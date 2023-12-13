@@ -1,0 +1,21 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{DA25295D-6462-435E-8EEC-60FA513CBB30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlorianAlbert.FinanceObserver.Server", "FlorianAlbert.FinanceObserver.Server\FlorianAlbert.FinanceObserver.Server.csproj", "{ECFDFBFC-48C7-4437-8BF9-51B1FAACB5E6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ECFDFBFC-48C7-4437-8BF9-51B1FAACB5E6} = {DA25295D-6462-435E-8EEC-60FA513CBB30}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ECFDFBFC-48C7-4437-8BF9-51B1FAACB5E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECFDFBFC-48C7-4437-8BF9-51B1FAACB5E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECFDFBFC-48C7-4437-8BF9-51B1FAACB5E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECFDFBFC-48C7-4437-8BF9-51B1FAACB5E6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
