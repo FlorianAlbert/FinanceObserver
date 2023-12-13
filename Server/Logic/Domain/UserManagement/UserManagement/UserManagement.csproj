@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>FlorianAlbert.FinanceObserver.Server.Logic.Domain.UserManagement</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\DataAccess\DbAccess.Contract\DbAccess.Contract.csproj"/>
+        <ProjectReference Include="..\UserManagement.Contract\UserManagement.Contract.csproj"/>
+    </ItemGroup>
+
+</Project>

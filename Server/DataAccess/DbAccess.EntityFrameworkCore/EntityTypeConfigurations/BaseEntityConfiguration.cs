@@ -1,0 +1,16 @@
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.EntityTypeConfigurations;
+
+public abstract class BaseEntityConfiguration<TKey, TEntity> : IEntityTypeConfiguration<TEntity>
+    where TKey : IParsable<TKey>,
+                 IEquatable<TKey>
+    where TEntity : BaseEntity<TKey>
+{
+    public virtual void Configure(EntityTypeBuilder<TEntity> builder)
+    {
+        builder.HasKey(entity => entity.Id);
+    }
+}

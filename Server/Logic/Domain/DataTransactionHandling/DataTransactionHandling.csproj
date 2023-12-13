@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>FlorianAlbert.FinanceObserver.Server.Logic.Domain.DataTransactionHandling</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\DataAccess\DbAccess.Contract\DbAccess.Contract.csproj"/>
+        <ProjectReference Include="..\DataTransactionHandling.Contract\DataTransactionHandling.Contract.csproj"/>
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,63 @@
+services:
+
+  # Backend
+  api:
+    build: .\Server\Presentation\Startup
+    ports:
+      - 5000:8080
+    environment:
+      FINANCE_OBSERVER_FROM_EMAIL_ADDRESS: ${FINANCE_OBSERVER_FROM_EMAIL_ADDRESS}
+      FINANCE_OBSERVER_FROM_EMAIL_NAME: ${FINANCE_OBSERVER_FROM_EMAIL_NAME}
+      FINANCE_OBSERVER_SMTP_HOST: ${FINANCE_OBSERVER_SMTP_HOST}
+      FINANCE_OBSERVER_SMTP_PORT: ${FINANCE_OBSERVER_SMTP_PORT}
+      FINANCE_OBSERVER_SMTP_USERNAME: ${FINANCE_OBSERVER_SMTP_USERNAME}
+      FINANCE_OBSERVER_SMTP_PASSWORD: ${FINANCE_OBSERVER_SMTP_PASSWORD}
+      FINANCE_OBSERVER_DB_PROVIDER: ${FINANCE_OBSERVER_DB_PROVIDER}
+      FINANCE_OBSERVER_DB_CONNECTIONSTRING: ${FINANCE_OBSERVER_DB_CONNECTIONSTRING}
+      FINANCE_OBSERVER_HASHING_ITERATIONS: ${FINANCE_OBSERVER_HASHING_ITERATIONS}
+      FINANCE_OBSERVER_HASHING_HASH_SIZE: ${FINANCE_OBSERVER_HASHING_HASH_SIZE}
+      FINANCE_OBSERVER_HASHING_SALT_SIZE: ${FINANCE_OBSERVER_HASHING_SALT_SIZE}
+    depends_on:
+      - postgres
+      - maildev
+
+  # Database
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+    expose:
+      - 5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  # pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+      - 9080:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - pgadmin_serverconf:/pgadmin4/servers.json
+    depends_on:
+      - postgres
+
+  # MailDev (Development SMTP Server)
+  maildev:
+    image: maildev/maildev:latest
+    ports:
+      - 1080:1080
+    expose:
+      - ${FINANCE_OBSERVER_SMTP_PORT}
+    environment:
+      MAILDEV_INCOMING_USER: ${FINANCE_OBSERVER_SMTP_USERNAME}
+      MAILDEV_INCOMING_PASS: ${FINANCE_OBSERVER_SMTP_PASSWORD}
+
+volumes:
+  pgadmin_data:
+  pgadmin_serverconf:
+  postgres:
