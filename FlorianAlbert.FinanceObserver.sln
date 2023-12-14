@@ -56,6 +56,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransactionHandling.Con
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransactionHandling", "Server\Logic\Domain\DataTransactionHandling\DataTransactionHandling.csproj", "{C0188D06-2A38-4379-BDFD-7AA9D3F89A4B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransactionHandling.Tests", "Server\Logic\Domain\DataTransactionHandling.Tests\DataTransactionHandling.Tests.csproj", "{37A8C970-539A-4A8E-8903-6136D458061B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -130,6 +132,10 @@ Global
 		{C0188D06-2A38-4379-BDFD-7AA9D3F89A4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0188D06-2A38-4379-BDFD-7AA9D3F89A4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0188D06-2A38-4379-BDFD-7AA9D3F89A4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37A8C970-539A-4A8E-8903-6136D458061B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37A8C970-539A-4A8E-8903-6136D458061B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37A8C970-539A-4A8E-8903-6136D458061B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37A8C970-539A-4A8E-8903-6136D458061B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,6 +164,7 @@ Global
 		{57B78B77-3C97-4ECE-AF67-AE3F7048A7DF} = {5E52A855-FB26-484A-B563-358312C81377}
 		{54C0DE98-18D9-46BF-9012-008F8346200B} = {5E52A855-FB26-484A-B563-358312C81377}
 		{C0188D06-2A38-4379-BDFD-7AA9D3F89A4B} = {5E52A855-FB26-484A-B563-358312C81377}
+		{37A8C970-539A-4A8E-8903-6136D458061B} = {5E52A855-FB26-484A-B563-358312C81377}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C7A11428-FDC3-4993-AB1D-8329B53E5CF3}
