@@ -21,6 +21,8 @@ internal class EmailManagementInstaller : IServiceInstaller
 
     public void Install(IServiceCollection services, IConfiguration configuration, ILogger logger)
     {
+        logger.LogInformation("Adding email management");
+        
         // Read settings
         string? fromEmailAddress = null;
         if (Environment.GetEnvironmentVariable(_fromEmailAddressFileEnvKey) is { } fromEmailAddressFileLocation
@@ -95,15 +97,6 @@ internal class EmailManagementInstaller : IServiceInstaller
 
         if (!string.IsNullOrEmpty(smtpUsername) && !string.IsNullOrEmpty(smtpPassword))
         {
-            logger.LogInformation("Adding email management with authentication");
-
-            logger.LogTrace("SmtpHost: {SmtpHost}", smtpHost);
-            logger.LogTrace("SmtpPort: {SmtpPort}", smtpPortString);
-            logger.LogTrace("FromEmailAddress: {FromEmailAddress}", fromEmailAddress);
-            logger.LogTrace("FromEmailName: {FromEmailName}", fromEmailName);
-            logger.LogTrace("SmtpUsername: {SmtpUsername}", smtpUsername);
-            logger.LogTrace("SmtpPassword: {SmtpPassword}", smtpPassword);
-
             services.AddFluentEmail(fromEmailAddress, fromEmailName)
                 .AddMailKitSender(new SmtpClientOptions
                 {
@@ -117,13 +110,6 @@ internal class EmailManagementInstaller : IServiceInstaller
         }
         else
         {
-            logger.LogInformation("Registering email management without authentication");
-
-            logger.LogInformation("SmtpHost: {SmtpHost}", smtpHost);
-            logger.LogInformation("SmtpPort: {SmtpPort}", smtpPortString);
-            logger.LogInformation("FromEmailAddress: {FromEmailAddress}", fromEmailAddress);
-            logger.LogInformation("FromEmailName: {FromEmailName}", fromEmailName);
-
             services.AddFluentEmail(fromEmailAddress, fromEmailName)
                 .AddMailKitSender(new SmtpClientOptions
                 {

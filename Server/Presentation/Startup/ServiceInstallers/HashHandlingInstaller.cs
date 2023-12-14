@@ -35,8 +35,6 @@ internal class HashHandlingInstaller : IServiceInstaller
         {
             throw new StartupValidationException("There was no valid iteration count found in the configuration.");
         }
-        
-        logger.LogTrace("HashIterations: {HashIterations}", iterations);
 
         string? hashSizeString = null;
         if (Environment.GetEnvironmentVariable(_hashSizeFileEnvKey) is { } hashSizeFileLocation
@@ -53,8 +51,6 @@ internal class HashHandlingInstaller : IServiceInstaller
         {
             throw new StartupValidationException("There was no valid hash size found in the configuration.");
         }
-        
-        logger.LogTrace("HashSize: {HashSize}", hashSize);
 
         string? saltSizeString = null;
         if (Environment.GetEnvironmentVariable(_saltSizeFileEnvKey) is { } saltSizeFileLocation
@@ -71,10 +67,8 @@ internal class HashHandlingInstaller : IServiceInstaller
         {
             throw new StartupValidationException("There was no valid salt size count found in the configuration.");
         }
-        
-        logger.LogTrace("SaltSize: {SaltSize}", saltSize);
 
-        services.AddTransient<HashingOptions>(serviceProvider => new HashingOptions
+        services.AddTransient<HashingOptions>(_ => new HashingOptions
         {
             Iterations = iterations,
             HashSize = hashSize,

@@ -58,9 +58,6 @@ internal class DbAccessInstaller : IServiceInstaller
 
             dbConnectionString = configuration[_dbConfiguredProvidersKey + ":" + provider]!;
         }
-        
-        logger.LogTrace("DatabaseProvider: {DatabaseProvider}", provider);
-        logger.LogTrace("Database ConnectionString: {DatabaseConnectionString}", dbConnectionString);
 
         services.AddDbContextPool<FinanceObserverContext>(contextOptionsBuilder =>
         {
