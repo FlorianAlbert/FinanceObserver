@@ -60,6 +60,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransactionHandling.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailManagement.Tests", "Server\Logic\Domain\EmailManagement.Tests\EmailManagement.Tests.csproj", "{411D92C2-95D8-4652-A885-31F76F6709AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashHandling.SHA512.Tests", "Server\Logic\Domain\HashHandling.SHA512.Tests\HashHandling.SHA512.Tests.csproj", "{0D36BF7A-5975-4C59-BD15-566A6CB4493E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,6 +144,10 @@ Global
 		{411D92C2-95D8-4652-A885-31F76F6709AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{411D92C2-95D8-4652-A885-31F76F6709AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{411D92C2-95D8-4652-A885-31F76F6709AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D36BF7A-5975-4C59-BD15-566A6CB4493E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D36BF7A-5975-4C59-BD15-566A6CB4493E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D36BF7A-5975-4C59-BD15-566A6CB4493E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D36BF7A-5975-4C59-BD15-566A6CB4493E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -172,6 +178,7 @@ Global
 		{C0188D06-2A38-4379-BDFD-7AA9D3F89A4B} = {5E52A855-FB26-484A-B563-358312C81377}
 		{37A8C970-539A-4A8E-8903-6136D458061B} = {5E52A855-FB26-484A-B563-358312C81377}
 		{411D92C2-95D8-4652-A885-31F76F6709AA} = {5E52A855-FB26-484A-B563-358312C81377}
+		{0D36BF7A-5975-4C59-BD15-566A6CB4493E} = {5E52A855-FB26-484A-B563-358312C81377}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C7A11428-FDC3-4993-AB1D-8329B53E5CF3}
