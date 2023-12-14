@@ -1,5 +1,4 @@
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
-using NSubstitute;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.DataTransactionHandling.Tests;
 
