@@ -1,9 +1,7 @@
-using AutoFixture;
 using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data.Inclusion;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
-using FluentAssertions;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.RegistrationConfirmationManagement.Tests;
 
