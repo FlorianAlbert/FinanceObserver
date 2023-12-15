@@ -607,4 +607,118 @@ public class RegistrationConfirmationManagerTests
         // Assert
         result.Errors.Should().ContainSingle();
     }
+
+    // GetUnconfirmedRegistrationConfirmationsWithUserAsync tests
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(1, 0)]
+    [InlineData(2, 0)]
+    [InlineData(5, 0)]
+    [InlineData(10, 0)]
+    [InlineData(25, 0)]
+    [InlineData(1, 1)]
+    [InlineData(2, 1)]
+    [InlineData(5, 1)]
+    [InlineData(10, 1)]
+    [InlineData(25, 1)]
+    [InlineData(2, 2)]
+    [InlineData(5, 2)]
+    [InlineData(10, 2)]
+    [InlineData(25, 2)]
+    [InlineData(5, 4)]
+    [InlineData(10, 4)]
+    [InlineData(25, 4)]
+    [InlineData(5, 5)]
+    [InlineData(10, 5)]
+    [InlineData(25, 5)]
+    [InlineData(10, 8)]
+    [InlineData(25, 8)]
+    [InlineData(10, 10)]
+    [InlineData(25, 10)]
+    [InlineData(25, 19)]
+    [InlineData(25, 25)]
+    public async Task GetUnconfirmedRegistrationConfirmationsWithUserAsync_Call_Succeeds(int existingRegistrationConfirmationsCount,
+        int unconfirmedRegistrationConfirmationsCount)
+    {
+        // Arrange
+        _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
+            composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
+                _fixture.Create<DateTime>()));
+        var existingRegistrations =
+            _fixture.CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationsCount).AsQueryable();
+        
+        // Set randomRegistrationConfirmations to unconfirmed
+        var random = new Random();
+        existingRegistrations.Select(existingRegistration => new { orderKey = random.Next(), existingRegistration})
+            .OrderBy(tmp => tmp.orderKey)
+            .Take(unconfirmedRegistrationConfirmationsCount)
+            .ToList()
+            .ForEach(tmp => tmp.existingRegistration.ConfirmationDate = null);
+        
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+            .Returns(existingRegistrations);
+
+        // Act
+        var result = await _sut.GetUnconfirmedRegistrationConfirmationsWithUserAsync();
+
+        // Assert
+        result.Succeeded.Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(1, 0)]
+    [InlineData(2, 0)]
+    [InlineData(5, 0)]
+    [InlineData(10, 0)]
+    [InlineData(25, 0)]
+    [InlineData(1, 1)]
+    [InlineData(2, 1)]
+    [InlineData(5, 1)]
+    [InlineData(10, 1)]
+    [InlineData(25, 1)]
+    [InlineData(2, 2)]
+    [InlineData(5, 2)]
+    [InlineData(10, 2)]
+    [InlineData(25, 2)]
+    [InlineData(5, 4)]
+    [InlineData(10, 4)]
+    [InlineData(25, 4)]
+    [InlineData(5, 5)]
+    [InlineData(10, 5)]
+    [InlineData(25, 5)]
+    [InlineData(10, 8)]
+    [InlineData(25, 8)]
+    [InlineData(10, 10)]
+    [InlineData(25, 10)]
+    [InlineData(25, 19)]
+    [InlineData(25, 25)]
+    public async Task GetUnconfirmedRegistrationConfirmationsWithUserAsync_Call_ReturnedRegistrationConfirmationsCountEqualsUnconfirmedRegistrationConfirmationsCount(int existingRegistrationConfirmationsCount,
+        int unconfirmedRegistrationConfirmationsCount)
+    {
+        // Arrange
+        _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
+            composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
+                _fixture.Create<DateTime>()));
+        var existingRegistrations =
+            _fixture.CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationsCount).AsQueryable();
+        
+        // Set randomRegistrationConfirmations to unconfirmed
+        var random = new Random();
+        existingRegistrations.Select(existingRegistration => new { orderKey = random.Next(), existingRegistration})
+            .OrderBy(tmp => tmp.orderKey)
+            .Take(unconfirmedRegistrationConfirmationsCount)
+            .ToList()
+            .ForEach(tmp => tmp.existingRegistration.ConfirmationDate = null);
+        
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+            .Returns(existingRegistrations);
+
+        // Act
+        var result = await _sut.GetUnconfirmedRegistrationConfirmationsWithUserAsync();
+
+        // Assert
+        result.Value.Should().HaveCount(unconfirmedRegistrationConfirmationsCount);
+    }
 }
