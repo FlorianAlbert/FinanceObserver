@@ -17,11 +17,9 @@ public class UserManager : IUserManager
 
     public async Task<Result<User>> AddNewUserAsync(User user, CancellationToken cancellationToken = default)
     {
-        var userAlreadyExists = await _repository.ExistsAsync(existingUser => existingUser.UserName == user.UserName,
-                                    cancellationToken: cancellationToken)
-                                || await _repository.ExistsAsync(
-                                    existingUser => existingUser.EmailAddress == user.EmailAddress,
-                                    cancellationToken: cancellationToken);
+        var userAlreadyExists = await _repository.ExistsAsync(
+            existingUser => existingUser.UserName == user.UserName || existingUser.EmailAddress == user.EmailAddress,
+            cancellationToken: cancellationToken);
 
         if (userAlreadyExists)
         {
