@@ -86,7 +86,7 @@ public class RegistrationWorkflow : IRegistrationWorkflow
         var registrationConfirmationEmail = new Email
         {
             Id = Guid.Empty,
-            Receivers = [userInsertResult.Value!],
+            Receivers = [addedUser],
             Subject = "Welcome to Observe!",
             Message = $"Hi {addedUser.FirstName}!\n" +
                       "\n" +
