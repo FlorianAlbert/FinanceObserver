@@ -35,7 +35,7 @@ public class HashGenerator : IHashGenerator
         Buffer.BlockCopy(hash, 0, combinedHash, 0, _hashSize);
         Buffer.BlockCopy(salt, 0, combinedHash, _hashSize, _saltSize);
 
-        var savedPasswordHash = Convert.ToBase64String(combinedHash);
-        return Task.FromResult(savedPasswordHash);
+        var resultingHash = Convert.ToBase64String(combinedHash);
+        return Task.FromResult(resultingHash);
     }
 }

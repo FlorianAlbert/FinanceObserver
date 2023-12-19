@@ -1,6 +1,5 @@
 ﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data.Inclusion;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.UserManagement.Contract;
 
@@ -17,11 +16,9 @@ public class UserManager : IUserManager
 
     public async Task<Result<User>> AddNewUserAsync(User user, CancellationToken cancellationToken = default)
     {
-        var userAlreadyExists = await _repository.ExistsAsync(existingUser => existingUser.UserName == user.UserName,
-                                    cancellationToken: cancellationToken)
-                                || await _repository.ExistsAsync(
-                                    existingUser => existingUser.EmailAddress == user.EmailAddress,
-                                    cancellationToken: cancellationToken);
+        var userAlreadyExists = await _repository.ExistsAsync(
+            existingUser => existingUser.UserName == user.UserName || existingUser.EmailAddress == user.EmailAddress,
+            cancellationToken: cancellationToken);
 
         if (userAlreadyExists)
         {
