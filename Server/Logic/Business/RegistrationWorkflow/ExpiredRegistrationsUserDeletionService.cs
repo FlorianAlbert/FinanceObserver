@@ -8,11 +8,12 @@ namespace FlorianAlbert.FinanceObserver.Server.Logic.Business.RegistrationWorkfl
 public class ExpiredRegistrationsUserDeletionService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(60));
+    private readonly PeriodicTimer _timer;
 
-    public ExpiredRegistrationsUserDeletionService(IServiceProvider serviceProvider)
+    public ExpiredRegistrationsUserDeletionService(IServiceProvider serviceProvider, int executionPeriodInSeconds)
     {
         _serviceProvider = serviceProvider;
+        _timer = new PeriodicTimer(TimeSpan.FromSeconds(executionPeriodInSeconds));
     }
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)

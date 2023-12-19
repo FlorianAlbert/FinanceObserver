@@ -648,7 +648,7 @@ public class RegistrationConfirmationManagerTests
         var existingRegistrations =
             _fixture.CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationsCount).AsQueryable();
         
-        // Set randomRegistrationConfirmations to unconfirmed
+        // Set random RegistrationConfirmations to unconfirmed
         var random = new Random();
         existingRegistrations.Select(existingRegistration => new { orderKey = random.Next(), existingRegistration})
             .OrderBy(tmp => tmp.orderKey)

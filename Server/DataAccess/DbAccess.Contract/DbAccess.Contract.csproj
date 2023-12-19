@@ -9,6 +9,7 @@
     
     <ItemGroup>
         <InternalsVisibleTo Include="DbAccess.EntityFrameworkCore" />
+        <InternalsVisibleTo Include="RegistrationWorkflow.Tests" />
     </ItemGroup>
 
     <ItemGroup>
