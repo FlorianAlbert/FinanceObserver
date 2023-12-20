@@ -27,10 +27,9 @@ jobs:
               run: dotnet build --configuration Release --no-restore
 
             - name: Test
-              run: dotnet test --configuration Release --no-restore --no-build  --collect "XPlat Code Coverage" --results-directory ./CodeCoverageReports
+              run: dotnet test --configuration Release --no-restore --no-build  --collect "XPlat Code Coverage"
 
             - name: Upload coverage reports to Codecov
               uses: codecov/codecov-action@v3
               with:
-                directory: ./CodeCoverageReports
-                dry_run: github.event_name != 'push'
+                dry_run: ${{ github.event_name != 'push' }}
