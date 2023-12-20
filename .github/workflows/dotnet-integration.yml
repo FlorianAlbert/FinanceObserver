@@ -33,4 +33,4 @@ jobs:
               uses: codecov/codecov-action@v3
               with:
                 directory: ./CodeCoverageReports
-                dry_run: github.event_name == 'pull_request'
+                dry_run: github.event_name != 'push'
