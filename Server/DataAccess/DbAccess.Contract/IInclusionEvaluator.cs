@@ -1,4 +1,4 @@
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data.Inclusion;
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
@@ -6,7 +6,7 @@ namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 public interface IInclusionEvaluator
 {
     IQueryable<TEntity> Evaluate<TEntity, TKey>(IQueryable<TEntity> queryable,
-        Inclusion[] inclusions,
+        Inclusion<TKey, TEntity>[] inclusions,
         CancellationToken cancellationToken = default)
         where TEntity : BaseEntity<TKey>
         where TKey : IParsable<TKey>,

@@ -3,7 +3,6 @@ using System.Reflection;
 using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data.Inclusion;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
@@ -29,7 +28,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
     private DbSet<TEntity> _Set => _set ??= _context.Set<TEntity>();
 
-    public Task<IQueryable<TEntity>> QueryAsync(Inclusion[]? includes = null,
+    public Task<IQueryable<TEntity>> QueryAsync(Inclusion<TKey, TEntity>[]? includes = null,
         CancellationToken cancellationToken = default)
     {
         var queryable = _includableEvaluator.Evaluate<TEntity, TKey>(_Set, includes ?? [], cancellationToken);
@@ -54,7 +53,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
         return ExistsAsync(e => e.Id.Equals(id), cancellationToken: cancellationToken);
     }
 
-    public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> condition, Inclusion[]? includes = null,
+    public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> condition, Inclusion<TKey, TEntity>[]? includes = null,
         CancellationToken cancellationToken = default)
     {
         return await (await QueryAsync(includes, cancellationToken)).AnyAsync(condition, cancellationToken);
@@ -93,7 +92,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
         return entities.ExecuteDeleteAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, Inclusion[]? includes = null,
+    public async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, Inclusion<TKey, TEntity>[]? includes = null,
         CancellationToken cancellationToken = default)
     {
         await DeleteAsync((await QueryAsync(includes, cancellationToken)).Where(predicate), cancellationToken);

@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data.Inclusion;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
@@ -11,13 +10,13 @@ public interface IRepository<TKey, TEntity>
     where TKey : IParsable<TKey>,
     IEquatable<TKey>
 {
-    Task<IQueryable<TEntity>> QueryAsync(Inclusion[]? includes = null, CancellationToken cancellationToken = default);
+    Task<IQueryable<TEntity>> QueryAsync(Inclusion<TKey, TEntity>[]? includes = null, CancellationToken cancellationToken = default);
 
     Task<Result<TEntity>> FindAsync(TKey id, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsAsync(TKey id, CancellationToken cancellationToken = default);
 
-    Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> condition, Inclusion[]? includes = null,
+    Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> condition, Inclusion<TKey, TEntity>[]? includes = null,
         CancellationToken cancellationToken = default);
 
     Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default);
@@ -26,7 +25,7 @@ public interface IRepository<TKey, TEntity>
 
     Task DeleteAsync(IQueryable<TEntity> entities, CancellationToken cancellationToken = default);
     
-    Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, Inclusion[]? includes = null, CancellationToken cancellationToken = default);
+    Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, Inclusion<TKey, TEntity>[]? includes = null, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(TKey id, CancellationToken cancellationToken = default);
 

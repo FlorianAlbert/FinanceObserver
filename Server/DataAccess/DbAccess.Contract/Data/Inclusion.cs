@@ -2,22 +2,40 @@ using System.Linq.Expressions;
 using System.Reflection;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 
-namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data.Inclusion;
+namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 
 public abstract class Inclusion
 {
     protected Queue<Inclusion>? _childInclusions;
-    public abstract string IncludePropertyName { get; protected set; }
-    public Queue<Inclusion> ChildInclusions => _childInclusions ??= new Queue<Inclusion>();
+    internal abstract string IncludePropertyName { get; private protected set; }
+    internal Queue<Inclusion> ChildInclusions => _childInclusions ??= new Queue<Inclusion>();
 }
 
-public abstract class Inclusion<TEntity, TKey, TInclude, TProperty> : Inclusion
+public abstract class Inclusion<TKey, TEntity> : Inclusion
+    where TEntity : BaseEntity<TKey>
+    where TKey : IParsable<TKey>,
+    IEquatable<TKey>
+{
+    public static Inclusion<TEntity, TKey, ICollection<TProperty>, TProperty> Of<TProperty>(Expression<Func<TEntity, ICollection<TProperty>>> inclusion)
+        where TProperty : BaseEntity<TKey>
+    {
+        return new Inclusion<TEntity, TKey, ICollection<TProperty>, TProperty>(inclusion);
+    }
+
+    public static Inclusion<TEntity, TKey, TProperty, TProperty> Of<TProperty>(Expression<Func<TEntity, TProperty>> inclusion)
+        where TProperty : BaseEntity<TKey>
+    {
+        return new Inclusion<TEntity, TKey, TProperty, TProperty>(inclusion);
+    }
+}
+
+public class Inclusion<TEntity, TKey, TInclude, TProperty> : Inclusion<TKey, TEntity>
     where TEntity : BaseEntity<TKey>
     where TKey : IParsable<TKey>,
     IEquatable<TKey>
     where TProperty : BaseEntity<TKey>
 {
-    public Inclusion(Expression<Func<TEntity, TInclude>> inclusion)
+    internal Inclusion(Expression<Func<TEntity, TInclude>> inclusion)
     {
         if (inclusion.Body is not MemberExpression member)
         {
@@ -52,7 +70,7 @@ public abstract class Inclusion<TEntity, TKey, TInclude, TProperty> : Inclusion
         IncludePropertyName = propInfo.Name;
     }
 
-    public sealed override string IncludePropertyName { get; protected set; }
+    internal sealed override string IncludePropertyName { get; private protected set; }
 
     public Inclusion<TEntity, TKey, TInclude, TProperty> AddChildInclusion<TNestedProperty>(
         Inclusion<TProperty, TKey, TNestedProperty, TNestedProperty> childInclusion)
