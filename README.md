@@ -2,6 +2,9 @@
 
 This is a learning project aiming to develop a platform to observe your finances and everything around it. 
 
+[![Continous Integration .NET](https://github.com/FlorianAlbert/FinanceObserver/actions/workflows/dotnet-integration.yml/badge.svg?event=push)](https://github.com/FlorianAlbert/FinanceObserver/actions/workflows/dotnet-integration.yml)
+[![codecov](https://codecov.io/gh/FlorianAlbert/FinanceObserver/graph/badge.svg?token=LW7XCTFPW3)](https://codecov.io/gh/FlorianAlbert/FinanceObserver)
+
 ## Description
 
 The main purpose of this project is to inspect, test and learn different technologies in a practical context.
