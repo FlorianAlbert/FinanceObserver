@@ -1,6 +1,6 @@
 ﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data.Inclusion;
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.RegistrationConfirmationManagement.Contract;
 
@@ -22,7 +22,7 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
         [
             .. (await _repository.QueryAsync(
             [
-                new SingleInclusion<RegistrationConfirmation, Guid, User>(existingRegistration =>
+                Inclusion<Guid, RegistrationConfirmation>.Of(existingRegistration =>
                     existingRegistration.User)
             ], cancellationToken))
             .Where(existingRegistration => existingRegistration.User == registration.User)
@@ -76,7 +76,7 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
     {
         RegistrationConfirmation[] existingRegistrationCandidates =
         [
-            ..(await _repository.QueryAsync([new SingleInclusion<RegistrationConfirmation, Guid, User>(r => r.User)],
+            ..(await _repository.QueryAsync([Inclusion<Guid, RegistrationConfirmation>.Of(r => r.User)],
                 cancellationToken))
             .Where(r => r.Id == registrationConfirmationId)
         ];
@@ -93,7 +93,7 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
         GetUnconfirmedRegistrationConfirmationsWithUserAsync(CancellationToken cancellationToken = default)
     {
         var unconfirmedRegistrations = (await _repository.QueryAsync(
-            [new SingleInclusion<RegistrationConfirmation, Guid, User>(r => r.User)],
+            [Inclusion<Guid, RegistrationConfirmation>.Of(r => r.User)],
             cancellationToken)).Where(r => r.ConfirmationDate == null);
 
         return Result<IQueryable<RegistrationConfirmation>>.Success(unconfirmedRegistrations);

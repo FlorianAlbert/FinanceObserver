@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data.Inclusion;
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.UserManagement.Tests;
@@ -35,7 +35,7 @@ public class UserManagerTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion[]>(),
+        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(false);
 
         // Act
@@ -51,7 +51,7 @@ public class UserManagerTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion[]>(),
+        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(false);
 
         // Act
@@ -68,7 +68,7 @@ public class UserManagerTests
         var user = _fixture.Create<User>();
         var createdUser = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion[]>(),
+        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(false);
         _repositoryMock.InsertAsync(user, Arg.Any<CancellationToken>()).Returns(createdUser);
 
@@ -85,7 +85,7 @@ public class UserManagerTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion[]>(),
+        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(true);
 
         // Act
@@ -101,7 +101,7 @@ public class UserManagerTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion[]>(),
+        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(true);
 
         // Act
@@ -117,7 +117,7 @@ public class UserManagerTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion[]>(),
+        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(true);
 
         // Act
@@ -268,7 +268,7 @@ public class UserManagerTests
         _ = await _sut.GetAllUsersAsync();
 
         // Assert
-        await _repositoryMock.Received(1).QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>());
+        await _repositoryMock.Received(1).QueryAsync(Arg.Any<Inclusion<Guid, User>[]>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -277,7 +277,7 @@ public class UserManagerTests
         // Arrange
         var users = _fixture.CreateMany<User>().AsQueryable();
 
-        _repositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>()).Returns(users);
+        _repositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, User>[]>(), Arg.Any<CancellationToken>()).Returns(users);
 
         // Act
         var result = await _sut.GetAllUsersAsync();

@@ -1,6 +1,6 @@
 using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data.Inclusion;
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.RegistrationConfirmationManagement.Tests;
@@ -37,7 +37,7 @@ public class RegistrationConfirmationManagerTests
         // Arrange
         var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(Array.Empty<RegistrationConfirmation>().AsQueryable());
 
         // Act
@@ -53,7 +53,7 @@ public class RegistrationConfirmationManagerTests
         // Arrange
         var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(Array.Empty<RegistrationConfirmation>().AsQueryable());
 
         // Act
@@ -72,7 +72,7 @@ public class RegistrationConfirmationManagerTests
         var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
         var createdRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(Array.Empty<RegistrationConfirmation>().AsQueryable());
         _registrationConfirmationRepositoryMock.InsertAsync(registrationConfirmation)
             .Returns(createdRegistrationConfirmation);
@@ -91,7 +91,7 @@ public class RegistrationConfirmationManagerTests
         var user = _fixture.Create<User>();
         user.RegistrationConfirmation.User = user;
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(new[] { user.RegistrationConfirmation }.AsQueryable());
 
         // Act
@@ -108,7 +108,7 @@ public class RegistrationConfirmationManagerTests
         var user = _fixture.Create<User>();
         user.RegistrationConfirmation.User = user;
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(new[] { user.RegistrationConfirmation }.AsQueryable());
 
         // Act
@@ -132,7 +132,7 @@ public class RegistrationConfirmationManagerTests
         var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
         var newRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(new[] { existingRegistrationConfirmation }.AsQueryable());
 
         // Act
@@ -160,7 +160,7 @@ public class RegistrationConfirmationManagerTests
             .CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationsCount).AsQueryable();
         var newRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(existingRegistrationConfirmations);
 
         // Act
@@ -188,7 +188,7 @@ public class RegistrationConfirmationManagerTests
             .CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationsCount).AsQueryable();
         var newRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(existingRegistrationConfirmations);
 
         // Act
@@ -490,7 +490,7 @@ public class RegistrationConfirmationManagerTests
                 registrationConfirmationId));
         var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(new[] { registrationConfirmation }.AsQueryable());
 
         // Act
@@ -512,7 +512,7 @@ public class RegistrationConfirmationManagerTests
                 registrationConfirmationId));
         var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(new[] { registrationConfirmation }.AsQueryable());
 
         // Act
@@ -527,7 +527,7 @@ public class RegistrationConfirmationManagerTests
     {
         // Arrange
         var registrationConfirmationId = _fixture.Create<Guid>();
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(Array.Empty<RegistrationConfirmation>().AsQueryable());
 
         // Act
@@ -543,7 +543,7 @@ public class RegistrationConfirmationManagerTests
     {
         // Arrange
         var registrationConfirmationId = _fixture.Create<Guid>();
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(Array.Empty<RegistrationConfirmation>().AsQueryable());
 
         // Act
@@ -570,7 +570,7 @@ public class RegistrationConfirmationManagerTests
         var registrationConfirmations =
             _fixture.CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationCount).AsQueryable();
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(registrationConfirmations);
 
         // Act
@@ -598,7 +598,7 @@ public class RegistrationConfirmationManagerTests
         var registrationConfirmations =
             _fixture.CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationCount).AsQueryable();
 
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(registrationConfirmations);
 
         // Act
@@ -656,7 +656,7 @@ public class RegistrationConfirmationManagerTests
             .ToList()
             .ForEach(tmp => tmp.existingRegistration.ConfirmationDate = null);
         
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(existingRegistrations);
 
         // Act
@@ -712,7 +712,7 @@ public class RegistrationConfirmationManagerTests
             .ToList()
             .ForEach(tmp => tmp.existingRegistration.ConfirmationDate = null);
         
-        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion[]>(), Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(), Arg.Any<CancellationToken>())
             .Returns(existingRegistrations);
 
         // Act

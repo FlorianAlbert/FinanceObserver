@@ -1,6 +1,6 @@
 using System.Text;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data.Inclusion;
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,9 +10,9 @@ public class InclusionEvaluator : IInclusionEvaluator
 {
     private readonly StringBuilder _includeStringBuilder = new();
 
-    public IQueryable<T> Evaluate<T, TKey>(IQueryable<T> queryable, Inclusion[] inclusions,
+    public IQueryable<TEntity> Evaluate<TEntity, TKey>(IQueryable<TEntity> queryable, Inclusion<TKey, TEntity>[] inclusions,
         CancellationToken cancellationToken = default)
-        where T : BaseEntity<TKey>
+        where TEntity : BaseEntity<TKey>
         where TKey : IParsable<TKey>,
         IEquatable<TKey>
     {
@@ -20,7 +20,7 @@ public class InclusionEvaluator : IInclusionEvaluator
 
         foreach (var inclusion in inclusions)
         {
-            var mustContinue = false;
+            bool mustContinue;
 
             do
             {
