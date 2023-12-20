@@ -1,0 +1,35 @@
+name: Continous Integration .NET
+
+on: 
+    pull_request: 
+        branches: 
+            - main
+    push: 
+        branches: 
+            - main
+
+jobs:
+    run:
+        name: CI job
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup dotnet
+              uses: actions/setup-dotnet@v3
+              with:
+                global-json-file: global.json
+            
+            - name: Restore
+              run: dotnet restore
+
+            - name: Build
+              run: dotnet build --configuration Release --no-restore
+
+            - name: Test
+              run: dotnet test --configuration Release --no-restore --no-build  --collect "XPlat Code Coverage"
+
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v3
+              with:
+                dry_run: ${{ github.event_name != 'push' }}
