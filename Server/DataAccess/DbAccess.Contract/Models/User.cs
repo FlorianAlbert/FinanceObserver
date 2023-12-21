@@ -5,9 +5,6 @@ public sealed class User : BaseEntity<Guid>
     private ICollection<Email>? _emails;
 
     // Navigation properties
-    private RegistrationConfirmation? _registrationConfirmation;
-
-    private ICollection<Transaction>? _transactions;
     public required string UserName { get; set; }
 
     public required string FirstName { get; set; }
@@ -22,6 +19,7 @@ public sealed class User : BaseEntity<Guid>
 
     public required string PasswordHash { get; set; }
 
+    private RegistrationConfirmation? _registrationConfirmation;
     public RegistrationConfirmation RegistrationConfirmation
     {
         get => _registrationConfirmation ??= new RegistrationConfirmation
@@ -31,7 +29,8 @@ public sealed class User : BaseEntity<Guid>
         };
         set => _registrationConfirmation = value;
     }
-
+    
+    private ICollection<Transaction>? _transactions;
     public ICollection<Transaction> Transactions
     {
         get => _transactions ??= new List<Transaction>();

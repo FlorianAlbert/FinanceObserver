@@ -15,15 +15,15 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
     IEquatable<TKey>
 {
     private readonly FinanceObserverContext _context;
-    private readonly IInclusionEvaluator _includableEvaluator;
+    private readonly IInclusionEvaluator _inclusionEvaluator;
 
     private DbSet<TEntity>? _set;
 
     internal Repository(FinanceObserverContext dbContext,
-        IInclusionEvaluator includableEvaluator)
+        IInclusionEvaluator inclusionEvaluator)
     {
         _context = dbContext;
-        _includableEvaluator = includableEvaluator;
+        _inclusionEvaluator = inclusionEvaluator;
     }
 
     private DbSet<TEntity> _Set => _set ??= _context.Set<TEntity>();
@@ -31,7 +31,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
     public Task<IQueryable<TEntity>> QueryAsync(Inclusion<TKey, TEntity>[]? includes = null,
         CancellationToken cancellationToken = default)
     {
-        var queryable = _includableEvaluator.Evaluate<TEntity, TKey>(_Set, includes ?? [], cancellationToken);
+        var queryable = _inclusionEvaluator.Evaluate(_Set, includes ?? [], cancellationToken);
 
         return Task.FromResult(queryable);
     }
