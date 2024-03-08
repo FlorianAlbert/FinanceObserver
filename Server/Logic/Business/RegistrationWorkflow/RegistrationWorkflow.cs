@@ -60,7 +60,7 @@ public class RegistrationWorkflow : IRegistrationWorkflow
             return Result.Failure(userInsertResult.Errors);
         }
 
-        var addedUser = userInsertResult.Value!;
+        var addedUser = userInsertResult.Value;
 
         // Create RegistrationConfirmation
         var registrationToAdd = new RegistrationConfirmation
@@ -80,7 +80,7 @@ public class RegistrationWorkflow : IRegistrationWorkflow
             return Result.Failure(registrationConfirmationInsertResult.Errors);
         }
 
-        var addedRegistration = registrationConfirmationInsertResult.Value!;
+        var addedRegistration = registrationConfirmationInsertResult.Value;
 
         // Create registration confirmation mail
         var registrationConfirmationEmail = new Email
@@ -125,7 +125,7 @@ public class RegistrationWorkflow : IRegistrationWorkflow
             return Result.Failure(registrationConfirmationResult.Errors);
         }
 
-        var registrationConfirmation = registrationConfirmationResult.Value!;
+        var registrationConfirmation = registrationConfirmationResult.Value;
         
         await _dataTransactionHandler.StartDbTransactionAsync(cancellationToken);
 

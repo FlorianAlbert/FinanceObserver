@@ -6,17 +6,17 @@ public abstract class BaseEntity<TKey>
 {
     public required TKey Id { get; init; }
 
-    private DateTime? _createdDate;
-    public DateTime CreatedDate
+    private DateTimeOffset? _createdDate;
+    public DateTimeOffset CreatedDate
     {
-        get => _createdDate ?? DateTime.MinValue;
+        get => _createdDate ?? DateTimeOffset.MinValue;
         internal set => _createdDate = value;
     }
     
-    private DateTime? _updatedDate;
-    public DateTime UpdatedDate
+    private DateTimeOffset? _updatedDate;
+    public DateTimeOffset UpdatedDate
     {
-        get => _updatedDate ?? DateTime.MinValue;
+        get => _updatedDate ?? DateTimeOffset.MinValue;
         internal set => _updatedDate = value;
     }
 }

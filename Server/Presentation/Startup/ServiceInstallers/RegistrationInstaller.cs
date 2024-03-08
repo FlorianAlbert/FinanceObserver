@@ -42,9 +42,8 @@ internal class RegistrationInstaller : IServiceInstaller
 
         services.AddTransient<IRegistrationWorkflow, RegistrationWorkflow>();
 
-        services.AddHostedService<ExpiredRegistrationsUserDeletionService>();
-        services.AddHostedService<ExpiredRegistrationsUserDeletionService>(x =>
-            new ExpiredRegistrationsUserDeletionService(x,
+        services.AddHostedService<ExpiredRegistrationsUserDeletionService>(serviceProvider =>
+            new ExpiredRegistrationsUserDeletionService(serviceProvider,
                 expiredRegistrationDeletionExecutionPeriodInSeconds));
     }
 }

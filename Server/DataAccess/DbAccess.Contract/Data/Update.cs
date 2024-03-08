@@ -24,4 +24,14 @@ public class Update<TEntity>
     {
         return new Update<TEntity>(selectorExpression, (TEntity e) => value);
     }
+
+    public bool SelectorEquals<TProperty>(Expression<Func<TEntity, TProperty>> otherSelectorExpression)
+    {
+        if (SelectorExpression is not Expression<Func<TEntity, TProperty>> thisSelectorExpression)
+        {
+            return false;
+        }
+
+        return otherSelectorExpression.Body == thisSelectorExpression.Body;
+    }
 }

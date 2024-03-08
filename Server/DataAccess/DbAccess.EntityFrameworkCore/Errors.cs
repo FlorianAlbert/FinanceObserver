@@ -2,7 +2,7 @@ using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Infrastructu
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
 
-public static class Errors
+internal static class Errors
 {
     private static Error? _entityNotFoundError;
 

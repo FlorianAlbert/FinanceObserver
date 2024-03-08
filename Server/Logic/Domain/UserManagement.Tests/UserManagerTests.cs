@@ -17,7 +17,7 @@ public class UserManagerTests
     public UserManagerTests()
     {
         _fixture = new Fixture();
-        _fixture.Register(() => DateOnly.FromDateTime(_fixture.Create<DateTime>()));
+        _fixture.Register(() => DateOnly.FromDateTime(_fixture.Create<DateTimeOffset>().Date));
         _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
@@ -51,7 +51,8 @@ public class UserManagerTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
+        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), 
+            Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(false);
 
         // Act
@@ -68,7 +69,8 @@ public class UserManagerTests
         var user = _fixture.Create<User>();
         var createdUser = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
+        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), 
+            Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(false);
         _repositoryMock.InsertAsync(user, Arg.Any<CancellationToken>()).Returns(createdUser);
 
@@ -85,7 +87,8 @@ public class UserManagerTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
+        _repositoryMock.ExistsAsync(Arg.Is((Expression<Func<User, bool>> expression) => expression.Compile()(user)), 
+            Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(true);
 
         // Act
@@ -101,7 +104,8 @@ public class UserManagerTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
+        _repositoryMock.ExistsAsync(Arg.Is((Expression<Func<User, bool>> expression) => expression.Compile()(user)), 
+            Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(true);
 
         // Act
@@ -117,7 +121,8 @@ public class UserManagerTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
+        _repositoryMock.ExistsAsync(Arg.Is((Expression<Func<User, bool>> expression) => expression.Compile()(user)), 
+            Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(true);
 
         // Act

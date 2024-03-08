@@ -39,7 +39,7 @@ public class UserManager : IUserManager
 
     public async Task<Result> RemoveUsersAsync(IEnumerable<User> users, CancellationToken cancellationToken = default)
     {
-        await _repository.DeleteAsync(users as IQueryable<User> ?? users.AsQueryable(), cancellationToken);
+        await _repository.DeleteAsync(users, cancellationToken);
 
         return Result.Success();
     }

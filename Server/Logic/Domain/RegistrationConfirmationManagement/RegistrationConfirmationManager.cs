@@ -52,7 +52,7 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
             return Result.Failure(registrationConfirmationResult.Errors);
         }
 
-        return await ConfirmAsync(registrationConfirmationResult.Value!, cancellationToken);
+        return await ConfirmAsync(registrationConfirmationResult.Value, cancellationToken);
     }
 
     public async Task<Result> ConfirmAsync(RegistrationConfirmation registrationConfirmation,
@@ -63,9 +63,7 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
             return Result.Success();
         }
         
-        registrationConfirmation.ConfirmationDate = DateTime.UtcNow;
-        
-        await _repository.UpdateAsync(registrationConfirmation, cancellationToken);
+        await _repository.UpdateAsync(registrationConfirmation, [Update<RegistrationConfirmation>.With(r => r.ConfirmationDate, DateTimeOffset.UtcNow)], cancellationToken);
 
         return Result.Success();
     }

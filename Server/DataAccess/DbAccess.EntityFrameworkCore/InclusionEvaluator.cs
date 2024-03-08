@@ -1,16 +1,15 @@
 using System.Text;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
 
-public class InclusionEvaluator : IInclusionEvaluator
+internal class InclusionEvaluator
 {
     private readonly StringBuilder _includeStringBuilder = new();
 
-    public IQueryable<TEntity> Evaluate<TEntity, TKey>(IQueryable<TEntity> queryable, Inclusion<TKey, TEntity>[] inclusions,
+    public virtual IQueryable<TEntity> Evaluate<TEntity, TKey>(IQueryable<TEntity> queryable, Inclusion<TKey, TEntity>[] inclusions,
         CancellationToken cancellationToken = default)
         where TEntity : BaseEntity<TKey>
         where TKey : IParsable<TKey>,

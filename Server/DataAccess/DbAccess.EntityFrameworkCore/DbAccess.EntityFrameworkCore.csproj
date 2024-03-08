@@ -13,6 +13,7 @@
     
     <ItemGroup>
         <InternalsVisibleTo Include="DbAccess.EntityFrameworkCore.Tests" />
+        <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
     </ItemGroup>
 
     <ItemGroup>

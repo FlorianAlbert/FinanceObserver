@@ -1,19 +1,41 @@
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Tests.TestModel;
+using Microsoft.EntityFrameworkCore;
+using Testcontainers.PostgreSql;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Tests;
 
-public class RepositoryFactoryTests
+public class RepositoryFactoryTests : IAsyncLifetime
 {
-    private readonly RepositoryFactory _sut;
+    private RepositoryFactory _sut = null!;
 
-    public RepositoryFactoryTests()
+    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
+        .WithImage("postgres:latest")
+        .WithDatabase("db")
+        .WithUsername("postgres")
+        .WithPassword("postgres")
+        .WithCleanUp(true)
+        .Build();
+    
+    private TestDbContext _context = null!;
+
+    public async Task InitializeAsync()
     {
-        var contextMock = MockedDbContextBuilder<FinanceObserverContext>.Create().Build();
-        var inclusionEvaluatorMock = Substitute.For<IInclusionEvaluator>();
+        await _postgreSqlContainer.StartAsync();
         
-        _sut = new RepositoryFactory(contextMock, inclusionEvaluatorMock);
+        var contextOptions = new DbContextOptionsBuilder<TestDbContext>()
+            .UseNpgsql(_postgreSqlContainer.GetConnectionString())
+            .Options;
+
+        _context = new TestDbContext(contextOptions);
+        
+        _sut = new RepositoryFactory(_context);
+        
+        await _context.Database.MigrateAsync();
+    }
+
+    public Task DisposeAsync()
+    {
+        return _postgreSqlContainer.DisposeAsync().AsTask();
     }
     
     [Fact]

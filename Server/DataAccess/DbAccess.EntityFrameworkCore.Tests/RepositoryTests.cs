@@ -1,135 +1,66 @@
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Tests.TestModel;
+using Microsoft.EntityFrameworkCore;
+using Testcontainers.PostgreSql;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Tests;
 
-public class RepositoryTests
+public class RepositoryTests : IAsyncLifetime
 {
     private readonly Fixture _fixture;
 
-    private readonly Func<Repository<Guid, TestEntity>> _repositoryFactory;
+    private Repository<Guid, TestEntity> _sut = null!;
+    
+    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
+        .WithImage("postgres:latest")
+        .WithDatabase("db")
+        .WithUsername("postgres")
+        .WithPassword("postgres")
+        .WithCleanUp(true)
+        .Build();
 
-    private readonly MockedDbContextBuilder<FinanceObserverContext> _mockedDbContextBuilder;
-    private readonly IInclusionEvaluator _inclusionEvaluatorMock;
-
-    private Repository<Guid, TestEntity>? _sut;
+    private TestDbContext _context = null!;
 
     public RepositoryTests()
     {
         _fixture = new Fixture();
+    }
 
-        _mockedDbContextBuilder = MockedDbContextBuilder<FinanceObserverContext>.Create();
-        _inclusionEvaluatorMock = Substitute.For<IInclusionEvaluator>();
+    public async Task InitializeAsync()
+    {
+        await _postgreSqlContainer.StartAsync();
+        
+        var contextOptions = new DbContextOptionsBuilder<TestDbContext>()
+            .UseNpgsql(_postgreSqlContainer.GetConnectionString())
+            .Options;
 
-        _repositoryFactory = () =>
-            new Repository<Guid, TestEntity>(_mockedDbContextBuilder.Build(), _inclusionEvaluatorMock);
+        _context = new TestDbContext(contextOptions);
+        
+        _sut = new Repository<Guid, TestEntity>(_context, new InclusionEvaluator());
+        
+        await _context.Database.MigrateAsync();
+    }
+
+    public Task DisposeAsync()
+    {
+        return _postgreSqlContainer.DisposeAsync().AsTask();
     }
 
     [Fact]
-    public async Task QueryAsync_CallWithoutInclusions_ReturnsQueryableReturnedByInclusionEvaluator()
+    public async Task QueryAsync_Call_ReturnsQueryableReturnedByInclusionEvaluator()
     {
         // Arrange
         var testEntities = _fixture.CreateMany<TestEntity>().AsQueryable();
-        var evaluatedTestEntities = _fixture.CreateMany<TestEntity>().AsQueryable();
-        _mockedDbContextBuilder.WithDbSet<Guid, TestEntity>(testEntities);
 
-        _inclusionEvaluatorMock.Evaluate(
-            Arg.Is<IQueryable<TestEntity>>(queryableArg =>
-                queryableArg.Count() == testEntities.Count() &&
-                queryableArg.All(testEntity => testEntities.Contains(testEntity))),
-            Arg.Is<Inclusion<Guid, TestEntity>[]>(inclusions => inclusions.Length == 0),
-            Arg.Any<CancellationToken>()).Returns(evaluatedTestEntities);
-
-        _sut = _repositoryFactory();
+        await _context.AddRangeAsync(testEntities);
+        await _context.SaveChangesAsync();
+        
+        _context.ChangeTracker.Clear();
 
         // Act
         var result = await _sut.QueryAsync();
 
         // Assert
-        result.Should().BeSameAs(evaluatedTestEntities);
-    }
-
-    [Fact]
-    public async Task QueryAsync_CallWithSingleRelationInclusion_ReturnsQueryableReturnedByInclusionEvaluator()
-    {
-        // Arrange
-        var testEntities = _fixture.CreateMany<TestEntity>().AsQueryable();
-        var evaluatedTestEntities = _fixture.CreateMany<TestEntity>().AsQueryable();
-        _mockedDbContextBuilder.WithDbSet<Guid, TestEntity>(testEntities);
-
-        var inclusion = Inclusion<Guid, TestEntity>.Of(e => e.TestSingleRelation);
-
-        _inclusionEvaluatorMock.Evaluate(
-            Arg.Is<IQueryable<TestEntity>>(queryableArg =>
-                queryableArg.Count() == testEntities.Count() &&
-                queryableArg.All(testEntity => testEntities.Contains(testEntity))),
-            Arg.Is<Inclusion<Guid, TestEntity>[]>(inclusions => inclusions.Length == 1 && inclusions[0] == inclusion),
-            Arg.Any<CancellationToken>()).Returns(evaluatedTestEntities);
-
-        _sut = _repositoryFactory();
-
-        // Act
-        var result = await _sut.QueryAsync([inclusion]);
-
-        // Assert
-        result.Should().BeSameAs(evaluatedTestEntities);
-    }
-
-    [Fact]
-    public async Task QueryAsync_CallWithManyRelationInclusion_ReturnsQueryableReturnedByInclusionEvaluator()
-    {
-        // Arrange
-        var testEntities = _fixture.CreateMany<TestEntity>().AsQueryable();
-        var evaluatedTestEntities = _fixture.CreateMany<TestEntity>().AsQueryable();
-        _mockedDbContextBuilder.WithDbSet<Guid, TestEntity>(testEntities);
-
-        var inclusion = Inclusion<Guid, TestEntity>.Of(e => e.TestManyRelation);
-
-        _inclusionEvaluatorMock.Evaluate(
-            Arg.Is<IQueryable<TestEntity>>(queryableArg =>
-                queryableArg.Count() == testEntities.Count() &&
-                queryableArg.All(testEntity => testEntities.Contains(testEntity))),
-            Arg.Is<Inclusion<Guid, TestEntity>[]>(inclusions => inclusions.Length == 1 && inclusions[0] == inclusion),
-            Arg.Any<CancellationToken>()).Returns(evaluatedTestEntities);
-
-        _sut = _repositoryFactory();
-
-        // Act
-        var result = await _sut.QueryAsync([inclusion]);
-
-        // Assert
-        result.Should().BeSameAs(evaluatedTestEntities);
-    }
-
-    [Fact]
-    public async Task QueryAsync_CallWithMultipleInclusions_ReturnsQueryableReturnedByInclusionEvaluator()
-    {
-        // Arrange
-        var testEntities = _fixture.CreateMany<TestEntity>().AsQueryable();
-        var evaluatedTestEntities = _fixture.CreateMany<TestEntity>().AsQueryable();
-        _mockedDbContextBuilder.WithDbSet<Guid, TestEntity>(testEntities);
-
-        Inclusion<Guid, TestEntity>[] inclusions =
-        [
-            Inclusion<Guid, TestEntity>.Of(e => e.TestSingleRelation),
-            Inclusion<Guid, TestEntity>.Of(e => e.TestManyRelation)
-        ];
-
-        _inclusionEvaluatorMock.Evaluate(
-            Arg.Is<IQueryable<TestEntity>>(queryableArg =>
-                queryableArg.Count() == testEntities.Count() &&
-                queryableArg.All(testEntity => testEntities.Contains(testEntity))),
-            Arg.Is<Inclusion<Guid, TestEntity>[]>(passedInclusions => passedInclusions == inclusions),
-            Arg.Any<CancellationToken>()).Returns(evaluatedTestEntities);
-
-        _sut = _repositoryFactory();
-
-        // Act
-        var result = await _sut.QueryAsync(inclusions);
-
-        // Assert
-        result.Should().BeSameAs(evaluatedTestEntities);
+        result.Should().BeEquivalentTo(testEntities);
     }
 
     [Fact]
@@ -137,9 +68,11 @@ public class RepositoryTests
     {
         // Arrange
         var testEntity = _fixture.Create<TestEntity>();
-        _mockedDbContextBuilder.WithDbSet<Guid, TestEntity>([testEntity]);
 
-        _sut = _repositoryFactory();
+        await _context.AddAsync(testEntity);
+        await _context.SaveChangesAsync();
+        
+        _context.ChangeTracker.Clear();
 
         // Act
         var result = await _sut.FindAsync(testEntity.Id);
@@ -153,24 +86,23 @@ public class RepositoryTests
     {
         // Arrange
         var testEntity = _fixture.Create<TestEntity>();
-        _mockedDbContextBuilder.WithDbSet<Guid, TestEntity>([testEntity]);
 
-        _sut = _repositoryFactory();
+        await _context.AddAsync(testEntity);
+        await _context.SaveChangesAsync();
+        
+        _context.ChangeTracker.Clear();
 
         // Act
         var result = await _sut.FindAsync(testEntity.Id);
 
         // Assert
-        result.Value.Should().BeSameAs(testEntity);
+        result.Value.Should().BeEquivalentTo(testEntity);
     }
 
     [Fact]
     public async Task FindAsync_CallWithNonExistingEntity_Fails()
     {
         // Arrange
-        _mockedDbContextBuilder.WithDbSet<Guid, TestEntity>([]);
-
-        _sut = _repositoryFactory();
 
         // Act
         var result = await _sut.FindAsync(Guid.NewGuid());
@@ -183,14 +115,136 @@ public class RepositoryTests
     public async Task FindAsync_CallWithNonExistingEntity_ReturnsOneError()
     {
         // Arrange
-        _mockedDbContextBuilder.WithDbSet<Guid, TestEntity>([]);
-
-        _sut = _repositoryFactory();
 
         // Act
         var result = await _sut.FindAsync(Guid.NewGuid());
 
         // Assert
         result.Errors.Should().ContainSingle();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_CallWithExistingEntityInEnumerable_DbCommandMockCalled()
+    {
+        // Arrange
+        var entityToDelete = _fixture.Create<TestEntity>();
+
+        await _context.AddAsync(entityToDelete);
+        await _context.SaveChangesAsync();
+        
+        _context.ChangeTracker.Clear();
+
+        // Act
+        await _sut.DeleteAsync([entityToDelete]);
+
+        // Assert
+        var notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
+        notFoundEntity.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_CallWithExistingEntity_DbCommandMockCalled()
+    {
+        // Arrange
+        var entityToDelete = _fixture.Create<TestEntity>();
+        var stillExistentEntities = _fixture.CreateMany<TestEntity>().ToList();
+
+        var storedEntities = stillExistentEntities.Concat([entityToDelete]);
+        
+        await _context.AddRangeAsync(storedEntities);
+        await _context.SaveChangesAsync();
+        
+        _context.ChangeTracker.Clear();
+
+        // Act
+        await _sut.DeleteAsync(entityToDelete);
+
+        // Assert
+        foreach (var entity in stillExistentEntities)
+        {
+            var foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
+            foundEntity.Should().NotBeNull();
+        }
+        
+        var notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
+        notFoundEntity.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_CallWithExistingKey_DbCommandMockCalled()
+    {
+        // Arrange
+        var entityToDelete = _fixture.Create<TestEntity>();
+        var stillExistentEntities = _fixture.CreateMany<TestEntity>().ToList();
+
+        var storedEntities = stillExistentEntities.Concat([entityToDelete]);
+        
+        await _context.AddRangeAsync(storedEntities);
+        await _context.SaveChangesAsync();
+        
+        _context.ChangeTracker.Clear();
+
+        // Act
+        await _sut.DeleteAsync(entityToDelete.Id);
+
+        // Assert
+        foreach (var entity in stillExistentEntities)
+        {
+            var foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
+            foundEntity.Should().NotBeNull();
+        }
+        
+        var notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
+        notFoundEntity.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_CallWithValidExpression_DbCommandMockCalled()
+    {
+        // Arrange
+        var entityToDelete = _fixture.Create<TestEntity>();
+        var stillExistentEntities = _fixture.CreateMany<TestEntity>().ToList();
+
+        var storedEntities = stillExistentEntities.Concat([entityToDelete]);
+        
+        await _context.AddRangeAsync(storedEntities);
+        await _context.SaveChangesAsync();
+        
+        _context.ChangeTracker.Clear();
+
+        // Act
+        await _sut.DeleteAsync(entity => entity.Id == entityToDelete.Id);
+
+        // Assert
+        foreach (var entity in stillExistentEntities)
+        {
+            var foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
+            foundEntity.Should().NotBeNull();
+        }
+        
+        var notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
+        notFoundEntity.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_CallWithInvalidExpression_DbCommandMockCalledWithEmptyQueryable()
+    {
+        // Arrange
+        var stillExistentEntities = _fixture.CreateMany<TestEntity>().ToList();
+        
+        await _context.AddRangeAsync(stillExistentEntities);
+        await _context.SaveChangesAsync();
+        
+        _context.ChangeTracker.Clear();
+
+        // Act
+        await _sut.DeleteAsync(entity => false);
+
+        // Assert
+        foreach (var entity in stillExistentEntities)
+        {
+            var foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
+            foundEntity.Should().NotBeNull();
+        }
     }
 }

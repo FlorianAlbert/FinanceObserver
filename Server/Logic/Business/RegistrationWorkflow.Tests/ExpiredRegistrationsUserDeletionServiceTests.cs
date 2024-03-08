@@ -18,7 +18,7 @@ public class ExpiredRegistrationsUserDeletionServiceTests
     public ExpiredRegistrationsUserDeletionServiceTests()
     {
         _fixture = new Fixture();
-        _fixture.Register(() => DateOnly.FromDateTime(_fixture.Create<DateTime>()));
+        _fixture.Register(() => DateOnly.FromDateTime(_fixture.Create<DateTimeOffset>().Date));
         _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
@@ -108,13 +108,13 @@ public class ExpiredRegistrationsUserDeletionServiceTests
             int unconfirmedRegistrationConfirmationsCount, int expiredUnconfirmedRegistrationConfirmationsCount)
     {
         // Arrange
-        var expiredCreatedDate = DateTime.UtcNow - TimeSpan.FromDays(5);
+        var expiredCreatedDate = DateTimeOffset.UtcNow - TimeSpan.FromDays(5);
         var expiredRegistrationConfirmations =
             _fixture.CreateMany<RegistrationConfirmation>(expiredUnconfirmedRegistrationConfirmationsCount).ToList();
         expiredRegistrationConfirmations.ForEach(r => r.CreatedDate = expiredCreatedDate);
         var usersToDelete = expiredRegistrationConfirmations.Select(r => r.User).ToList();
 
-        var nonExpiredCreatedDate = DateTime.UtcNow - TimeSpan.FromMinutes(5);
+        var nonExpiredCreatedDate = DateTimeOffset.UtcNow - TimeSpan.FromMinutes(5);
         var nonExpiredRegistrationConfirmations =
             _fixture.CreateMany<RegistrationConfirmation>(unconfirmedRegistrationConfirmationsCount -
                                                           expiredUnconfirmedRegistrationConfirmationsCount).ToList();

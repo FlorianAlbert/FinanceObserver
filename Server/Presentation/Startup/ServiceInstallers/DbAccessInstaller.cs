@@ -59,7 +59,7 @@ internal class DbAccessInstaller : IServiceInstaller
             dbConnectionString = configuration[_dbConfiguredProvidersKey + ":" + provider]!;
         }
 
-        services.AddDbContextPool<FinanceObserverContext>(contextOptionsBuilder =>
+        services.AddDbContextPool<DbContext, FinanceObserverContext>(contextOptionsBuilder =>
         {
             switch (provider)
             {
@@ -69,7 +69,8 @@ internal class DbAccessInstaller : IServiceInstaller
                         .ConfigureWarnings(x => { x.Ignore(InMemoryEventId.TransactionIgnoredWarning); });
                     break;
                 case DatabaseProvider.Npgsql:
-                    contextOptionsBuilder.UseNpgsql(dbConnectionString);
+                    contextOptionsBuilder.UseNpgsql(dbConnectionString, 
+                        npgsqlOptionsBuilder => npgsqlOptionsBuilder.MigrationsAssembly(typeof(AssemblyReference).Assembly.FullName));
                     break;
                 case DatabaseProvider.None:
                 default:
@@ -80,7 +81,6 @@ internal class DbAccessInstaller : IServiceInstaller
             }
         });
 
-        services.AddTransient<IInclusionEvaluator, InclusionEvaluator>();
         services.AddScoped<IRepositoryFactory, RepositoryFactory>();
         services.AddScoped<IDbTransactionHandler, DbTransactionHandler>();
     }
