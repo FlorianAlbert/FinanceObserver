@@ -26,7 +26,7 @@ public static class ApplicationBuilderExtensions
 
         using var scope = app.ApplicationServices.CreateScope();
         
-        using var dbContext = scope.ServiceProvider.GetRequiredService<FinanceObserverContext>();
+        using var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
         pipeline.Execute(dbContext.Database.Migrate);
 
         return app;

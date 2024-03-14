@@ -9,7 +9,9 @@
     
     <ItemGroup>
         <InternalsVisibleTo Include="DbAccess.EntityFrameworkCore" />
+        <InternalsVisibleTo Include="DbAccess.EntityFrameworkCore.Tests" />
         <InternalsVisibleTo Include="RegistrationWorkflow.Tests" />
+        <InternalsVisibleTo Include="RegistrationConfirmationManagement.Tests" />
     </ItemGroup>
 
     <ItemGroup>

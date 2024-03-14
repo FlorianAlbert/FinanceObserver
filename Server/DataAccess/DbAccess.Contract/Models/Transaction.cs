@@ -10,7 +10,7 @@ public class Transaction : BaseEntity<Guid>
 
     public required decimal Amount { get; set; }
 
-    public required DateTime Time { get; set; }
+    public required DateTimeOffset Time { get; set; }
 
     public required User Owner { get; set; }
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.EntityTypeConfigurations;
 
-public class UserConfiguration : BaseEntityConfiguration<Guid, User>
+internal class UserConfiguration : BaseEntityConfiguration<Guid, User>
 {
     public override void Configure(EntityTypeBuilder<User> builder)
     {

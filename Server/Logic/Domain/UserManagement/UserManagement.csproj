@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\..\DataAccess\DbAccess.Contract\DbAccess.Contract.csproj"/>
+        <ProjectReference Include="..\..\..\DataAccess\DbAccess.Contract\DbAccess.Contract.csproj"/>
         <ProjectReference Include="..\UserManagement.Contract\UserManagement.Contract.csproj"/>
     </ItemGroup>
 

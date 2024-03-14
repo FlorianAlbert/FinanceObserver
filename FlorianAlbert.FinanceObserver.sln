@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Startup", "Server\Presentat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "REST", "Server\Presentation\REST\REST.csproj", "{26F22902-7F67-459D-A9FE-76E54D56BC90}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement.Contract", "Server\Logic\Domain\UserManagement\UserManagement.Contract\UserManagement.Contract.csproj", "{166D924B-FAD6-4765-9263-0651D0499F87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement.Contract", "Server\Logic\Domain\UserManagement.Contract\UserManagement.Contract.csproj", "{166D924B-FAD6-4765-9263-0651D0499F87}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logic", "Logic", "{AC44F145-B78B-43AD-BFF1-98F5E9D25FD9}"
 EndProject
@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CrossCutting", "CrossCuttin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataClasses", "Server\CrossCutting\DataClasses\DataClasses.csproj", "{9C787721-76F0-43FF-88A8-A4F7DDB61EEF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement", "Server\Logic\Domain\UserManagement\UserManagement\UserManagement.csproj", "{6E522ABC-F094-4A2E-8363-D99DBF38F268}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement", "Server\Logic\Domain\UserManagement\UserManagement.csproj", "{6E522ABC-F094-4A2E-8363-D99DBF38F268}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{DD36AA25-5D23-4EBC-B7E5-23FB6E864B96}"
 EndProject
@@ -67,6 +67,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Tests", "Server\Logic\Domain\UserManagement.Tests\UserManagement.Tests.csproj", "{9378B164-3388-4DF1-9F41-72A976C67B99}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistrationWorkflow.Tests", "Server\Logic\Business\RegistrationWorkflow.Tests\RegistrationWorkflow.Tests.csproj", "{B0923225-8E51-4CEE-A7C0-02613D8F4987}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbAccess.EntityFrameworkCore.Tests", "Server\DataAccess\DbAccess.EntityFrameworkCore.Tests\DbAccess.EntityFrameworkCore.Tests.csproj", "{8B6072CB-3D08-4286-AC21-F7698040297B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -166,6 +168,10 @@ Global
 		{B0923225-8E51-4CEE-A7C0-02613D8F4987}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0923225-8E51-4CEE-A7C0-02613D8F4987}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0923225-8E51-4CEE-A7C0-02613D8F4987}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B6072CB-3D08-4286-AC21-F7698040297B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B6072CB-3D08-4286-AC21-F7698040297B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B6072CB-3D08-4286-AC21-F7698040297B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B6072CB-3D08-4286-AC21-F7698040297B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -200,6 +206,7 @@ Global
 		{66661A83-162D-47CC-B131-D18CF39737A9} = {5E52A855-FB26-484A-B563-358312C81377}
 		{9378B164-3388-4DF1-9F41-72A976C67B99} = {5E52A855-FB26-484A-B563-358312C81377}
 		{B0923225-8E51-4CEE-A7C0-02613D8F4987} = {A0E180CF-A829-4A73-93FA-9392A37718E6}
+		{8B6072CB-3D08-4286-AC21-F7698040297B} = {A5301672-A694-4DEE-896A-52C440F1BA25}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C7A11428-FDC3-4993-AB1D-8329B53E5CF3}

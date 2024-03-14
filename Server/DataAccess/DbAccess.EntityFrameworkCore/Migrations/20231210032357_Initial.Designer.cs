@@ -46,7 +46,7 @@ namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFramewo
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Message")
@@ -57,7 +57,7 @@ namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFramewo
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -71,13 +71,13 @@ namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFramewo
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("ConfirmationDate")
+                    b.Property<DateTimeOffset?>("ConfirmationDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
@@ -100,7 +100,7 @@ namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFramewo
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Currency")
@@ -113,14 +113,14 @@ namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFramewo
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Time")
+                    b.Property<DateTimeOffset>("Time")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -139,7 +139,7 @@ namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFramewo
                     b.Property<DateOnly>("BirthDate")
                         .HasColumnType("date");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EmailAddress")
@@ -158,7 +158,7 @@ namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFramewo
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserName")

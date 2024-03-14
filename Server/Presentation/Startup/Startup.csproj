@@ -23,8 +23,8 @@
         <ProjectReference Include="..\..\Logic\Domain\EmailManagement\EmailManagement.csproj"/>
         <ProjectReference Include="..\..\Logic\Domain\HashHandling.SHA512\HashHandling.SHA512.csproj"/>
         <ProjectReference Include="..\..\Logic\Domain\RegistrationConfirmationManagement\RegistrationConfirmationManagement.csproj"/>
-        <ProjectReference Include="..\..\Logic\Domain\UserManagement\UserManagement.Contract\UserManagement.Contract.csproj"/>
-        <ProjectReference Include="..\..\Logic\Domain\UserManagement\UserManagement\UserManagement.csproj"/>
+        <ProjectReference Include="..\..\Logic\Domain\UserManagement.Contract\UserManagement.Contract.csproj"/>
+        <ProjectReference Include="..\..\Logic\Domain\UserManagement\UserManagement.csproj"/>
         <ProjectReference Include="..\REST\REST.csproj"/>
     </ItemGroup>
 </Project>

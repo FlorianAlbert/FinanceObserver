@@ -2,7 +2,7 @@
 
 public class RegistrationConfirmation : BaseEntity<Guid>
 {
-    public DateTime? ConfirmationDate { get; set; }
+    public DateTimeOffset? ConfirmationDate { get; set; }
 
     public bool RegistrationIsConfirmed => ConfirmationDate is not null;
 

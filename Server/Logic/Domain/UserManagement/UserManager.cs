@@ -39,14 +39,14 @@ public class UserManager : IUserManager
 
     public async Task<Result> RemoveUsersAsync(IEnumerable<User> users, CancellationToken cancellationToken = default)
     {
-        await _repository.DeleteAsync(users as IQueryable<User> ?? users.AsQueryable(), cancellationToken);
+        await _repository.DeleteAsync(users, cancellationToken);
 
         return Result.Success();
     }
 
     public Task<Result<User>> GetUserAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return _repository.FindAsync(id, cancellationToken);
+        return _repository.FindAsync(id, cancellationToken: cancellationToken);
     }
 
     public async Task<Result<IQueryable<User>>> GetAllUsersAsync(CancellationToken cancellationToken = default)

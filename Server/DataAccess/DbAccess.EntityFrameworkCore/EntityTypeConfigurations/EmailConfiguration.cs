@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.EntityTypeConfigurations;
 
-public class EmailConfiguration : BaseEntityConfiguration<Guid, Email>
+internal class EmailConfiguration : BaseEntityConfiguration<Guid, Email>
 {
     public override void Configure(EntityTypeBuilder<Email> builder)
     {

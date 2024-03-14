@@ -10,6 +10,11 @@
     <ItemGroup>
         <ProjectReference Include="..\DbAccess.Contract\DbAccess.Contract.csproj"/>
     </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="DbAccess.EntityFrameworkCore.Tests" />
+        <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0"/>
@@ -19,6 +24,4 @@
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0"/>
     </ItemGroup>
-
-
 </Project>
