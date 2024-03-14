@@ -12,7 +12,7 @@ public interface IRepository<TKey, TEntity>
 {
     Task<IQueryable<TEntity>> QueryAsync(Inclusion<TKey, TEntity>[]? includes = null, CancellationToken cancellationToken = default);
 
-    Task<Result<TEntity>> FindAsync(TKey id, CancellationToken cancellationToken = default);
+    Task<Result<TEntity>> FindAsync(TKey id, Inclusion<TKey, TEntity>[]? includes = null, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsAsync(TKey id, CancellationToken cancellationToken = default);
 

@@ -1,11 +1,13 @@
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 
-public abstract class BaseEntity<TKey>
-    where TKey : IParsable<TKey>, 
+public abstract class BaseEntity<TKey> : LifecycleTrackable where TKey : IParsable<TKey>, 
                  IEquatable<TKey>
 {
     public required TKey Id { get; init; }
+}
 
+public abstract class LifecycleTrackable
+{
     private DateTimeOffset? _createdDate;
     public DateTimeOffset CreatedDate
     {

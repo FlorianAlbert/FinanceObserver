@@ -53,7 +53,7 @@ public abstract class Inclusion
 }
 
 public abstract class Inclusion<TKey, TEntity> : Inclusion
-    where TEntity : BaseEntity<TKey>
+    where TEntity : BaseEntity<TKey>?
     where TKey : IParsable<TKey>,
     IEquatable<TKey>
 {
@@ -64,17 +64,17 @@ public abstract class Inclusion<TKey, TEntity> : Inclusion
     }
 
     public static Inclusion<TEntity, TKey, TProperty, TProperty> Of<TProperty>(Expression<Func<TEntity, TProperty>> inclusion)
-        where TProperty : BaseEntity<TKey>
+        where TProperty : BaseEntity<TKey>?
     {
         return new Inclusion<TEntity, TKey, TProperty, TProperty>(inclusion);
     }
 }
 
 public class Inclusion<TEntity, TKey, TInclude, TProperty> : Inclusion<TKey, TEntity>
-    where TEntity : BaseEntity<TKey>
+    where TEntity : BaseEntity<TKey>?
     where TKey : IParsable<TKey>,
     IEquatable<TKey>
-    where TProperty : BaseEntity<TKey>
+    where TProperty : BaseEntity<TKey>?
 {
     internal Inclusion(Expression<Func<TEntity, TInclude>> inclusion)
     {

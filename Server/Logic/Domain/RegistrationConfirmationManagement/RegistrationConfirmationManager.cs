@@ -45,7 +45,7 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
     public async Task<Result> ConfirmAsync(Guid registrationConfirmationId,
         CancellationToken cancellationToken = default)
     {
-        var registrationConfirmationResult = await _repository.FindAsync(registrationConfirmationId, cancellationToken);
+        var registrationConfirmationResult = await _repository.FindAsync(registrationConfirmationId, cancellationToken: cancellationToken);
 
         if (registrationConfirmationResult.Failed)
         {

@@ -16,5 +16,14 @@ public class TestDbContext : DbContext
 
         modelBuilder.Entity<TestEntity>()
             .HasKey(entity => entity.Id);
+        modelBuilder.Entity<TestEntity>()
+            .HasOne(entity => entity.Relation)
+            .WithMany(relation => relation.TestEntities);
+        
+        modelBuilder.Entity<TestRelationEntity>()
+            .HasKey(entity => entity.Id);
+        modelBuilder.Entity<TestRelationEntity>()
+            .HasMany(entity => entity.TestEntities)
+            .WithOne(relation => relation.Relation);
     }
 }

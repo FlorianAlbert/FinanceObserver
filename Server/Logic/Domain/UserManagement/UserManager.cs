@@ -46,7 +46,7 @@ public class UserManager : IUserManager
 
     public Task<Result<User>> GetUserAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return _repository.FindAsync(id, cancellationToken);
+        return _repository.FindAsync(id, cancellationToken: cancellationToken);
     }
 
     public async Task<Result<IQueryable<User>>> GetAllUsersAsync(CancellationToken cancellationToken = default)

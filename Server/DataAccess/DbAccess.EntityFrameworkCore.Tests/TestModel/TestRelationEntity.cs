@@ -4,4 +4,10 @@ namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFramewo
 
 public class TestRelationEntity : BaseEntity<Guid>
 {
+    private ICollection<TestEntity>? _testEntities;
+    public ICollection<TestEntity> TestEntities
+    {
+        get => _testEntities ??= new List<TestEntity>();
+        set => _testEntities = value.ToList();
+    }
 }

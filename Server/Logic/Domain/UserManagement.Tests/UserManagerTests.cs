@@ -191,7 +191,7 @@ public class UserManagerTests
         var userId = _fixture.Create<Guid>();
         var user = _fixture.Create<User>();
         
-        _repositoryMock.FindAsync(userId, Arg.Any<CancellationToken>()).Returns(Result<User>.Success(user));
+        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result<User>.Success(user));
 
         // Act
         var result = await _sut.GetUserAsync(userId);
@@ -207,7 +207,7 @@ public class UserManagerTests
         var userId = _fixture.Create<Guid>();
         var user = _fixture.Create<User>();
         
-        _repositoryMock.FindAsync(userId, Arg.Any<CancellationToken>()).Returns(Result<User>.Success(user));
+        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result<User>.Success(user));
 
         // Act
         var result = await _sut.GetUserAsync(userId);
@@ -222,7 +222,7 @@ public class UserManagerTests
         // Arrange
         var userId = _fixture.Create<Guid>();
         
-        _repositoryMock.FindAsync(userId, Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
 
         // Act
         var result = await _sut.GetUserAsync(userId);
@@ -243,7 +243,7 @@ public class UserManagerTests
         var userId = _fixture.Create<Guid>();
         var errors = _fixture.CreateMany<Error>(repositoryErrorCount).ToArray();
         
-        _repositoryMock.FindAsync(userId, Arg.Any<CancellationToken>()).Returns(Result<User>.Failure(errors));
+        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result<User>.Failure(errors));
 
         // Act
         var result = await _sut.GetUserAsync(userId);

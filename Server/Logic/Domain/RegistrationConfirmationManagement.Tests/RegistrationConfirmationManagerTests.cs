@@ -354,7 +354,7 @@ public class RegistrationConfirmationManagerTests
                 null as DateTimeOffset?));
         var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
             .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
 
         // Act
@@ -374,7 +374,7 @@ public class RegistrationConfirmationManagerTests
                 null as DateTimeOffset?));
         var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
             .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
         _registrationConfirmationRepositoryMock.When(repo => repo.UpdateAsync(registrationConfirmation,
                 Arg.Is<Update<RegistrationConfirmation>[]>(updates => updates.Length == 1),
@@ -421,7 +421,7 @@ public class RegistrationConfirmationManagerTests
                 null as DateTimeOffset?));
         var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
             .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
 
         // Act
@@ -444,7 +444,7 @@ public class RegistrationConfirmationManagerTests
                 _fixture.Create<DateTimeOffset>()));
         var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
             .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
 
         // Act
@@ -464,7 +464,7 @@ public class RegistrationConfirmationManagerTests
                 _fixture.Create<DateTimeOffset>()));
         var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
             .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
 
         // Act
@@ -484,7 +484,7 @@ public class RegistrationConfirmationManagerTests
                 _fixture.Create<DateTimeOffset>()));
         var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
-        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
             .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
 
         // Act
@@ -502,7 +502,7 @@ public class RegistrationConfirmationManagerTests
         // Arrange
         var registrationConfirmationId = _fixture.Create<Guid>();
 
-        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
             .Returns(Result<RegistrationConfirmation>.Failure());
 
         // Act
@@ -519,7 +519,7 @@ public class RegistrationConfirmationManagerTests
         var registrationConfirmationId = _fixture.Create<Guid>();
         var errors = _fixture.CreateMany<Error>().ToArray();
 
-        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
             .Returns(Result<RegistrationConfirmation>.Failure(errors));
 
         // Act
@@ -536,7 +536,7 @@ public class RegistrationConfirmationManagerTests
         var registrationConfirmationId = _fixture.Create<Guid>();
         var errors = _fixture.CreateMany<Error>().ToArray();
 
-        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<CancellationToken>())
+        _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
             .Returns(Result<RegistrationConfirmation>.Failure(errors));
 
         // Act

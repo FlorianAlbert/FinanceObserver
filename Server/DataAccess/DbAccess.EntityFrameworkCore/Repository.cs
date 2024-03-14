@@ -36,9 +36,9 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
         return Task.FromResult(queryable);
     }
 
-    public async Task<Result<TEntity>> FindAsync(TKey id, CancellationToken cancellationToken = default)
+    public async Task<Result<TEntity>> FindAsync(TKey id, Inclusion<TKey, TEntity>[]? includes = null, CancellationToken cancellationToken = default)
     {
-        var entity = (await QueryAsync(cancellationToken: cancellationToken)).SingleOrDefault(entity => entity.Id.Equals(id));
+        var entity = (await QueryAsync(includes, cancellationToken)).SingleOrDefault(entity => entity.Id.Equals(id));
 
         if (entity is null)
         {
@@ -61,17 +61,27 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        entity.CreatedDate = DateTimeOffset.UtcNow;
-        entity.UpdatedDate = entity.CreatedDate;
+        var createdTime = DateTimeOffset.UtcNow;
 
-        var entry = _context.Attach(entity);
-        entry.State = EntityState.Added;
+        var newEntry = _context.Attach(entity);
+        newEntry.State = EntityState.Added;
+
+        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
+        {
+            ((LifecycleTrackable)entry.Entity).CreatedDate = createdTime;
+            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
+        }
+
+        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
+        {
+            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
+        }
 
         await _context.SaveChangesAsync(cancellationToken);
         
         _context.ChangeTracker.Clear();
 
-        return entry.Entity;
+        return newEntry.Entity;
     }
 
     public async Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
@@ -81,11 +91,19 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
         var createdTime = DateTimeOffset.UtcNow;
         foreach (var entity in entitiesArray)
         {
-            entity.CreatedDate = createdTime;
-            entity.UpdatedDate = createdTime;
-
             var entry = _context.Attach(entity);
             entry.State = EntityState.Added;
+        }
+
+        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
+        {
+            ((LifecycleTrackable)entry.Entity).CreatedDate = createdTime;
+            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
+        }
+
+        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
+        {
+            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
         }
 
         await _context.SaveChangesAsync(cancellationToken);

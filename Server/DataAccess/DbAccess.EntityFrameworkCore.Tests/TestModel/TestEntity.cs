@@ -4,4 +4,9 @@ namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFramewo
 
 public class TestEntity : BaseEntity<Guid>
 {
+    // ReSharper disable EntityFramework.ModelValidation.UnlimitedStringLength
+    public required string Name { get; init; }
+    // ReSharper restore EntityFramework.ModelValidation.UnlimitedStringLength
+    
+    public TestRelationEntity? Relation { get; init; }
 }
