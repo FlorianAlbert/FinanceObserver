@@ -22,7 +22,7 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
         [
             .. (await _repository.QueryAsync(
             [
-                Inclusion<Guid, RegistrationConfirmation>.Of(existingRegistration =>
+                Inclusion<Guid, RegistrationConfirmation>.Of<Guid, User>(existingRegistration =>
                     existingRegistration.User)
             ], cancellationToken))
             .Where(existingRegistration => existingRegistration.User == registration.User)
@@ -74,7 +74,7 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
     {
         RegistrationConfirmation[] existingRegistrationCandidates =
         [
-            ..(await _repository.QueryAsync([Inclusion<Guid, RegistrationConfirmation>.Of(r => r.User)],
+            ..(await _repository.QueryAsync([Inclusion<Guid, RegistrationConfirmation>.Of<Guid, User>(r => r.User)],
                 cancellationToken))
             .Where(r => r.Id == registrationConfirmationId)
         ];
@@ -91,7 +91,7 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
         GetUnconfirmedRegistrationConfirmationsWithUserAsync(CancellationToken cancellationToken = default)
     {
         var unconfirmedRegistrations = (await _repository.QueryAsync(
-            [Inclusion<Guid, RegistrationConfirmation>.Of(r => r.User)],
+            [Inclusion<Guid, RegistrationConfirmation>.Of<Guid, User>(r => r.User)],
             cancellationToken)).Where(r => r.ConfirmationDate == null);
 
         return Result<IQueryable<RegistrationConfirmation>>.Success(unconfirmedRegistrations);
