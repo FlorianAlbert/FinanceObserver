@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.EntityTypeConfigurations;
 
-public class TransactionConfiguration : BaseEntityConfiguration<Guid, Transaction>
+internal class TransactionConfiguration : BaseEntityConfiguration<Guid, Transaction>
 {
     public override void Configure(EntityTypeBuilder<Transaction> builder)
     {

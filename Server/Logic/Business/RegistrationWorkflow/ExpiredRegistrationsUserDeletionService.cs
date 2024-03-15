@@ -35,11 +35,11 @@ public class ExpiredRegistrationsUserDeletionService : BackgroundService
                 continue;
             }
 
-            var unconfirmedRegistrationConfirmations = unconfirmedRegistrationConfirmationsResult.Value!;
+            var unconfirmedRegistrationConfirmations = unconfirmedRegistrationConfirmationsResult.Value;
 
             var expiredUsers =
                 unconfirmedRegistrationConfirmations.Where(r =>
-                    r.CreatedDate.AddDays(1) <= DateTime.UtcNow).Select(r => r.User);
+                    r.CreatedDate.AddDays(1) <= DateTimeOffset.UtcNow).Select(r => r.User);
 
             await userManager.RemoveUsersAsync(expiredUsers, cancellationToken);
         }

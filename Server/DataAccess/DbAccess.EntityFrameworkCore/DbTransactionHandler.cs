@@ -1,12 +1,13 @@
 ﻿using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
 
 public class DbTransactionHandler : IDbTransactionHandler
 {
-    private readonly FinanceObserverContext _context;
+    private readonly DbContext _context;
 
-    public DbTransactionHandler(FinanceObserverContext context)
+    public DbTransactionHandler(DbContext context)
     {
         _context = context;
     }

@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Exceptions;
 
 namespace FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
@@ -11,9 +12,9 @@ public class Result
         Errors = errors?.ToImmutableHashSet() ?? [];
     }
 
-    public bool Succeeded { get; }
+    public virtual bool Succeeded { get; }
 
-    public bool Failed => !Succeeded;
+    public virtual bool Failed => !Succeeded;
 
     public IReadOnlySet<Error> Errors { get; }
 
@@ -44,6 +45,12 @@ public class Result<T> : Result
 
         Value = value;
     }
+
+    [MemberNotNullWhen(true, nameof(Value))]
+    public override bool Succeeded => base.Succeeded;
+
+    [MemberNotNullWhen(false, nameof(Value))]
+    public override bool Failed => base.Failed;
 
     public T? Value { get; }
 

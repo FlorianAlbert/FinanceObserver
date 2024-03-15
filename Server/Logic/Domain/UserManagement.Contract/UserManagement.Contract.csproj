@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\..\CrossCutting\DataClasses\DataClasses.csproj"/>
-        <ProjectReference Include="..\..\..\..\DataAccess\DbAccess.Contract\DbAccess.Contract.csproj"/>
+        <ProjectReference Include="..\..\..\CrossCutting\DataClasses\DataClasses.csproj"/>
+        <ProjectReference Include="..\..\..\DataAccess\DbAccess.Contract\DbAccess.Contract.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -18,7 +18,7 @@ public class EmailManagerTests
     public EmailManagerTests()
     {
         _fixture = new Fixture();
-        _fixture.Register(() => DateOnly.FromDateTime(_fixture.Create<DateTime>()));
+        _fixture.Register(() => DateOnly.FromDateTime(_fixture.Create<DateTimeOffset>().Date));
         _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => _fixture.Behaviors.Remove(b));
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 

@@ -13,7 +13,7 @@
         <ProjectReference Include="..\..\Domain\EmailManagement.Contract\EmailManagement.Contract.csproj"/>
         <ProjectReference Include="..\..\Domain\HashHandling.Contract\HashHandling.Contract.csproj"/>
         <ProjectReference Include="..\..\Domain\RegistrationConfirmationManagement.Contract\RegistrationConfirmationManagement.Contract.csproj"/>
-        <ProjectReference Include="..\..\Domain\UserManagement\UserManagement.Contract\UserManagement.Contract.csproj"/>
+        <ProjectReference Include="..\..\Domain\UserManagement.Contract\UserManagement.Contract.csproj"/>
         <ProjectReference Include="..\RegistrationWorkflow.Contract\RegistrationWorkflow.Contract.csproj"/>
     </ItemGroup>
 

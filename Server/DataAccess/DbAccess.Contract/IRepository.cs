@@ -12,7 +12,7 @@ public interface IRepository<TKey, TEntity>
 {
     Task<IQueryable<TEntity>> QueryAsync(Inclusion<TKey, TEntity>[]? includes = null, CancellationToken cancellationToken = default);
 
-    Task<Result<TEntity>> FindAsync(TKey id, CancellationToken cancellationToken = default);
+    Task<Result<TEntity>> FindAsync(TKey id, Inclusion<TKey, TEntity>[]? includes = null, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsAsync(TKey id, CancellationToken cancellationToken = default);
 
@@ -23,7 +23,7 @@ public interface IRepository<TKey, TEntity>
 
     Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
 
-    Task DeleteAsync(IQueryable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task DeleteAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
     
     Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, Inclusion<TKey, TEntity>[]? includes = null, CancellationToken cancellationToken = default);
 
@@ -31,7 +31,7 @@ public interface IRepository<TKey, TEntity>
 
     Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
 
-    Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
+    Task UpdateAsync(TEntity entity, Update<TEntity>[] updates, CancellationToken cancellationToken = default);
 
     Task<int> UpdateAsync(Expression<Func<TEntity, bool>> predicate, Update<TEntity>[] updates,
         CancellationToken cancellationToken = default);
