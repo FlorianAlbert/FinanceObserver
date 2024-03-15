@@ -102,7 +102,7 @@ public class RepositoryTests : IAsyncLifetime
         _context.ChangeTracker.Clear();
 
         // Act
-        var result = await _sut.QueryAsync([Inclusion<Guid, TestEntity>.Of(entity => entity.Relation)]);
+        var result = await _sut.QueryAsync([Inclusion<Guid, TestEntity>.Of<Guid, TestRelationEntity?>(entity => entity.Relation)]);
 
         // Assert
         foreach (var entity in result)

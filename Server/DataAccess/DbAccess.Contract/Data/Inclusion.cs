@@ -57,24 +57,30 @@ public abstract class Inclusion<TKey, TEntity> : Inclusion
     where TKey : IParsable<TKey>,
     IEquatable<TKey>
 {
-    public static Inclusion<TEntity, TKey, ICollection<TProperty>, TProperty> Of<TProperty>(Expression<Func<TEntity, ICollection<TProperty>>> inclusion)
-        where TProperty : BaseEntity<TKey>
+    public static Inclusion<TKey, TEntity, TPropertyKey, TProperty, ICollection<TProperty>> Of<TPropertyKey, TProperty>(Expression<Func<TEntity, ICollection<TProperty>>> inclusion)
+        where TProperty : BaseEntity<TPropertyKey>
+        where TPropertyKey : IParsable<TPropertyKey>,
+        IEquatable<TPropertyKey>
     {
-        return new Inclusion<TEntity, TKey, ICollection<TProperty>, TProperty>(inclusion);
+        return new Inclusion<TKey, TEntity, TPropertyKey, TProperty, ICollection<TProperty>>(inclusion);
     }
 
-    public static Inclusion<TEntity, TKey, TProperty, TProperty> Of<TProperty>(Expression<Func<TEntity, TProperty>> inclusion)
-        where TProperty : BaseEntity<TKey>?
+    public static Inclusion<TKey, TEntity, TPropertyKey, TProperty, TProperty> Of<TPropertyKey, TProperty>(Expression<Func<TEntity, TProperty>> inclusion)
+        where TProperty : BaseEntity<TPropertyKey>?
+        where TPropertyKey : IParsable<TPropertyKey>,
+        IEquatable<TPropertyKey>
     {
-        return new Inclusion<TEntity, TKey, TProperty, TProperty>(inclusion);
+        return new Inclusion<TKey, TEntity, TPropertyKey, TProperty, TProperty>(inclusion);
     }
 }
 
-public class Inclusion<TEntity, TKey, TInclude, TProperty> : Inclusion<TKey, TEntity>
+public class Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> : Inclusion<TKey, TEntity>
     where TEntity : BaseEntity<TKey>?
     where TKey : IParsable<TKey>,
     IEquatable<TKey>
-    where TProperty : BaseEntity<TKey>?
+    where TProperty : BaseEntity<TPropertyKey>?
+    where TPropertyKey : IParsable<TPropertyKey>,
+    IEquatable<TPropertyKey>
 {
     internal Inclusion(Expression<Func<TEntity, TInclude>> inclusion)
     {
@@ -104,19 +110,23 @@ public class Inclusion<TEntity, TKey, TInclude, TProperty> : Inclusion<TKey, TEn
 
     internal sealed override string IncludePropertyName { get; private protected set; }
 
-    public Inclusion<TEntity, TKey, TInclude, TProperty> AddChildInclusion<TNestedProperty>(
-        Inclusion<TProperty, TKey, TNestedProperty, TNestedProperty> childInclusion)
-        where TNestedProperty : BaseEntity<TKey>
+    public Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> AddChildInclusion<TNestedPropertyKey, TNestedProperty>(
+        Inclusion<TPropertyKey, TProperty, TNestedPropertyKey, TNestedProperty, TNestedProperty> childInclusion)
+        where TNestedProperty : BaseEntity<TNestedPropertyKey>
+        where TNestedPropertyKey : IParsable<TNestedPropertyKey>,
+        IEquatable<TNestedPropertyKey>
     {
         _childInclusions.Enqueue(childInclusion);
 
         return this;
     }
 
-    public Inclusion<TEntity, TKey, TInclude, TProperty> AddChildInclusion<TCollection, TContent>(
-        Inclusion<TProperty, TKey, TCollection, TContent> childInclusion)
+    public Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> AddChildInclusion<TContentKey, TContent, TCollection>(
+        Inclusion<TPropertyKey, TProperty, TContentKey, TContent, TCollection> childInclusion)
         where TCollection : class, ICollection<TContent>
-        where TContent : BaseEntity<TKey>
+        where TContent : BaseEntity<TContentKey>
+        where TContentKey : IParsable<TContentKey>,
+        IEquatable<TContentKey>
     {
         _childInclusions.Enqueue(childInclusion);
 
