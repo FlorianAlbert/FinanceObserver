@@ -63,11 +63,6 @@ internal class DbAccessInstaller : IServiceInstaller
         {
             switch (provider)
             {
-                case DatabaseProvider.InMemory:
-                    contextOptionsBuilder
-                        .UseInMemoryDatabase(dbConnectionString, imdbo => { imdbo.EnableNullChecks(); })
-                        .ConfigureWarnings(x => { x.Ignore(InMemoryEventId.TransactionIgnoredWarning); });
-                    break;
                 case DatabaseProvider.Npgsql:
                     contextOptionsBuilder.UseNpgsql(dbConnectionString, 
                         npgsqlOptionsBuilder => npgsqlOptionsBuilder.MigrationsAssembly(typeof(AssemblyReference).Assembly.FullName));
