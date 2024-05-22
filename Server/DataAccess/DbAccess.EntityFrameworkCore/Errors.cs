@@ -1,4 +1,4 @@
-using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
 

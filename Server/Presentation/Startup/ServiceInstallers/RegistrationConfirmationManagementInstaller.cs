@@ -8,7 +8,7 @@ public class RegistrationConfirmationManagementInstaller : IServiceInstaller
     public void Install(IServiceCollection services, IConfiguration configuration, ILogger logger)
     {
         logger.LogInformation("Adding RegistrationConfirmation management");
-        
+
         services.AddScoped<IRegistrationConfirmationManager, RegistrationConfirmationManager>();
     }
 }

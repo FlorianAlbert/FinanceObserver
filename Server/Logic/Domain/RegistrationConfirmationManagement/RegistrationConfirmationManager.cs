@@ -1,7 +1,7 @@
-﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
+﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.RegistrationConfirmationManagement.Contract;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.RegistrationConfirmationManagement;
@@ -32,20 +32,20 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
         {
             return existingRegistrationCandidates.Length switch
             {
-                1 => Result<RegistrationConfirmation>.Success(existingRegistrationCandidates[0]),
-                _ => Result<RegistrationConfirmation>.Failure(Errors.MultipleRegistrationConfigurationsFoundError)
+                1 => Result.Success(existingRegistrationCandidates[0]),
+                _ => Result.Failure<RegistrationConfirmation>(Errors.MultipleRegistrationConfigurationsFoundError)
             };
         }
 
-        var newRegistration = await _repository.InsertAsync(registration, cancellationToken);
+        RegistrationConfirmation newRegistration = await _repository.InsertAsync(registration, cancellationToken);
 
-        return Result<RegistrationConfirmation>.Success(newRegistration);
+        return Result.Success(newRegistration);
     }
 
     public async Task<Result> ConfirmAsync(Guid registrationConfirmationId,
         CancellationToken cancellationToken = default)
     {
-        var registrationConfirmationResult = await _repository.FindAsync(registrationConfirmationId, cancellationToken: cancellationToken);
+        Result<RegistrationConfirmation> registrationConfirmationResult = await _repository.FindAsync(registrationConfirmationId, cancellationToken: cancellationToken);
 
         if (registrationConfirmationResult.Failed)
         {
@@ -62,7 +62,7 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
         {
             return Result.Success();
         }
-        
+
         await _repository.UpdateAsync(registrationConfirmation, [Update<RegistrationConfirmation>.With(r => r.ConfirmationDate, DateTimeOffset.UtcNow)], cancellationToken);
 
         return Result.Success();
@@ -81,19 +81,19 @@ public class RegistrationConfirmationManager : IRegistrationConfirmationManager
 
         return existingRegistrationCandidates.Length switch
         {
-            0 => Result<RegistrationConfirmation>.Failure(Errors.NoRegistrationConfigurationsFoundError),
-            1 => Result<RegistrationConfirmation>.Success(existingRegistrationCandidates[0]),
-            _ => Result<RegistrationConfirmation>.Failure(Errors.MultipleRegistrationConfigurationsFoundError)
+            0 => Result.Failure<RegistrationConfirmation>(Errors.NoRegistrationConfigurationsFoundError),
+            1 => Result.Success(existingRegistrationCandidates[0]),
+            _ => Result.Failure<RegistrationConfirmation>(Errors.MultipleRegistrationConfigurationsFoundError)
         };
     }
 
     public async Task<Result<IQueryable<RegistrationConfirmation>>>
         GetUnconfirmedRegistrationConfirmationsWithUserAsync(CancellationToken cancellationToken = default)
     {
-        var unconfirmedRegistrations = (await _repository.QueryAsync(
+        IQueryable<RegistrationConfirmation> unconfirmedRegistrations = (await _repository.QueryAsync(
             [Inclusion<Guid, RegistrationConfirmation>.Of<Guid, User>(r => r.User)],
             cancellationToken)).Where(r => r.ConfirmationDate == null);
 
-        return Result<IQueryable<RegistrationConfirmation>>.Success(unconfirmedRegistrations);
+        return Result.Success(unconfirmedRegistrations);
     }
 }

@@ -1,7 +1,7 @@
-using System.Security.Cryptography;
-using System.Text;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.HashHandling.Contract;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.HashHandling.SHA512.Data;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.HashHandling.SHA512;
 
@@ -20,19 +20,19 @@ public class HashValidator : IHashValidator
 
     public Task<bool> ValidateAsync(string validated, string savedHash, CancellationToken cancellationToken = default)
     {
-        var combinedHash = Convert.FromBase64String(savedHash);
+        byte[] combinedHash = Convert.FromBase64String(savedHash);
 
-        var hash = combinedHash.AsSpan(0, _hashSize);
-        var salt = combinedHash.AsSpan(_hashSize, _saltSize);
+        Span<byte> hash = combinedHash.AsSpan(0, _hashSize);
+        Span<byte> salt = combinedHash.AsSpan(_hashSize, _saltSize);
 
-        var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(
+        byte[] hashToCompare = Rfc2898DeriveBytes.Pbkdf2(
             Encoding.UTF8.GetBytes(validated),
             salt,
             _iterations,
             HashAlgorithmName.SHA512,
             _hashSize);
 
-        var isEqual = CryptographicOperations.FixedTimeEquals(hashToCompare, hash);
+        bool isEqual = CryptographicOperations.FixedTimeEquals(hashToCompare, hash);
 
         return Task.FromResult(isEqual);
     }

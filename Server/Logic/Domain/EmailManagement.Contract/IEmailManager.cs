@@ -1,5 +1,5 @@
-﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Contract;
 

@@ -21,7 +21,7 @@ internal class RegistrationInstaller : IServiceInstaller
         string? expiredRegistrationDeletionExecutionPeriodInSecondsString = null;
         if (Environment.GetEnvironmentVariable(
                     _expiredRegistrationDeletionExecutionPeriodInSecondsFileEnvKey) is
-                { } expiredRegistrationDeletionExecutionPeriodInSecondsFileLocation
+            { } expiredRegistrationDeletionExecutionPeriodInSecondsFileLocation
             && File.Exists(expiredRegistrationDeletionExecutionPeriodInSecondsFileLocation))
         {
             expiredRegistrationDeletionExecutionPeriodInSecondsString =
@@ -34,7 +34,7 @@ internal class RegistrationInstaller : IServiceInstaller
 
         ArgumentException.ThrowIfNullOrEmpty(expiredRegistrationDeletionExecutionPeriodInSecondsString);
         if (!int.TryParse(expiredRegistrationDeletionExecutionPeriodInSecondsString,
-                out var expiredRegistrationDeletionExecutionPeriodInSeconds))
+                out int expiredRegistrationDeletionExecutionPeriodInSeconds))
         {
             throw new StartupValidationException(
                 "There was no valid expiredRegistrationDeletion execution period found in the configuration.");

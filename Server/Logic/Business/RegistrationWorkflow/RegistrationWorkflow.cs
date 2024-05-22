@@ -1,6 +1,6 @@
 ﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Constants;
-using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.Logic.Business.RegistrationWorkflow.Contract;
 using FlorianAlbert.FinanceObserver.Server.Logic.Business.RegistrationWorkflow.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.DataTransactionHandling.Contract;
@@ -30,28 +30,28 @@ public class RegistrationWorkflow : IRegistrationWorkflow
         _registrationConfirmationManager = registrationConfirmationManager;
     }
 
-    public async Task<Result> ExecuteRegistrationAsync(RegistrationRequest registrationRequest,
+    public async Task<Result> ExecuteRegistrationAsync(RegistrationWorkflowRequest registrationWorkflowRequest,
         CancellationToken cancellationToken = default)
     {
         await _dataTransactionHandler.StartDbTransactionAsync(cancellationToken);
 
         // Create password hash 
-        var hash = await _hashGenerator.GenerateAsync(registrationRequest.Password, cancellationToken);
+        string hash = await _hashGenerator.GenerateAsync(registrationWorkflowRequest.Password, cancellationToken);
 
         // Create new user
         var userToAdd = new User
         {
             Id = Guid.Empty,
-            UserName = registrationRequest.Username,
-            FirstName = registrationRequest.FirstName,
-            LastName = registrationRequest.LastName,
-            EmailAddress = registrationRequest.EmailAddress,
-            BirthDate = registrationRequest.BirthDate,
+            UserName = registrationWorkflowRequest.Username,
+            FirstName = registrationWorkflowRequest.FirstName,
+            LastName = registrationWorkflowRequest.LastName,
+            EmailAddress = registrationWorkflowRequest.EmailAddress,
+            BirthDate = registrationWorkflowRequest.BirthDate,
             PasswordHash = hash
         };
 
         // Add new user
-        var userInsertResult = await _userManager.AddNewUserAsync(userToAdd, cancellationToken);
+        Result<User> userInsertResult = await _userManager.AddNewUserAsync(userToAdd, cancellationToken);
 
         if (userInsertResult.Failed)
         {
@@ -60,7 +60,7 @@ public class RegistrationWorkflow : IRegistrationWorkflow
             return Result.Failure(userInsertResult.Errors);
         }
 
-        var addedUser = userInsertResult.Value;
+        User addedUser = userInsertResult.Value;
 
         // Create RegistrationConfirmation
         var registrationToAdd = new RegistrationConfirmation
@@ -70,7 +70,7 @@ public class RegistrationWorkflow : IRegistrationWorkflow
         };
 
         // Add new RegistrationConfirmation
-        var registrationConfirmationInsertResult =
+        Result<RegistrationConfirmation> registrationConfirmationInsertResult =
             await _registrationConfirmationManager.RegisterAsync(registrationToAdd, cancellationToken);
 
         if (registrationConfirmationInsertResult.Failed)
@@ -80,7 +80,7 @@ public class RegistrationWorkflow : IRegistrationWorkflow
             return Result.Failure(registrationConfirmationInsertResult.Errors);
         }
 
-        var addedRegistration = registrationConfirmationInsertResult.Value;
+        RegistrationConfirmation addedRegistration = registrationConfirmationInsertResult.Value;
 
         // Create registration confirmation mail
         var registrationConfirmationEmail = new Email
@@ -92,14 +92,14 @@ public class RegistrationWorkflow : IRegistrationWorkflow
                       "\n" +
                       $"Welcome to Observe! We are very happy you decided to be a part of our community! {Emoji.SmilingFace}\n" +
                       "But before you can start with saving money, we would like you to confirm your email address by clicking the following link: \n" +
-                      $"{registrationRequest.ConfirmationLinkTemplate.Replace("<confirmationId>", addedRegistration.Id.ToString())}\n" +
+                      $"{registrationWorkflowRequest.ConfirmationLinkTemplate.Replace("<confirmationId>", addedRegistration.Id.ToString())}\n" +
                       "\n" +
                       "See you soon!\n" +
                       "Your Observe-Team"
         };
 
         // Send registration confirmation mail
-        var emailResult = await _emailManager.SendEmailAsync(registrationConfirmationEmail, cancellationToken);
+        Result emailResult = await _emailManager.SendEmailAsync(registrationConfirmationEmail, cancellationToken);
 
         if (emailResult.Failed)
         {
@@ -113,35 +113,35 @@ public class RegistrationWorkflow : IRegistrationWorkflow
         return Result.Success();
     }
 
-    public async Task<Result> ExecuteConfirmationAsync(ConfirmationRequest confirmationRequest,
+    public async Task<Result> ExecuteConfirmationAsync(ConfirmationWorkflowRequest confirmationWorkflowRequest,
         CancellationToken cancellationToken = default)
     {
-        var registrationConfirmationResult =
+        Result<RegistrationConfirmation> registrationConfirmationResult =
             await _registrationConfirmationManager.GetRegistrationConfirmationWithUserAsync(
-                confirmationRequest.ConfirmationId, cancellationToken);
+                confirmationWorkflowRequest.ConfirmationId, cancellationToken);
 
         if (registrationConfirmationResult.Failed)
         {
             return Result.Failure(registrationConfirmationResult.Errors);
         }
 
-        var registrationConfirmation = registrationConfirmationResult.Value;
-        
+        RegistrationConfirmation registrationConfirmation = registrationConfirmationResult.Value;
+
         await _dataTransactionHandler.StartDbTransactionAsync(cancellationToken);
 
-        var confirmationResult =
+        Result confirmationResult =
             await _registrationConfirmationManager.ConfirmAsync(registrationConfirmation, cancellationToken);
 
         if (confirmationResult.Failed)
         {
             await _dataTransactionHandler.RollbackDbTransactionAsync(cancellationToken);
-            
+
             return Result.Failure(confirmationResult.Errors);
         }
-        
+
         // Create confirmation mail
-        var receiver = registrationConfirmation.User;
-        
+        User receiver = registrationConfirmation.User;
+
         var confirmationEmail = new Email
         {
             Id = Guid.Empty,
@@ -157,7 +157,7 @@ public class RegistrationWorkflow : IRegistrationWorkflow
         };
 
         // Send confirmation mail
-        var emailResult = await _emailManager.SendEmailAsync(confirmationEmail, cancellationToken);
+        Result emailResult = await _emailManager.SendEmailAsync(confirmationEmail, cancellationToken);
 
         if (emailResult.Failed)
         {

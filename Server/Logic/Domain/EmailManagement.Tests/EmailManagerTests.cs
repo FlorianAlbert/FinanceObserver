@@ -1,7 +1,8 @@
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FluentEmail.Core;
 using FluentEmail.Core.Models;
-using Email = FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models.Email;
+using Email = FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model.Email;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Tests;
 
@@ -24,7 +25,7 @@ public class EmailManagerTests
 
         _emailRepositoryMock = Substitute.For<IRepository<Guid, Email>>();
 
-        var repositoryFactoryMock = Substitute.For<IRepositoryFactory>();
+        IRepositoryFactory repositoryFactoryMock = Substitute.For<IRepositoryFactory>();
         repositoryFactoryMock.CreateRepository<Guid, Email>().Returns(_emailRepositoryMock);
 
         _email = _fixture.Create<Email>();
@@ -38,13 +39,13 @@ public class EmailManagerTests
                                                                            .SequenceEqual(
                                                                                _email.Receivers.Select(r =>
                                                                                    r.FullName))))
-            
+
             .Returns(_fluentEmailMock);
         // ReSharper restore PossibleMultipleEnumeration
         _fluentEmailMock.Subject(_email.Subject).Returns(_fluentEmailMock);
         _fluentEmailMock.Body(_email.Message).Returns(_fluentEmailMock);
 
-        var fluentEmailFactoryMock = Substitute.For<IFluentEmailFactory>();
+        IFluentEmailFactory fluentEmailFactoryMock = Substitute.For<IFluentEmailFactory>();
         fluentEmailFactoryMock.Create().Returns(_fluentEmailMock);
 
         _sut = new EmailManager(repositoryFactoryMock, fluentEmailFactoryMock);
@@ -57,12 +58,12 @@ public class EmailManagerTests
         _fixture.Customize<SendResponse>(customizationComposer =>
             customizationComposer.With(sendResponse => sendResponse.ErrorMessages, []));
 
-        var sendResponse = _fixture.Create<SendResponse>();
+        SendResponse sendResponse = _fixture.Create<SendResponse>();
 
         _fluentEmailMock.SendAsync(Arg.Any<CancellationToken>()).Returns(sendResponse);
 
         // Act
-        var result = await _sut.SendEmailAsync(_email);
+        Result result = await _sut.SendEmailAsync(_email);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -75,7 +76,7 @@ public class EmailManagerTests
         _fixture.Customize<SendResponse>(customizationComposer =>
             customizationComposer.With(sendResponse => sendResponse.ErrorMessages, []));
 
-        var sendResponse = _fixture.Create<SendResponse>();
+        SendResponse sendResponse = _fixture.Create<SendResponse>();
 
         _fluentEmailMock.SendAsync(Arg.Any<CancellationToken>()).Returns(sendResponse);
 
@@ -94,12 +95,12 @@ public class EmailManagerTests
             customizationComposer.With(sendResponse => sendResponse.ErrorMessages,
                 _fixture.CreateMany<string>().ToList()));
 
-        var sendResponse = _fixture.Create<SendResponse>();
+        SendResponse sendResponse = _fixture.Create<SendResponse>();
 
         _fluentEmailMock.SendAsync(Arg.Any<CancellationToken>()).Returns(sendResponse);
 
         // Act
-        var result = await _sut.SendEmailAsync(_email);
+        Result result = await _sut.SendEmailAsync(_email);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -113,12 +114,12 @@ public class EmailManagerTests
             customizationComposer.With(sendResponse => sendResponse.ErrorMessages,
                 _fixture.CreateMany<string>().ToList()));
 
-        var sendResponse = _fixture.Create<SendResponse>();
+        SendResponse sendResponse = _fixture.Create<SendResponse>();
 
         _fluentEmailMock.SendAsync(Arg.Any<CancellationToken>()).Returns(sendResponse);
 
         // Act
-        var result = await _sut.SendEmailAsync(_email);
+        Result result = await _sut.SendEmailAsync(_email);
 
         // Assert
         result.Errors.Should().ContainSingle();
@@ -133,12 +134,12 @@ public class EmailManagerTests
         _fixture.Customize<SendResponse>(customizationComposer =>
             customizationComposer.With(sendResponse => sendResponse.ErrorMessages, sendErrorMessages));
 
-        var sendResponse = _fixture.Create<SendResponse>();
+        SendResponse sendResponse = _fixture.Create<SendResponse>();
 
         _fluentEmailMock.SendAsync(Arg.Any<CancellationToken>()).Returns(sendResponse);
 
         // Act
-        var result = await _sut.SendEmailAsync(_email);
+        Result result = await _sut.SendEmailAsync(_email);
 
         // Assert
         result.Errors.Single().Detail.Should().ContainAll(sendErrorMessages);

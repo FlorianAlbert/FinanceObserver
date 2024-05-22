@@ -1,8 +1,8 @@
-using System.Linq.Expressions;
-using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+using System.Linq.Expressions;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.UserManagement.Tests;
 
@@ -23,7 +23,7 @@ public class UserManagerTests
 
         _repositoryMock = Substitute.For<IRepository<Guid, User>>();
 
-        var repositoryFactoryMock = Substitute.For<IRepositoryFactory>();
+        IRepositoryFactory repositoryFactoryMock = Substitute.For<IRepositoryFactory>();
         repositoryFactoryMock.CreateRepository<Guid, User>().Returns(_repositoryMock);
 
         _sut = new UserManager(repositoryFactoryMock);
@@ -33,13 +33,13 @@ public class UserManagerTests
     public async Task AddNewUserAsync_CallWithoutExistingUser_Succeeds()
     {
         // Arrange
-        var user = _fixture.Create<User>();
+        User user = _fixture.Create<User>();
 
         _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(false);
 
         // Act
-        var result = await _sut.AddNewUserAsync(user);
+        Result<User> result = await _sut.AddNewUserAsync(user);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -49,9 +49,9 @@ public class UserManagerTests
     public async Task AddNewUserAsync_CallWithoutExistingUser_RepositoryInsertCalled()
     {
         // Arrange
-        var user = _fixture.Create<User>();
+        User user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), 
+        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(),
             Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(false);
 
@@ -66,16 +66,16 @@ public class UserManagerTests
     public async Task AddNewUserAsync_CallWithoutExistingUser_ReturnsNewUserReturnedByRepository()
     {
         // Arrange
-        var user = _fixture.Create<User>();
-        var createdUser = _fixture.Create<User>();
+        User user = _fixture.Create<User>();
+        User createdUser = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(), 
+        _repositoryMock.ExistsAsync(Arg.Any<Expression<Func<User, bool>>>(),
             Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(false);
         _repositoryMock.InsertAsync(user, Arg.Any<CancellationToken>()).Returns(createdUser);
 
         // Act
-        var result = await _sut.AddNewUserAsync(user);
+        Result<User> result = await _sut.AddNewUserAsync(user);
 
         // Assert
         result.Value.Should().BeSameAs(createdUser);
@@ -85,14 +85,14 @@ public class UserManagerTests
     public async Task AddNewUserAsync_CallWithExistingUser_Fails()
     {
         // Arrange
-        var user = _fixture.Create<User>();
+        User user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Is((Expression<Func<User, bool>> expression) => expression.Compile()(user)), 
+        _repositoryMock.ExistsAsync(Arg.Is((Expression<Func<User, bool>> expression) => expression.Compile()(user)),
             Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(true);
 
         // Act
-        var result = await _sut.AddNewUserAsync(user);
+        Result<User> result = await _sut.AddNewUserAsync(user);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -102,9 +102,9 @@ public class UserManagerTests
     public async Task AddNewUserAsync_CallWithExistingUser_RepositoryInsertNotCalled()
     {
         // Arrange
-        var user = _fixture.Create<User>();
+        User user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Is((Expression<Func<User, bool>> expression) => expression.Compile()(user)), 
+        _repositoryMock.ExistsAsync(Arg.Is((Expression<Func<User, bool>> expression) => expression.Compile()(user)),
             Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(true);
 
@@ -119,14 +119,14 @@ public class UserManagerTests
     public async Task AddNewUserAsync_CallWithExistingUser_ReturnErrorCountIsOne()
     {
         // Arrange
-        var user = _fixture.Create<User>();
+        User user = _fixture.Create<User>();
 
-        _repositoryMock.ExistsAsync(Arg.Is((Expression<Func<User, bool>> expression) => expression.Compile()(user)), 
+        _repositoryMock.ExistsAsync(Arg.Is((Expression<Func<User, bool>> expression) => expression.Compile()(user)),
             Arg.Any<Inclusion<Guid, User>[]>(),
             Arg.Any<CancellationToken>()).Returns(true);
 
         // Act
-        var result = await _sut.AddNewUserAsync(user);
+        Result<User> result = await _sut.AddNewUserAsync(user);
 
         // Assert
         result.Errors.Should().ContainSingle();
@@ -136,10 +136,10 @@ public class UserManagerTests
     public async Task RemoveUserAsync_Call_Succeeds()
     {
         // Arrange
-        var userId = _fixture.Create<Guid>();
+        Guid userId = _fixture.Create<Guid>();
 
         // Act
-        var result = await _sut.RemoveUserAsync(userId);
+        Result result = await _sut.RemoveUserAsync(userId);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -149,7 +149,7 @@ public class UserManagerTests
     public async Task RemoveUserAsync_Call_RepositoryDeleteCalled()
     {
         // Arrange
-        var userId = _fixture.Create<Guid>();
+        Guid userId = _fixture.Create<Guid>();
 
         // Act
         _ = await _sut.RemoveUserAsync(userId);
@@ -162,10 +162,10 @@ public class UserManagerTests
     public async Task RemoveUsersAsync_Call_Succeeds()
     {
         // Arrange
-        var users = _fixture.CreateMany<User>().AsQueryable();
+        IQueryable<User> users = _fixture.CreateMany<User>().AsQueryable();
 
         // Act
-        var result = await _sut.RemoveUsersAsync(users);
+        Result result = await _sut.RemoveUsersAsync(users);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -175,7 +175,7 @@ public class UserManagerTests
     public async Task RemoveUsersAsync_Call_RepositoryDeleteCalled()
     {
         // Arrange
-        var users = _fixture.CreateMany<User>().AsQueryable();
+        IQueryable<User> users = _fixture.CreateMany<User>().AsQueryable();
 
         // Act
         _ = await _sut.RemoveUsersAsync(users);
@@ -188,13 +188,13 @@ public class UserManagerTests
     public async Task GetUserAsync_CallWithSuccessfulRepositoryCall_Succeeds()
     {
         // Arrange
-        var userId = _fixture.Create<Guid>();
-        var user = _fixture.Create<User>();
-        
-        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result<User>.Success(user));
+        Guid userId = _fixture.Create<Guid>();
+        User user = _fixture.Create<User>();
+
+        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result.Success(user));
 
         // Act
-        var result = await _sut.GetUserAsync(userId);
+        Result<User> result = await _sut.GetUserAsync(userId);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -204,13 +204,13 @@ public class UserManagerTests
     public async Task GetUserAsync_CallWithSuccessfulRepositoryCall_ReturnsUserReturnedByRepository()
     {
         // Arrange
-        var userId = _fixture.Create<Guid>();
-        var user = _fixture.Create<User>();
-        
-        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result<User>.Success(user));
+        Guid userId = _fixture.Create<Guid>();
+        User user = _fixture.Create<User>();
+
+        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result.Success(user));
 
         // Act
-        var result = await _sut.GetUserAsync(userId);
+        Result<User> result = await _sut.GetUserAsync(userId);
 
         // Assert
         result.Value.Should().BeSameAs(user);
@@ -220,12 +220,12 @@ public class UserManagerTests
     public async Task GetUserAsync_CallWithFailedRepositoryCall_Fails()
     {
         // Arrange
-        var userId = _fixture.Create<Guid>();
-        
-        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+        Guid userId = _fixture.Create<Guid>();
+
+        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result.Failure<User>());
 
         // Act
-        var result = await _sut.GetUserAsync(userId);
+        Result<User> result = await _sut.GetUserAsync(userId);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -240,13 +240,13 @@ public class UserManagerTests
     public async Task GetUserAsync_CallWithFailedRepositoryCall_ReturnedErrorsMatchErrorsReturnedFromRepository(int repositoryErrorCount)
     {
         // Arrange
-        var userId = _fixture.Create<Guid>();
-        var errors = _fixture.CreateMany<Error>(repositoryErrorCount).ToArray();
-        
-        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result<User>.Failure(errors));
+        Guid userId = _fixture.Create<Guid>();
+        Error[] errors = _fixture.CreateMany<Error>(repositoryErrorCount).ToArray();
+
+        _repositoryMock.FindAsync(userId, Arg.Any<Inclusion<Guid, User>[]?>(), Arg.Any<CancellationToken>()).Returns(Result.Failure<User>(errors));
 
         // Act
-        var result = await _sut.GetUserAsync(userId);
+        Result<User> result = await _sut.GetUserAsync(userId);
 
         // Assert
         result.Errors.Should().BeEquivalentTo(errors);
@@ -258,7 +258,7 @@ public class UserManagerTests
         // Arrange
 
         // Act
-        var result = await _sut.GetAllUsersAsync();
+        Result<IQueryable<User>> result = await _sut.GetAllUsersAsync();
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -280,12 +280,12 @@ public class UserManagerTests
     public async Task GetAllUsersAsync_Call_ReturnsUsersReturnedFromRepository()
     {
         // Arrange
-        var users = _fixture.CreateMany<User>().AsQueryable();
+        IQueryable<User> users = _fixture.CreateMany<User>().AsQueryable();
 
         _repositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, User>[]>(), Arg.Any<CancellationToken>()).Returns(users);
 
         // Act
-        var result = await _sut.GetAllUsersAsync();
+        Result<IQueryable<User>> result = await _sut.GetAllUsersAsync();
 
         // Assert
         result.Value.Should().BeSameAs(users);

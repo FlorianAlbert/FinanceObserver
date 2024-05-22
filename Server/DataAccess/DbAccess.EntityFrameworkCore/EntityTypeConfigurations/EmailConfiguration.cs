@@ -1,4 +1,4 @@
-﻿using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,7 +9,7 @@ internal class EmailConfiguration : BaseEntityConfiguration<Guid, Email>
     public override void Configure(EntityTypeBuilder<Email> builder)
     {
         base.Configure(builder);
-        
+
         builder.HasMany(email => email.Receivers)
             .WithMany(user => user.Emails);
     }

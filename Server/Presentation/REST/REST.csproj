@@ -14,6 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Logic\Business\AuthorizationWorkflow.Contract\AuthorizationWorkflow.Contract.csproj" />
         <ProjectReference Include="..\..\Logic\Business\RegistrationWorkflow.Contract\RegistrationWorkflow.Contract.csproj"/>
     </ItemGroup>
 

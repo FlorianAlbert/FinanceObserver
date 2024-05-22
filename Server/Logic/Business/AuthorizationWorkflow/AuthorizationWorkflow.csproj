@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Domain\HashHandling.Contract\HashHandling.Contract.csproj" />
+      <ProjectReference Include="..\..\Domain\TokenManagement.Contract\TokenManagement.Contract.csproj" />
+      <ProjectReference Include="..\..\Domain\UserManagement.Contract\UserManagement.Contract.csproj" />
+      <ProjectReference Include="..\AuthorizationWorkflow.Contract\AuthorizationWorkflow.Contract.csproj" />
+    </ItemGroup>
+
+</Project>

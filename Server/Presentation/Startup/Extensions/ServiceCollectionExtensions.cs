@@ -8,15 +8,17 @@ internal static class ServiceCollectionExtensions
         IConfiguration configuration,
         params Assembly[] assemblies)
     {
-        var serviceInstallers = assemblies.SelectMany(assembly => assembly.DefinedTypes)
+        IEnumerable<IServiceInstaller> serviceInstallers = assemblies.SelectMany(assembly => assembly.DefinedTypes)
             .Where(type => typeof(IServiceInstaller).IsAssignableFrom(type)
                            && type is { IsInterface: false, IsAbstract: false })
             .Select(Activator.CreateInstance)
             .Cast<IServiceInstaller>();
 
-        foreach (var serviceInstaller in serviceInstallers)
+        IServiceProvider serviceProvider = services.BuildServiceProvider();
+
+        foreach (IServiceInstaller serviceInstaller in serviceInstallers)
         {
-            var logger = services.BuildServiceProvider()
+            var logger = serviceProvider
                 .GetRequiredService(typeof(ILogger<>).MakeGenericType(serviceInstaller.GetType())) as ILogger;
             serviceInstaller.Install(services, configuration, logger!);
         }

@@ -1,6 +1,6 @@
-namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+namespace FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
 
-public abstract class BaseEntity<TKey> : LifecycleTrackable where TKey : IParsable<TKey>, 
+public abstract class BaseEntity<TKey> : LifecycleTrackable where TKey : IParsable<TKey>,
                  IEquatable<TKey>
 {
     public required TKey Id { get; init; }
@@ -14,7 +14,7 @@ public abstract class LifecycleTrackable
         get => _createdDate ?? DateTimeOffset.MinValue;
         internal set => _createdDate = value;
     }
-    
+
     private DateTimeOffset? _updatedDate;
     public DateTimeOffset UpdatedDate
     {

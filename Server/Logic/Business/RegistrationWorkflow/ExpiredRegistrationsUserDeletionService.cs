@@ -1,3 +1,5 @@
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.RegistrationConfirmationManagement.Contract;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.UserManagement.Contract;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,12 +23,12 @@ public class ExpiredRegistrationsUserDeletionService : BackgroundService
         while (await _timer.WaitForNextTickAsync(cancellationToken) &&
                !cancellationToken.IsCancellationRequested)
         {
-            await using var scope = _serviceProvider.CreateAsyncScope();
-            
-            var registrationConfirmationManager = scope.ServiceProvider.GetRequiredService<IRegistrationConfirmationManager>();
-            var userManager = scope.ServiceProvider.GetRequiredService<IUserManager>();
-            
-            var unconfirmedRegistrationConfirmationsResult =
+            await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
+
+            IRegistrationConfirmationManager registrationConfirmationManager = scope.ServiceProvider.GetRequiredService<IRegistrationConfirmationManager>();
+            IUserManager userManager = scope.ServiceProvider.GetRequiredService<IUserManager>();
+
+            Result<IQueryable<RegistrationConfirmation>> unconfirmedRegistrationConfirmationsResult =
                 await registrationConfirmationManager.GetUnconfirmedRegistrationConfirmationsWithUserAsync(
                     cancellationToken);
 
@@ -35,9 +37,9 @@ public class ExpiredRegistrationsUserDeletionService : BackgroundService
                 continue;
             }
 
-            var unconfirmedRegistrationConfirmations = unconfirmedRegistrationConfirmationsResult.Value;
+            IQueryable<RegistrationConfirmation> unconfirmedRegistrationConfirmations = unconfirmedRegistrationConfirmationsResult.Value;
 
-            var expiredUsers =
+            IQueryable<User> expiredUsers =
                 unconfirmedRegistrationConfirmations.Where(r =>
                     r.CreatedDate.AddDays(1) <= DateTimeOffset.UtcNow).Select(r => r.User);
 

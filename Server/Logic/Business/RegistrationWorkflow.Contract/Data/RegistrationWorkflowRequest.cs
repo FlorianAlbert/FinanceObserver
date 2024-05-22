@@ -1,6 +1,6 @@
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Business.RegistrationWorkflow.Contract.Data;
 
-public class RegistrationRequest
+public class RegistrationWorkflowRequest
 {
     public required string Username { get; init; }
 

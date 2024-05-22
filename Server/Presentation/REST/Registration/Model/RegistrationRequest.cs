@@ -9,7 +9,7 @@ public class RegistrationRequest
     ///     The requested user name
     /// </summary>
     /// <example>MaxMustermann</example>
-    public required string UserName { get; init; }
+    public required string Username { get; init; }
 
     /// <summary>
     ///     The first name of the user

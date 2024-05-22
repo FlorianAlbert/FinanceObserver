@@ -1,4 +1,4 @@
-namespace FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
+namespace FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 
 public class Error
 {

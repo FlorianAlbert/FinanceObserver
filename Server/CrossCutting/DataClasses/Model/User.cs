@@ -1,10 +1,7 @@
-﻿namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+﻿namespace FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
 
 public sealed class User : BaseEntity<Guid>
 {
-    private ICollection<Email>? _emails;
-
-    // Navigation properties
     public required string UserName { get; set; }
 
     public required string FirstName { get; set; }
@@ -19,6 +16,7 @@ public sealed class User : BaseEntity<Guid>
 
     public required string PasswordHash { get; set; }
 
+    // Navigation properties
     private RegistrationConfirmation? _registrationConfirmation;
     public RegistrationConfirmation RegistrationConfirmation
     {
@@ -29,17 +27,18 @@ public sealed class User : BaseEntity<Guid>
         };
         set => _registrationConfirmation = value;
     }
-    
+
     private ICollection<Transaction>? _transactions;
     public ICollection<Transaction> Transactions
     {
-        get => _transactions ??= new List<Transaction>();
-        set => _transactions = value.ToList();
+        get => _transactions ??= [];
+        set => _transactions = [.. value];
     }
 
+    private ICollection<Email>? _emails;
     public ICollection<Email> Emails
     {
-        get => _emails ??= new List<Email>();
-        set => _emails = value.ToList();
+        get => _emails ??= [];
+        set => _emails = [.. value];
     }
 }

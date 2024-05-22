@@ -1,11 +1,13 @@
-﻿using System.Linq.Expressions;
-using System.Reflection;
-using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
+﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
+using System.Collections.Immutable;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
 
@@ -31,21 +33,21 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
     public Task<IQueryable<TEntity>> QueryAsync(Inclusion<TKey, TEntity>[]? includes = null,
         CancellationToken cancellationToken = default)
     {
-        var queryable = _inclusionEvaluator.Evaluate(_Set.AsNoTracking(), includes ?? [], cancellationToken);
+        IQueryable<TEntity> queryable = InclusionEvaluator.Evaluate(_Set.AsNoTracking(), includes?.ToImmutableArray() ?? [], cancellationToken);
 
         return Task.FromResult(queryable);
     }
 
     public async Task<Result<TEntity>> FindAsync(TKey id, Inclusion<TKey, TEntity>[]? includes = null, CancellationToken cancellationToken = default)
     {
-        var entity = (await QueryAsync(includes, cancellationToken)).SingleOrDefault(entity => entity.Id.Equals(id));
+        TEntity? entity = (await QueryAsync(includes, cancellationToken)).SingleOrDefault(entity => entity.Id.Equals(id));
 
         if (entity is null)
         {
-            return Result<TEntity>.Failure(Errors.EntityNotFoundError);
+            return Result.Failure<TEntity>(Errors.EntityNotFoundError);
         }
 
-        return Result<TEntity>.Success(entity);
+        return Result.Success(entity);
     }
 
     public Task<bool> ExistsAsync(TKey id, CancellationToken cancellationToken = default)
@@ -61,24 +63,24 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        var createdTime = DateTimeOffset.UtcNow;
+        DateTimeOffset createdTime = DateTimeOffset.UtcNow;
 
-        var newEntry = _context.Attach(entity);
+        EntityEntry<TEntity> newEntry = _context.Attach(entity);
         newEntry.State = EntityState.Added;
 
-        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
+        foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
         {
-            ((LifecycleTrackable)entry.Entity).CreatedDate = createdTime;
-            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
+            ((LifecycleTrackable) entry.Entity).CreatedDate = createdTime;
+            ((LifecycleTrackable) entry.Entity).UpdatedDate = createdTime;
         }
 
-        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
+        foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
         {
-            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
+            ((LifecycleTrackable) entry.Entity).UpdatedDate = createdTime;
         }
 
         await _context.SaveChangesAsync(cancellationToken);
-        
+
         _context.ChangeTracker.Clear();
 
         return newEntry.Entity;
@@ -86,28 +88,28 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
     public async Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
-        var entitiesArray = entities as TEntity[] ?? entities.ToArray();
+        TEntity[] entitiesArray = entities as TEntity[] ?? entities.ToArray();
 
-        var createdTime = DateTimeOffset.UtcNow;
-        foreach (var entity in entitiesArray)
+        DateTimeOffset createdTime = DateTimeOffset.UtcNow;
+        foreach (TEntity entity in entitiesArray)
         {
-            var entry = _context.Attach(entity);
+            EntityEntry<TEntity> entry = _context.Attach(entity);
             entry.State = EntityState.Added;
         }
 
-        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
+        foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
         {
-            ((LifecycleTrackable)entry.Entity).CreatedDate = createdTime;
-            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
+            ((LifecycleTrackable) entry.Entity).CreatedDate = createdTime;
+            ((LifecycleTrackable) entry.Entity).UpdatedDate = createdTime;
         }
 
-        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
+        foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
         {
-            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
+            ((LifecycleTrackable) entry.Entity).UpdatedDate = createdTime;
         }
 
         await _context.SaveChangesAsync(cancellationToken);
-        
+
         _context.ChangeTracker.Clear();
     }
 
@@ -120,14 +122,14 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
             return;
         }
 
-        var entitiesArray = entities as object[] ?? entities.ToArray();
+        object[] entitiesArray = entities as object[] ?? entities.ToArray();
 
         _context.AttachRange(entitiesArray);
 
         _context.RemoveRange(entitiesArray);
 
         await _context.SaveChangesAsync(cancellationToken);
-        
+
         _context.ChangeTracker.Clear();
     }
 
@@ -165,13 +167,13 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
                 or nameof(BaseEntity<TKey>.Id)
             }
         }).ToList();
-        
+
         validUpdates.Add(Update<TEntity>.With(e => e.UpdatedDate, DateTimeOffset.UtcNow));
 
-        var methods = typeof(SetPropertyCalls<TEntity>)
+        MethodInfo[] methods = typeof(SetPropertyCalls<TEntity>)
             .GetMethods(BindingFlags.Instance | BindingFlags.Public);
 
-        var m = methods.Single(methodInfo =>
+        MethodInfo m = methods.Single(methodInfo =>
             methodInfo is { Name: nameof(SetPropertyCalls<object>.SetProperty), IsGenericMethod: true } &&
             methodInfo.GetParameters() is { Length: 2 } parameters
             && parameters.All(parameterInfo => parameterInfo.ParameterType is { IsGenericType: true } parameterType &&
@@ -179,7 +181,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
         Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>>
             baseExpression = setPropertyCall => setPropertyCall;
-        
+
         var updateExpression = Expression.Lambda<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>>(validUpdates.Aggregate(
                 baseExpression.Body,
                 (currentExpr, nextUpdate) =>
@@ -189,9 +191,9 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
                         nextUpdate.ValueExpression)),
             baseExpression.Parameters);
 
-        var entitiesToUpdate = _Set.Where(predicate);
-        
-        var updatedRowsCount = await entitiesToUpdate.ExecuteUpdateAsync(updateExpression, cancellationToken: cancellationToken);
+        IQueryable<TEntity> entitiesToUpdate = _Set.Where(predicate);
+
+        int updatedRowsCount = await entitiesToUpdate.ExecuteUpdateAsync(updateExpression, cancellationToken: cancellationToken);
 
         return updatedRowsCount;
     }

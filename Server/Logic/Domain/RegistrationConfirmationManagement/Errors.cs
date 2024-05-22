@@ -1,4 +1,4 @@
-﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
+﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.RegistrationConfirmationManagement;
 
@@ -10,7 +10,7 @@ internal static class Errors
             "Multiple registrations were found",
             "There were multiple registrations found!",
             409);
-    
+
     private static Error? _noRegistrationConfigurationsFoundError;
     public static Error NoRegistrationConfigurationsFoundError =>
         _noRegistrationConfigurationsFoundError ??= new Error(nameof(NoRegistrationConfigurationsFoundError),

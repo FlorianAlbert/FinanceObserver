@@ -1,8 +1,8 @@
-using System.Linq.Expressions;
-using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+using System.Linq.Expressions;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.RegistrationConfirmationManagement.Tests;
 
@@ -23,7 +23,7 @@ public class RegistrationConfirmationManagerTests
 
         _registrationConfirmationRepositoryMock = Substitute.For<IRepository<Guid, RegistrationConfirmation>>();
 
-        var repositoryFactoryMock = Substitute.For<IRepositoryFactory>();
+        IRepositoryFactory repositoryFactoryMock = Substitute.For<IRepositoryFactory>();
         repositoryFactoryMock.CreateRepository<Guid, RegistrationConfirmation>()
             .Returns(_registrationConfirmationRepositoryMock);
 
@@ -36,14 +36,14 @@ public class RegistrationConfirmationManagerTests
     public async Task RegisterAsync_CallWithoutExistingRegistrationConfirmations_Succeeds()
     {
         // Arrange
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
                 Arg.Any<CancellationToken>())
             .Returns(Array.Empty<RegistrationConfirmation>().AsQueryable());
 
         // Act
-        var result = await _sut.RegisterAsync(registrationConfirmation);
+        Result<RegistrationConfirmation> result = await _sut.RegisterAsync(registrationConfirmation);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -53,7 +53,7 @@ public class RegistrationConfirmationManagerTests
     public async Task RegisterAsync_CallWithoutExistingRegistrationConfirmations_RepositoryInsertCalled()
     {
         // Arrange
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
                 Arg.Any<CancellationToken>())
@@ -72,8 +72,8 @@ public class RegistrationConfirmationManagerTests
         RegisterAsync_CallWithoutExistingRegistrationConfirmations_ReturnsNewlyCreatedRegistrationConfirmation()
     {
         // Arrange
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
-        var createdRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation createdRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
                 Arg.Any<CancellationToken>())
@@ -82,7 +82,7 @@ public class RegistrationConfirmationManagerTests
             .Returns(createdRegistrationConfirmation);
 
         // Act
-        var result = await _sut.RegisterAsync(registrationConfirmation);
+        Result<RegistrationConfirmation> result = await _sut.RegisterAsync(registrationConfirmation);
 
         // Assert
         result.Value.Should().BeSameAs(createdRegistrationConfirmation);
@@ -92,7 +92,7 @@ public class RegistrationConfirmationManagerTests
     public async Task RegisterAsync_CallWithOneExistingRegistrationConfirmationForUser_Succeeds()
     {
         // Arrange
-        var user = _fixture.Create<User>();
+        User user = _fixture.Create<User>();
         user.RegistrationConfirmation.User = user;
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
@@ -100,7 +100,7 @@ public class RegistrationConfirmationManagerTests
             .Returns(new[] { user.RegistrationConfirmation }.AsQueryable());
 
         // Act
-        var result = await _sut.RegisterAsync(user.RegistrationConfirmation);
+        Result<RegistrationConfirmation> result = await _sut.RegisterAsync(user.RegistrationConfirmation);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -110,7 +110,7 @@ public class RegistrationConfirmationManagerTests
     public async Task RegisterAsync_CallWithOneExistingRegistrationConfirmationForUser_RepositoryInsertNotCalled()
     {
         // Arrange
-        var user = _fixture.Create<User>();
+        User user = _fixture.Create<User>();
         user.RegistrationConfirmation.User = user;
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
@@ -130,20 +130,20 @@ public class RegistrationConfirmationManagerTests
         RegisterAsync_CallWithOneExistingRegistrationConfirmationForUser_ReturnsExistingRegistrationConfirmation()
     {
         // Arrange
-        var user = _fixture.Create<User>();
+        User user = _fixture.Create<User>();
         user.RegistrationConfirmation = null!;
 
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.User, user));
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
-        var newRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation newRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
                 Arg.Any<CancellationToken>())
             .Returns(new[] { existingRegistrationConfirmation }.AsQueryable());
 
         // Act
-        var result = await _sut.RegisterAsync(newRegistrationConfirmation);
+        Result<RegistrationConfirmation> result = await _sut.RegisterAsync(newRegistrationConfirmation);
 
         // Assert
         result.Value.Should().BeSameAs(existingRegistrationConfirmation);
@@ -158,21 +158,21 @@ public class RegistrationConfirmationManagerTests
         int existingRegistrationConfirmationsCount)
     {
         // Arrange
-        var user = _fixture.Create<User>();
+        User user = _fixture.Create<User>();
         user.RegistrationConfirmation.User = user;
 
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.User, user));
-        var existingRegistrationConfirmations = _fixture
+        IQueryable<RegistrationConfirmation> existingRegistrationConfirmations = _fixture
             .CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationsCount).AsQueryable();
-        var newRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation newRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
                 Arg.Any<CancellationToken>())
             .Returns(existingRegistrationConfirmations);
 
         // Act
-        var result = await _sut.RegisterAsync(newRegistrationConfirmation);
+        Result<RegistrationConfirmation> result = await _sut.RegisterAsync(newRegistrationConfirmation);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -187,21 +187,21 @@ public class RegistrationConfirmationManagerTests
         int existingRegistrationConfirmationsCount)
     {
         // Arrange
-        var user = _fixture.Create<User>();
+        User user = _fixture.Create<User>();
         user.RegistrationConfirmation.User = user;
 
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.User, user));
-        var existingRegistrationConfirmations = _fixture
+        IQueryable<RegistrationConfirmation> existingRegistrationConfirmations = _fixture
             .CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationsCount).AsQueryable();
-        var newRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation newRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
                 Arg.Any<CancellationToken>())
             .Returns(existingRegistrationConfirmations);
 
         // Act
-        var result = await _sut.RegisterAsync(newRegistrationConfirmation);
+        Result<RegistrationConfirmation> result = await _sut.RegisterAsync(newRegistrationConfirmation);
 
         // Assert
         result.Errors.Should().ContainSingle();
@@ -216,10 +216,10 @@ public class RegistrationConfirmationManagerTests
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 null as DateTimeOffset?));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         // Act
-        var result = await _sut.ConfirmAsync(registrationConfirmation);
+        Result result = await _sut.ConfirmAsync(registrationConfirmation);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -233,15 +233,15 @@ public class RegistrationConfirmationManagerTests
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 null as DateTimeOffset?));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
-        
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+
         _registrationConfirmationRepositoryMock.When(repo => repo.UpdateAsync(registrationConfirmation,
                 Arg.Is<Update<RegistrationConfirmation>[]>(updates => updates.Length == 1),
                 Arg.Any<CancellationToken>()))
             .Do(info =>
             {
-                var updates = info.Arg<Update<RegistrationConfirmation>[]>();
-                var firstUpdate = updates[0];
+                Update<RegistrationConfirmation>[] updates = info.Arg<Update<RegistrationConfirmation>[]>();
+                Update<RegistrationConfirmation> firstUpdate = updates[0];
                 if (firstUpdate is not
                     {
                         SelectorExpression: Expression<Func<RegistrationConfirmation, DateTimeOffset?>> selectorExpression,
@@ -251,15 +251,15 @@ public class RegistrationConfirmationManagerTests
                     return;
                 }
 
-                var newValueParameterExpression = Expression.Parameter(selectorExpression.Body.Type);
+                ParameterExpression newValueParameterExpression = Expression.Parameter(selectorExpression.Body.Type);
                 var assign = Expression.Lambda<Action<RegistrationConfirmation, DateTimeOffset?>>(
                     Expression.Assign(selectorExpression.Body, newValueParameterExpression),
                     selectorExpression.Parameters[0], newValueParameterExpression);
-                    
-                var valueGenerator = valueExpression.Compile();
-                var newValue = valueGenerator(registrationConfirmation);
 
-                var setter = assign.Compile();
+                Func<RegistrationConfirmation, DateTimeOffset?> valueGenerator = valueExpression.Compile();
+                DateTimeOffset? newValue = valueGenerator(registrationConfirmation);
+
+                Action<RegistrationConfirmation, DateTimeOffset?> setter = assign.Compile();
                 setter(registrationConfirmation, newValue);
             });
 
@@ -278,7 +278,7 @@ public class RegistrationConfirmationManagerTests
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 null as DateTimeOffset?));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         // Act
         _ = await _sut.ConfirmAsync(registrationConfirmation);
@@ -297,10 +297,10 @@ public class RegistrationConfirmationManagerTests
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 _fixture.Create<DateTimeOffset>()));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         // Act
-        var result = await _sut.ConfirmAsync(registrationConfirmation);
+        Result result = await _sut.ConfirmAsync(registrationConfirmation);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -314,7 +314,7 @@ public class RegistrationConfirmationManagerTests
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 _fixture.Create<DateTimeOffset>()));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         // Act
         _ = await _sut.ConfirmAsync(registrationConfirmation);
@@ -331,7 +331,7 @@ public class RegistrationConfirmationManagerTests
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 _fixture.Create<DateTimeOffset>()));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         // Act
         _ = await _sut.ConfirmAsync(registrationConfirmation);
@@ -348,17 +348,17 @@ public class RegistrationConfirmationManagerTests
     public async Task ConfirmAsyncById_CallWithUnconfirmedRegistrationConfirmation_Succeeds()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 null as DateTimeOffset?));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
+            .Returns(Result.Success(registrationConfirmation));
 
         // Act
-        var result = await _sut.ConfirmAsync(registrationConfirmationId);
+        Result result = await _sut.ConfirmAsync(registrationConfirmationId);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -368,21 +368,21 @@ public class RegistrationConfirmationManagerTests
     public async Task ConfirmAsyncById_CallWithUnconfirmedRegistrationConfirmation_RegistrationConfirmationIsConfirmed()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 null as DateTimeOffset?));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
+            .Returns(Result.Success(registrationConfirmation));
         _registrationConfirmationRepositoryMock.When(repo => repo.UpdateAsync(registrationConfirmation,
                 Arg.Is<Update<RegistrationConfirmation>[]>(updates => updates.Length == 1),
                 Arg.Any<CancellationToken>()))
             .Do(info =>
             {
-                var updates = info.Arg<Update<RegistrationConfirmation>[]>();
-                var firstUpdate = updates[0];
+                Update<RegistrationConfirmation>[] updates = info.Arg<Update<RegistrationConfirmation>[]>();
+                Update<RegistrationConfirmation> firstUpdate = updates[0];
                 if (firstUpdate is not
                     {
                         SelectorExpression: Expression<Func<RegistrationConfirmation, DateTimeOffset?>> selectorExpression,
@@ -392,15 +392,15 @@ public class RegistrationConfirmationManagerTests
                     return;
                 }
 
-                var newValueParameterExpression = Expression.Parameter(selectorExpression.Body.Type);
+                ParameterExpression newValueParameterExpression = Expression.Parameter(selectorExpression.Body.Type);
                 var assign = Expression.Lambda<Action<RegistrationConfirmation, DateTimeOffset?>>(
                     Expression.Assign(selectorExpression.Body, newValueParameterExpression),
                     selectorExpression.Parameters[0], newValueParameterExpression);
-                    
-                var valueGenerator = valueExpression.Compile();
-                var newValue = valueGenerator(registrationConfirmation);
 
-                var setter = assign.Compile();
+                Func<RegistrationConfirmation, DateTimeOffset?> valueGenerator = valueExpression.Compile();
+                DateTimeOffset? newValue = valueGenerator(registrationConfirmation);
+
+                Action<RegistrationConfirmation, DateTimeOffset?> setter = assign.Compile();
                 setter(registrationConfirmation, newValue);
             });
 
@@ -415,14 +415,14 @@ public class RegistrationConfirmationManagerTests
     public async Task ConfirmAsyncById_CallWithUnconfirmedRegistrationConfirmation_RepositoryUpdateCalled()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 null as DateTimeOffset?));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
+            .Returns(Result.Success(registrationConfirmation));
 
         // Act
         _ = await _sut.ConfirmAsync(registrationConfirmationId);
@@ -438,17 +438,17 @@ public class RegistrationConfirmationManagerTests
     public async Task ConfirmAsyncById_CallWithConfirmedRegistrationConfirmation_Succeeds()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 _fixture.Create<DateTimeOffset>()));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
+            .Returns(Result.Success(registrationConfirmation));
 
         // Act
-        var result = await _sut.ConfirmAsync(registrationConfirmationId);
+        Result result = await _sut.ConfirmAsync(registrationConfirmationId);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -458,14 +458,14 @@ public class RegistrationConfirmationManagerTests
     public async Task ConfirmAsyncById_CallWithConfirmedRegistrationConfirmation_RegistrationConfirmationIsConfirmed()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 _fixture.Create<DateTimeOffset>()));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
+            .Returns(Result.Success(registrationConfirmation));
 
         // Act
         _ = await _sut.ConfirmAsync(registrationConfirmationId);
@@ -478,14 +478,14 @@ public class RegistrationConfirmationManagerTests
     public async Task ConfirmAsyncById_CallWithConfirmedRegistrationConfirmation_RepositoryUpdateNotCalled()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 _fixture.Create<DateTimeOffset>()));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(registrationConfirmation));
+            .Returns(Result.Success(registrationConfirmation));
 
         // Act
         _ = await _sut.ConfirmAsync(registrationConfirmationId);
@@ -500,13 +500,13 @@ public class RegistrationConfirmationManagerTests
     public async Task ConfirmAsyncById_CallWithUnknownId_Fails()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
 
         _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
-        var result = await _sut.ConfirmAsync(registrationConfirmationId);
+        Result result = await _sut.ConfirmAsync(registrationConfirmationId);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -516,14 +516,14 @@ public class RegistrationConfirmationManagerTests
     public async Task ConfirmAsyncById_CallWithUnknownId_ErrorsGetHandedThroughFromRepository()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
-        var errors = _fixture.CreateMany<Error>().ToArray();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
+        Error[] errors = _fixture.CreateMany<Error>().ToArray();
 
         _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure(errors));
+            .Returns(Result.Failure<RegistrationConfirmation>(errors));
 
         // Act
-        var result = await _sut.ConfirmAsync(registrationConfirmationId);
+        Result result = await _sut.ConfirmAsync(registrationConfirmationId);
 
         // Assert
         result.Errors.Should().BeEquivalentTo(errors);
@@ -533,11 +533,11 @@ public class RegistrationConfirmationManagerTests
     public async Task ConfirmAsyncById_CallWithUnknownId_RepositoryUpdateNotCalled()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
-        var errors = _fixture.CreateMany<Error>().ToArray();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
+        Error[] errors = _fixture.CreateMany<Error>().ToArray();
 
         _registrationConfirmationRepositoryMock.FindAsync(registrationConfirmationId, Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]?>(), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure(errors));
+            .Returns(Result.Failure<RegistrationConfirmation>(errors));
 
         // Act
         _ = await _sut.ConfirmAsync(registrationConfirmationId);
@@ -554,19 +554,19 @@ public class RegistrationConfirmationManagerTests
     public async Task GetRegistrationConfirmationWithUserAsync_CallWithOneExistingRegistrationConfirmation_Succeeds()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
 
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.Id,
                 registrationConfirmationId));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
                 Arg.Any<CancellationToken>())
             .Returns(new[] { registrationConfirmation }.AsQueryable());
 
         // Act
-        var result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
+        Result<RegistrationConfirmation> result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -577,19 +577,19 @@ public class RegistrationConfirmationManagerTests
         GetRegistrationConfirmationWithUserAsync_CallWithOneExistingRegistrationConfirmation_ReturnsExistingRegistrationConfirmation()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
 
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.Id,
                 registrationConfirmationId));
-        var registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationConfirmation registrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
                 Arg.Any<CancellationToken>())
             .Returns(new[] { registrationConfirmation }.AsQueryable());
 
         // Act
-        var result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
+        Result<RegistrationConfirmation> result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
 
         // Assert
         result.Value.Should().BeSameAs(registrationConfirmation);
@@ -599,13 +599,13 @@ public class RegistrationConfirmationManagerTests
     public async Task GetRegistrationConfirmationWithUserAsync_CallWithoutExistingRegistrationConfirmation_Fails()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
                 Arg.Any<CancellationToken>())
             .Returns(Array.Empty<RegistrationConfirmation>().AsQueryable());
 
         // Act
-        var result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
+        Result<RegistrationConfirmation> result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -616,13 +616,13 @@ public class RegistrationConfirmationManagerTests
         GetRegistrationConfirmationWithUserAsync_CallWithoutExistingRegistrationConfirmation_ErrorCountIsOne()
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
                 Arg.Any<CancellationToken>())
             .Returns(Array.Empty<RegistrationConfirmation>().AsQueryable());
 
         // Act
-        var result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
+        Result<RegistrationConfirmation> result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
 
         // Assert
         result.Errors.Should().ContainSingle();
@@ -637,12 +637,12 @@ public class RegistrationConfirmationManagerTests
         int existingRegistrationConfirmationCount)
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
 
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.Id,
                 registrationConfirmationId));
-        var registrationConfirmations =
+        IQueryable<RegistrationConfirmation> registrationConfirmations =
             _fixture.CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationCount).AsQueryable();
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
@@ -650,7 +650,7 @@ public class RegistrationConfirmationManagerTests
             .Returns(registrationConfirmations);
 
         // Act
-        var result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
+        Result<RegistrationConfirmation> result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -666,12 +666,12 @@ public class RegistrationConfirmationManagerTests
             int existingRegistrationConfirmationCount)
     {
         // Arrange
-        var registrationConfirmationId = _fixture.Create<Guid>();
+        Guid registrationConfirmationId = _fixture.Create<Guid>();
 
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.Id,
                 registrationConfirmationId));
-        var registrationConfirmations =
+        IQueryable<RegistrationConfirmation> registrationConfirmations =
             _fixture.CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationCount).AsQueryable();
 
         _registrationConfirmationRepositoryMock.QueryAsync(Arg.Any<Inclusion<Guid, RegistrationConfirmation>[]>(),
@@ -679,7 +679,7 @@ public class RegistrationConfirmationManagerTests
             .Returns(registrationConfirmations);
 
         // Act
-        var result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
+        Result<RegistrationConfirmation> result = await _sut.GetRegistrationConfirmationWithUserAsync(registrationConfirmationId);
 
         // Assert
         result.Errors.Should().ContainSingle();
@@ -723,7 +723,7 @@ public class RegistrationConfirmationManagerTests
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 _fixture.Create<DateTimeOffset>()));
-        var existingRegistrations =
+        IQueryable<RegistrationConfirmation> existingRegistrations =
             _fixture.CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationsCount).AsQueryable();
 
         // Set random RegistrationConfirmations to unconfirmed
@@ -739,7 +739,7 @@ public class RegistrationConfirmationManagerTests
             .Returns(existingRegistrations);
 
         // Act
-        var result = await _sut.GetUnconfirmedRegistrationConfirmationsWithUserAsync();
+        Result<IQueryable<RegistrationConfirmation>> result = await _sut.GetUnconfirmedRegistrationConfirmationsWithUserAsync();
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -782,7 +782,7 @@ public class RegistrationConfirmationManagerTests
         _fixture.Customize<RegistrationConfirmation>(composerTransformation =>
             composerTransformation.With(registrationConfirmation => registrationConfirmation.ConfirmationDate,
                 _fixture.Create<DateTimeOffset>()));
-        var existingRegistrations =
+        IQueryable<RegistrationConfirmation> existingRegistrations =
             _fixture.CreateMany<RegistrationConfirmation>(existingRegistrationConfirmationsCount).AsQueryable();
 
         // Set randomRegistrationConfirmations to unconfirmed
@@ -798,7 +798,7 @@ public class RegistrationConfirmationManagerTests
             .Returns(existingRegistrations);
 
         // Act
-        var result = await _sut.GetUnconfirmedRegistrationConfirmationsWithUserAsync();
+        Result<IQueryable<RegistrationConfirmation>> result = await _sut.GetUnconfirmedRegistrationConfirmationsWithUserAsync();
 
         // Assert
         result.Value.Should().HaveCount(unconfirmedRegistrationConfirmationsCount);

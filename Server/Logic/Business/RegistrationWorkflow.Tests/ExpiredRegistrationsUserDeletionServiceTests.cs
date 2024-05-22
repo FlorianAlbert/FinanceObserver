@@ -1,5 +1,5 @@
-using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.RegistrationConfirmationManagement.Contract;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.UserManagement.Contract;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,18 +25,18 @@ public class ExpiredRegistrationsUserDeletionServiceTests
         _registrationConfirmationManagerMock = Substitute.For<IRegistrationConfirmationManager>();
         _userManagerMock = Substitute.For<IUserManager>();
 
-        var scopeServiceProviderMock = Substitute.For<IServiceProvider>();
+        IServiceProvider scopeServiceProviderMock = Substitute.For<IServiceProvider>();
         scopeServiceProviderMock.GetService(typeof(IRegistrationConfirmationManager))
             .Returns(_registrationConfirmationManagerMock);
         scopeServiceProviderMock.GetService(typeof(IUserManager)).Returns(_userManagerMock);
 
-        var serviceScopeMock = Substitute.For<IServiceScope>();
+        IServiceScope serviceScopeMock = Substitute.For<IServiceScope>();
         serviceScopeMock.ServiceProvider.Returns(scopeServiceProviderMock);
 
-        var serviceScopeFactoryMock = Substitute.For<IServiceScopeFactory>();
+        IServiceScopeFactory serviceScopeFactoryMock = Substitute.For<IServiceScopeFactory>();
         serviceScopeFactoryMock.CreateScope().Returns(serviceScopeMock);
 
-        var globalServiceProviderMock = Substitute.For<IServiceProvider>();
+        IServiceProvider globalServiceProviderMock = Substitute.For<IServiceProvider>();
         globalServiceProviderMock.GetService(typeof(IServiceScopeFactory)).Returns(serviceScopeFactoryMock);
 
         _sut = new ExpiredRegistrationsUserDeletionService(globalServiceProviderMock, 1);
@@ -55,7 +55,7 @@ public class ExpiredRegistrationsUserDeletionServiceTests
 
         _registrationConfirmationManagerMock
             .GetUnconfirmedRegistrationConfirmationsWithUserAsync(Arg.Any<CancellationToken>()).Returns(
-                Result<IQueryable<RegistrationConfirmation>>.Success(Array.Empty<RegistrationConfirmation>()
+                Result.Success(Array.Empty<RegistrationConfirmation>()
                     .AsQueryable()));
 
         _userManagerMock
@@ -68,7 +68,7 @@ public class ExpiredRegistrationsUserDeletionServiceTests
         await cancellationTokenSource.CancelAsync();
 
         // Assert
-        var callCount =
+        int callCount =
             _userManagerMock.ReceivedCalls().Count(call =>
                 call.GetMethodInfo().Equals(typeof(IUserManager).GetMethod(
                     nameof(IUserManager.RemoveUsersAsync))));
@@ -108,13 +108,13 @@ public class ExpiredRegistrationsUserDeletionServiceTests
             int unconfirmedRegistrationConfirmationsCount, int expiredUnconfirmedRegistrationConfirmationsCount)
     {
         // Arrange
-        var expiredCreatedDate = DateTimeOffset.UtcNow - TimeSpan.FromDays(5);
+        DateTimeOffset expiredCreatedDate = DateTimeOffset.UtcNow - TimeSpan.FromDays(5);
         var expiredRegistrationConfirmations =
             _fixture.CreateMany<RegistrationConfirmation>(expiredUnconfirmedRegistrationConfirmationsCount).ToList();
         expiredRegistrationConfirmations.ForEach(r => r.CreatedDate = expiredCreatedDate);
         var usersToDelete = expiredRegistrationConfirmations.Select(r => r.User).ToList();
 
-        var nonExpiredCreatedDate = DateTimeOffset.UtcNow - TimeSpan.FromMinutes(5);
+        DateTimeOffset nonExpiredCreatedDate = DateTimeOffset.UtcNow - TimeSpan.FromMinutes(5);
         var nonExpiredRegistrationConfirmations =
             _fixture.CreateMany<RegistrationConfirmation>(unconfirmedRegistrationConfirmationsCount -
                                                           expiredUnconfirmedRegistrationConfirmationsCount).ToList();
@@ -126,10 +126,10 @@ public class ExpiredRegistrationsUserDeletionServiceTests
         var taskCompletionSource = new TaskCompletionSource();
         cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetCanceled(),
             useSynchronizationContext: false);
-        
+
         // Combine and shuffle expired and non-expired RegistrationConfirmations
         var random = new Random();
-        var returnedRegistrationConfirmations =
+        IQueryable<RegistrationConfirmation> returnedRegistrationConfirmations =
             expiredRegistrationConfirmations
                 .Concat(nonExpiredRegistrationConfirmations)
                 .Select(existingRegistration => new { orderKey = random.Next(), existingRegistration })
@@ -139,14 +139,14 @@ public class ExpiredRegistrationsUserDeletionServiceTests
 
         _registrationConfirmationManagerMock
             .GetUnconfirmedRegistrationConfirmationsWithUserAsync(Arg.Any<CancellationToken>()).Returns(
-                Result<IQueryable<RegistrationConfirmation>>.Success(returnedRegistrationConfirmations));
+                Result.Success(returnedRegistrationConfirmations));
 
         _userManagerMock
             .When(u => u.RemoveUsersAsync(
                 Arg.Is<IEnumerable<User>>(users =>
                     // ReSharper disable PossibleMultipleEnumeration
                     users.Count() == usersToDelete.Count && usersToDelete.TrueForAll(users.Contains)),
-                    // ReSharper restore PossibleMultipleEnumeration
+                // ReSharper restore PossibleMultipleEnumeration
                 Arg.Any<CancellationToken>()))
             .Do(_ => taskCompletionSource.TrySetResult());
 
@@ -156,7 +156,7 @@ public class ExpiredRegistrationsUserDeletionServiceTests
         await cancellationTokenSource.CancelAsync();
 
         // Assert
-        var callCount =
+        int callCount =
             _userManagerMock.ReceivedCalls().Count(call =>
                 call.GetMethodInfo().Equals(typeof(IUserManager).GetMethod(
                     nameof(IUserManager.RemoveUsersAsync))));
@@ -181,10 +181,10 @@ public class ExpiredRegistrationsUserDeletionServiceTests
 
         _registrationConfirmationManagerMock
             .GetUnconfirmedRegistrationConfirmationsWithUserAsync(Arg.Any<CancellationToken>()).Returns(
-                Result<IQueryable<RegistrationConfirmation>>.Success(Array.Empty<RegistrationConfirmation>()
+                Result.Success(Array.Empty<RegistrationConfirmation>()
                     .AsQueryable()));
 
-        var counter = 0;
+        int counter = 0;
         _userManagerMock
             .When(u => u.RemoveUsersAsync(Arg.Any<IEnumerable<User>>(), Arg.Any<CancellationToken>()))
             .Do(_ =>
@@ -203,7 +203,7 @@ public class ExpiredRegistrationsUserDeletionServiceTests
         await cancellationTokenSource.CancelAsync();
 
         // Assert
-        var callCount =
+        int callCount =
             _userManagerMock.ReceivedCalls().Count(call =>
                 call.GetMethodInfo().Equals(typeof(IUserManager).GetMethod(
                     nameof(IUserManager.RemoveUsersAsync))));
@@ -221,7 +221,7 @@ public class ExpiredRegistrationsUserDeletionServiceTests
         cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetCanceled(),
             useSynchronizationContext: false);
 
-        var queryCount = 0;
+        int queryCount = 0;
         _registrationConfirmationManagerMock.When(r => r.GetUnconfirmedRegistrationConfirmationsWithUserAsync(Arg.Any<CancellationToken>()))
             .Do(_ =>
             {
@@ -235,7 +235,7 @@ public class ExpiredRegistrationsUserDeletionServiceTests
 
         _registrationConfirmationManagerMock
             .GetUnconfirmedRegistrationConfirmationsWithUserAsync(Arg.Any<CancellationToken>()).Returns(
-                Result<IQueryable<RegistrationConfirmation>>.Failure());
+                Result.Failure<IQueryable<RegistrationConfirmation>>());
 
         // Act
         await _sut.StartAsync(cancellationTokenSource.Token);
@@ -243,7 +243,7 @@ public class ExpiredRegistrationsUserDeletionServiceTests
         await cancellationTokenSource.CancelAsync();
 
         // Assert
-        var callCount =
+        int callCount =
             _userManagerMock.ReceivedCalls().Count(call =>
                 call.GetMethodInfo().Equals(typeof(IUserManager).GetMethod(
                     nameof(IUserManager.RemoveUsersAsync))));
@@ -268,9 +268,9 @@ public class ExpiredRegistrationsUserDeletionServiceTests
 
         _registrationConfirmationManagerMock
             .GetUnconfirmedRegistrationConfirmationsWithUserAsync(Arg.Any<CancellationToken>()).Returns(
-                Result<IQueryable<RegistrationConfirmation>>.Failure());
+                Result.Failure<IQueryable<RegistrationConfirmation>>());
 
-        var queryCount = 0;
+        int queryCount = 0;
         _registrationConfirmationManagerMock.When(r => r.GetUnconfirmedRegistrationConfirmationsWithUserAsync(Arg.Any<CancellationToken>()))
             .Do(_ =>
             {
@@ -288,7 +288,7 @@ public class ExpiredRegistrationsUserDeletionServiceTests
         await cancellationTokenSource.CancelAsync();
 
         // Assert
-        var callCount =
+        int callCount =
             _userManagerMock.ReceivedCalls().Count(call =>
                 call.GetMethodInfo().Equals(typeof(IUserManager).GetMethod(
                     nameof(IUserManager.RemoveUsersAsync))));

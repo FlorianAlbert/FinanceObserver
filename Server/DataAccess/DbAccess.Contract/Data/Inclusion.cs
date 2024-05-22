@@ -1,16 +1,18 @@
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 using System.Reflection;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 
 public abstract class Inclusion
 {
-    protected readonly Queue<Inclusion> _childInclusions = new();
+    protected readonly List<Inclusion> _childInclusions = [];
 
-    internal abstract string IncludePropertyName { get; private protected set; }
-    internal Queue<Inclusion> ChildInclusions => _childInclusions;
-    
+    public abstract string IncludePropertyName { get; private protected set; }
+
+    public ImmutableArray<Inclusion> ChildInclusions => [.. _childInclusions];
+
     private bool Equals(Inclusion other)
     {
         return Equals(_childInclusions, other._childInclusions) && IncludePropertyName == other.IncludePropertyName;
@@ -18,7 +20,7 @@ public abstract class Inclusion
 
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj))
+        if (obj is null)
         {
             return false;
         }
@@ -33,7 +35,7 @@ public abstract class Inclusion
             return false;
         }
 
-        return Equals((Inclusion)obj);
+        return Equals((Inclusion) obj);
     }
 
     public override int GetHashCode()
@@ -54,8 +56,7 @@ public abstract class Inclusion
 
 public abstract class Inclusion<TKey, TEntity> : Inclusion
     where TEntity : BaseEntity<TKey>?
-    where TKey : IParsable<TKey>,
-    IEquatable<TKey>
+    where TKey : IParsable<TKey>, IEquatable<TKey>
 {
     public static Inclusion<TKey, TEntity, TPropertyKey, TProperty, ICollection<TProperty>> Of<TPropertyKey, TProperty>(Expression<Func<TEntity, ICollection<TProperty>>> inclusion)
         where TProperty : BaseEntity<TPropertyKey>
@@ -99,7 +100,7 @@ public class Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> : Inclu
             throw new ArgumentException($"Expression '{inclusion}' refers to a field, not a property.");
         }
 
-        var type = typeof(TEntity);
+        Type type = typeof(TEntity);
         if (propInfo.ReflectedType != null && !propInfo.ReflectedType.IsAssignableFrom(type))
         {
             throw new ArgumentException($"Expression '{inclusion}' refers to a property that is not from type {type}.");
@@ -108,7 +109,7 @@ public class Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> : Inclu
         IncludePropertyName = propInfo.Name;
     }
 
-    internal sealed override string IncludePropertyName { get; private protected set; }
+    public sealed override string IncludePropertyName { get; private protected set; }
 
     public Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> AddChildInclusion<TNestedPropertyKey, TNestedProperty>(
         Inclusion<TPropertyKey, TProperty, TNestedPropertyKey, TNestedProperty, TNestedProperty> childInclusion)
@@ -116,7 +117,7 @@ public class Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> : Inclu
         where TNestedPropertyKey : IParsable<TNestedPropertyKey>,
         IEquatable<TNestedPropertyKey>
     {
-        _childInclusions.Enqueue(childInclusion);
+        _childInclusions.Add(childInclusion);
 
         return this;
     }
@@ -128,7 +129,7 @@ public class Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> : Inclu
         where TContentKey : IParsable<TContentKey>,
         IEquatable<TContentKey>
     {
-        _childInclusions.Enqueue(childInclusion);
+        _childInclusions.Add(childInclusion);
 
         return this;
     }

@@ -5,7 +5,7 @@ namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.DataTransactionHandl
 public class DataTransactionHandlerTests
 {
     private readonly IDbTransactionHandler _dbTransactionHandlerMock;
-    
+
     private readonly DataTransactionHandler _sut;
 
     public DataTransactionHandlerTests()
@@ -19,7 +19,7 @@ public class DataTransactionHandlerTests
     {
         // Act
         await _sut.StartDbTransactionAsync();
-        
+
         // Assert
         await _dbTransactionHandlerMock.Received(1).StartTransactionAsync();
     }
@@ -29,11 +29,11 @@ public class DataTransactionHandlerTests
     {
         // Arrange
         var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-        
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
+
         // Act
         await _sut.StartDbTransactionAsync(cancellationToken);
-        
+
         // Assert
         await _dbTransactionHandlerMock.Received(1).StartTransactionAsync(cancellationToken);
     }
@@ -43,7 +43,7 @@ public class DataTransactionHandlerTests
     {
         // Act
         await _sut.CommitDbTransactionAsync();
-        
+
         // Assert
         await _dbTransactionHandlerMock.Received(1).CommitTransactionAsync();
     }
@@ -53,11 +53,11 @@ public class DataTransactionHandlerTests
     {
         // Arrange
         var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-        
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
+
         // Act
         await _sut.CommitDbTransactionAsync(cancellationToken);
-        
+
         // Assert
         await _dbTransactionHandlerMock.Received(1).CommitTransactionAsync(cancellationToken);
     }
@@ -67,7 +67,7 @@ public class DataTransactionHandlerTests
     {
         // Act
         await _sut.RollbackDbTransactionAsync();
-        
+
         // Assert
         await _dbTransactionHandlerMock.Received(1).RollbackTransactionAsync();
     }
@@ -77,11 +77,11 @@ public class DataTransactionHandlerTests
     {
         // Arrange
         var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-        
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
+
         // Act
         await _sut.RollbackDbTransactionAsync(cancellationToken);
-        
+
         // Assert
         await _dbTransactionHandlerMock.Received(1).RollbackTransactionAsync(cancellationToken);
     }

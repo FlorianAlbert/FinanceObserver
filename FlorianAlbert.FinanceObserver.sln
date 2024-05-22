@@ -52,23 +52,33 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistrationConfirmationMan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistrationConfirmationManagement", "Server\Logic\Domain\RegistrationConfirmationManagement\RegistrationConfirmationManagement.csproj", "{57B78B77-3C97-4ECE-AF67-AE3F7048A7DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransactionHandling.Contract", "Server\Logic\Domain\DataTransactionHandling.Contract\DataTransactionHandling.Contract.csproj", "{54C0DE98-18D9-46BF-9012-008F8346200B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTransactionHandling.Contract", "Server\Logic\Domain\DataTransactionHandling.Contract\DataTransactionHandling.Contract.csproj", "{54C0DE98-18D9-46BF-9012-008F8346200B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransactionHandling", "Server\Logic\Domain\DataTransactionHandling\DataTransactionHandling.csproj", "{C0188D06-2A38-4379-BDFD-7AA9D3F89A4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTransactionHandling", "Server\Logic\Domain\DataTransactionHandling\DataTransactionHandling.csproj", "{C0188D06-2A38-4379-BDFD-7AA9D3F89A4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransactionHandling.Tests", "Server\Logic\Domain\DataTransactionHandling.Tests\DataTransactionHandling.Tests.csproj", "{37A8C970-539A-4A8E-8903-6136D458061B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTransactionHandling.Tests", "Server\Logic\Domain\DataTransactionHandling.Tests\DataTransactionHandling.Tests.csproj", "{37A8C970-539A-4A8E-8903-6136D458061B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailManagement.Tests", "Server\Logic\Domain\EmailManagement.Tests\EmailManagement.Tests.csproj", "{411D92C2-95D8-4652-A885-31F76F6709AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailManagement.Tests", "Server\Logic\Domain\EmailManagement.Tests\EmailManagement.Tests.csproj", "{411D92C2-95D8-4652-A885-31F76F6709AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashHandling.SHA512.Tests", "Server\Logic\Domain\HashHandling.SHA512.Tests\HashHandling.SHA512.Tests.csproj", "{0D36BF7A-5975-4C59-BD15-566A6CB4493E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HashHandling.SHA512.Tests", "Server\Logic\Domain\HashHandling.SHA512.Tests\HashHandling.SHA512.Tests.csproj", "{0D36BF7A-5975-4C59-BD15-566A6CB4493E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistrationConfirmationManagement.Tests", "Server\Logic\Domain\RegistrationConfirmationManagement.Tests\RegistrationConfirmationManagement.Tests.csproj", "{66661A83-162D-47CC-B131-D18CF39737A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistrationConfirmationManagement.Tests", "Server\Logic\Domain\RegistrationConfirmationManagement.Tests\RegistrationConfirmationManagement.Tests.csproj", "{66661A83-162D-47CC-B131-D18CF39737A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Tests", "Server\Logic\Domain\UserManagement.Tests\UserManagement.Tests.csproj", "{9378B164-3388-4DF1-9F41-72A976C67B99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement.Tests", "Server\Logic\Domain\UserManagement.Tests\UserManagement.Tests.csproj", "{9378B164-3388-4DF1-9F41-72A976C67B99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistrationWorkflow.Tests", "Server\Logic\Business\RegistrationWorkflow.Tests\RegistrationWorkflow.Tests.csproj", "{B0923225-8E51-4CEE-A7C0-02613D8F4987}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistrationWorkflow.Tests", "Server\Logic\Business\RegistrationWorkflow.Tests\RegistrationWorkflow.Tests.csproj", "{B0923225-8E51-4CEE-A7C0-02613D8F4987}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbAccess.EntityFrameworkCore.Tests", "Server\DataAccess\DbAccess.EntityFrameworkCore.Tests\DbAccess.EntityFrameworkCore.Tests.csproj", "{8B6072CB-3D08-4286-AC21-F7698040297B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbAccess.EntityFrameworkCore.Tests", "Server\DataAccess\DbAccess.EntityFrameworkCore.Tests\DbAccess.EntityFrameworkCore.Tests.csproj", "{8B6072CB-3D08-4286-AC21-F7698040297B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Server\CrossCutting\Infrastructure\Infrastructure.csproj", "{0CF36423-DDE8-46B5-A340-F6B5F99A2273}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorizationWorkflow", "Server\Logic\Business\AuthorizationWorkflow\AuthorizationWorkflow.csproj", "{7C25DCF8-7684-4A52-A013-52C999A15CA7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorizationWorkflow.Contract", "Server\Logic\Business\AuthorizationWorkflow.Contract\AuthorizationWorkflow.Contract.csproj", "{AEE40863-40F0-47D8-9210-C3C509474BA5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TokenManagement", "Server\Logic\Domain\TokenManagement\TokenManagement.csproj", "{B2BFAF24-F3D4-4AB8-914D-FD1CBE7B934B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TokenManagement.Contract", "Server\Logic\Domain\TokenManagement.Contract\TokenManagement.Contract.csproj", "{9C8FE029-ADAC-4828-B91D-43A77F9D9FA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -172,6 +182,26 @@ Global
 		{8B6072CB-3D08-4286-AC21-F7698040297B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B6072CB-3D08-4286-AC21-F7698040297B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B6072CB-3D08-4286-AC21-F7698040297B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CF36423-DDE8-46B5-A340-F6B5F99A2273}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CF36423-DDE8-46B5-A340-F6B5F99A2273}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CF36423-DDE8-46B5-A340-F6B5F99A2273}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CF36423-DDE8-46B5-A340-F6B5F99A2273}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C25DCF8-7684-4A52-A013-52C999A15CA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C25DCF8-7684-4A52-A013-52C999A15CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C25DCF8-7684-4A52-A013-52C999A15CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C25DCF8-7684-4A52-A013-52C999A15CA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEE40863-40F0-47D8-9210-C3C509474BA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEE40863-40F0-47D8-9210-C3C509474BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEE40863-40F0-47D8-9210-C3C509474BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEE40863-40F0-47D8-9210-C3C509474BA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2BFAF24-F3D4-4AB8-914D-FD1CBE7B934B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2BFAF24-F3D4-4AB8-914D-FD1CBE7B934B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2BFAF24-F3D4-4AB8-914D-FD1CBE7B934B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2BFAF24-F3D4-4AB8-914D-FD1CBE7B934B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C8FE029-ADAC-4828-B91D-43A77F9D9FA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C8FE029-ADAC-4828-B91D-43A77F9D9FA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C8FE029-ADAC-4828-B91D-43A77F9D9FA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C8FE029-ADAC-4828-B91D-43A77F9D9FA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -207,6 +237,11 @@ Global
 		{9378B164-3388-4DF1-9F41-72A976C67B99} = {5E52A855-FB26-484A-B563-358312C81377}
 		{B0923225-8E51-4CEE-A7C0-02613D8F4987} = {A0E180CF-A829-4A73-93FA-9392A37718E6}
 		{8B6072CB-3D08-4286-AC21-F7698040297B} = {A5301672-A694-4DEE-896A-52C440F1BA25}
+		{0CF36423-DDE8-46B5-A340-F6B5F99A2273} = {15163B24-45F6-4D6D-B58B-AB58D0A02C59}
+		{7C25DCF8-7684-4A52-A013-52C999A15CA7} = {A0E180CF-A829-4A73-93FA-9392A37718E6}
+		{AEE40863-40F0-47D8-9210-C3C509474BA5} = {A0E180CF-A829-4A73-93FA-9392A37718E6}
+		{B2BFAF24-F3D4-4AB8-914D-FD1CBE7B934B} = {5E52A855-FB26-484A-B563-358312C81377}
+		{9C8FE029-ADAC-4828-B91D-43A77F9D9FA4} = {5E52A855-FB26-484A-B563-358312C81377}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C7A11428-FDC3-4993-AB1D-8329B53E5CF3}

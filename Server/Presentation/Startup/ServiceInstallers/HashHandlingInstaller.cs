@@ -19,7 +19,7 @@ internal class HashHandlingInstaller : IServiceInstaller
     public void Install(IServiceCollection services, IConfiguration configuration, ILogger logger)
     {
         logger.LogInformation("Adding hash handling");
-        
+
         string? iterationsString = null;
         if (Environment.GetEnvironmentVariable(_iterationsFileEnvKey) is { } iterationsFileLocation
             && File.Exists(iterationsFileLocation))
@@ -31,7 +31,7 @@ internal class HashHandlingInstaller : IServiceInstaller
                              ?? configuration[_iterationsKey];
 
         ArgumentException.ThrowIfNullOrEmpty(iterationsString);
-        if (!int.TryParse(iterationsString, out var iterations))
+        if (!int.TryParse(iterationsString, out int iterations))
         {
             throw new StartupValidationException("There was no valid iteration count found in the configuration.");
         }
@@ -47,7 +47,7 @@ internal class HashHandlingInstaller : IServiceInstaller
                            ?? configuration[_hashSizeKey];
 
         ArgumentException.ThrowIfNullOrEmpty(hashSizeString);
-        if (!int.TryParse(hashSizeString, out var hashSize))
+        if (!int.TryParse(hashSizeString, out int hashSize))
         {
             throw new StartupValidationException("There was no valid hash size found in the configuration.");
         }
@@ -63,7 +63,7 @@ internal class HashHandlingInstaller : IServiceInstaller
                            ?? configuration[_saltSizeKey];
 
         ArgumentException.ThrowIfNullOrEmpty(saltSizeString);
-        if (!int.TryParse(saltSizeString, out var saltSize))
+        if (!int.TryParse(saltSizeString, out int saltSize))
         {
             throw new StartupValidationException("There was no valid salt size count found in the configuration.");
         }

@@ -1,7 +1,7 @@
-using System.Security.Cryptography;
-using System.Text;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.HashHandling.Contract;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.HashHandling.SHA512.Data;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.HashHandling.SHA512;
 
@@ -22,20 +22,20 @@ public class HashGenerator : IHashGenerator
 
     public Task<string> GenerateAsync(string input, CancellationToken cancellationToken = default)
     {
-        var salt = RandomNumberGenerator.GetBytes(_saltSize);
+        byte[] salt = RandomNumberGenerator.GetBytes(_saltSize);
 
-        var hash = Rfc2898DeriveBytes.Pbkdf2(
+        byte[] hash = Rfc2898DeriveBytes.Pbkdf2(
             Encoding.UTF8.GetBytes(input),
             salt,
             _iterations,
             HashAlgorithmName.SHA512,
             _hashSize);
 
-        var combinedHash = new byte[_CombinedHashSize];
+        byte[] combinedHash = new byte[_CombinedHashSize];
         Buffer.BlockCopy(hash, 0, combinedHash, 0, _hashSize);
         Buffer.BlockCopy(salt, 0, combinedHash, _hashSize, _saltSize);
 
-        var resultingHash = Convert.ToBase64String(combinedHash);
+        string resultingHash = Convert.ToBase64String(combinedHash);
         return Task.FromResult(resultingHash);
     }
 }

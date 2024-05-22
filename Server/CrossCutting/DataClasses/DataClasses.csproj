@@ -6,5 +6,12 @@
         <Nullable>enable</Nullable>
         <RootNamespace>FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses</RootNamespace>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="DbAccess.EntityFrameworkCore" />
+        <InternalsVisibleTo Include="DbAccess.EntityFrameworkCore.Tests" />
+        <InternalsVisibleTo Include="RegistrationConfirmationManagement.Tests" />
+        <InternalsVisibleTo Include="RegistrationWorkflow.Tests" />
+    </ItemGroup>
 
 </Project>

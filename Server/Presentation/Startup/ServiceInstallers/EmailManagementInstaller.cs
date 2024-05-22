@@ -22,7 +22,7 @@ internal class EmailManagementInstaller : IServiceInstaller
     public void Install(IServiceCollection services, IConfiguration configuration, ILogger logger)
     {
         logger.LogInformation("Adding email management");
-        
+
         // Read settings
         string? fromEmailAddress = null;
         if (Environment.GetEnvironmentVariable(_fromEmailAddressFileEnvKey) is { } fromEmailAddressFileLocation
@@ -67,7 +67,7 @@ internal class EmailManagementInstaller : IServiceInstaller
         smtpPortString ??= Environment.GetEnvironmentVariable(_portEnvKey)
                            ?? configuration["SmtpSettings:Port"];
         ArgumentException.ThrowIfNullOrEmpty(smtpPortString);
-        if (!int.TryParse(smtpPortString, out var smtpPort))
+        if (!int.TryParse(smtpPortString, out int smtpPort))
         {
             throw new StartupValidationException("There was no valid iteration count found in the configuration.");
         }

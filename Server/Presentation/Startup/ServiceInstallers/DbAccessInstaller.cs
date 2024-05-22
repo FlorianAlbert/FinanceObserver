@@ -2,7 +2,6 @@ using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace FlorianAlbert.FinanceObserver.Server.Startup.ServiceInstallers;
 
@@ -18,7 +17,7 @@ internal class DbAccessInstaller : IServiceInstaller
     public void Install(IServiceCollection services, IConfiguration configuration, ILogger logger)
     {
         logger.LogInformation("Adding database access");
-        
+
         string? dbProvider = null;
         if (Environment.GetEnvironmentVariable(_dbProviderFileEnvKey) is { } dbProviderFileLocation
             && File.Exists(dbProviderFileLocation))
@@ -64,7 +63,7 @@ internal class DbAccessInstaller : IServiceInstaller
             switch (provider)
             {
                 case DatabaseProvider.Npgsql:
-                    contextOptionsBuilder.UseNpgsql(dbConnectionString, 
+                    contextOptionsBuilder.UseNpgsql(dbConnectionString,
                         npgsqlOptionsBuilder => npgsqlOptionsBuilder.MigrationsAssembly(typeof(AssemblyReference).Assembly.FullName));
                     break;
                 case DatabaseProvider.None:

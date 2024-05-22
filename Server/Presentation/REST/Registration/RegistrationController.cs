@@ -1,4 +1,6 @@
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.Logic.Business.RegistrationWorkflow.Contract;
+using FlorianAlbert.FinanceObserver.Server.Logic.Business.RegistrationWorkflow.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.Presentation.REST.Registration.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,15 +29,15 @@ public class RegistrationController : BaseController
     /// </summary>
     /// <param name="request">The details of the new registration</param>
     /// <param name="cancellationToken">The cancellation token to cancel the registration request</param>
-    /// <returns>Code status code OK (200) if success, otherwise a ProblemDetails object</returns>
+    /// <returns>Status code OK (200) if success, otherwise a ProblemDetails object</returns>
     [HttpPost("request", Name = nameof(Register))]
     public async Task<IActionResult> Register([FromBody] RegistrationRequest request,
         CancellationToken cancellationToken)
     {
-        var registrationResult = await _registrationWorkflow.ExecuteRegistrationAsync(
-            new Logic.Business.RegistrationWorkflow.Contract.Data.RegistrationRequest
+        Result registrationResult = await _registrationWorkflow.ExecuteRegistrationAsync(
+            new RegistrationWorkflowRequest
             {
-                Username = request.UserName,
+                Username = request.Username,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 BirthDate = request.BirthDate,
@@ -62,8 +64,8 @@ public class RegistrationController : BaseController
     public async Task<IActionResult> Confirm([FromBody] ConfirmationRequest request,
         CancellationToken cancellationToken)
     {
-        var confirmationResult = await _registrationWorkflow.ExecuteConfirmationAsync(
-            new Logic.Business.RegistrationWorkflow.Contract.Data.ConfirmationRequest
+        Result confirmationResult = await _registrationWorkflow.ExecuteConfirmationAsync(
+            new ConfirmationWorkflowRequest
             {
                 ConfirmationId = request.ConfirmationId
             }, cancellationToken);

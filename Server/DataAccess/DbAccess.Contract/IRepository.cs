@@ -1,7 +1,7 @@
-﻿using System.Linq.Expressions;
-using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
+﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+using System.Linq.Expressions;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 
@@ -24,7 +24,7 @@ public interface IRepository<TKey, TEntity>
     Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
-    
+
     Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, Inclusion<TKey, TEntity>[]? includes = null, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(TKey id, CancellationToken cancellationToken = default);

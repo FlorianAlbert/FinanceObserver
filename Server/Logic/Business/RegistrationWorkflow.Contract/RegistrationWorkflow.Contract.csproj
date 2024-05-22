@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\CrossCutting\DataClasses\DataClasses.csproj"/>
+        <ProjectReference Include="..\..\..\CrossCutting\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 
 

@@ -13,6 +13,6 @@ public class FinanceObserverContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AssemblyReference).Assembly, t => true);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AssemblyReference).Assembly);
     }
 }

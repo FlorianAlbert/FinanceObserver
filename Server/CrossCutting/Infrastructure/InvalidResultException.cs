@@ -1,4 +1,4 @@
-namespace FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Exceptions;
+namespace FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 
 public class InvalidResultException : Exception
 {

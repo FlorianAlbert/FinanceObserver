@@ -1,4 +1,4 @@
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

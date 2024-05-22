@@ -1,7 +1,12 @@
 using FlorianAlbert.FinanceObserver.Server.Startup;
 using FlorianAlbert.FinanceObserver.Server.Startup.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AddServerHeader = false;
+});
 
 builder.Host.UseDefaultServiceProvider(serviceProviderOptions =>
 {
@@ -14,7 +19,7 @@ builder.Host.UseDefaultServiceProvider(serviceProviderOptions =>
 builder.Services
     .InstallServices(builder.Configuration, typeof(IServiceInstaller).Assembly);
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.UseMigrations();
 

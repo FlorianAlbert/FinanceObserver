@@ -1,5 +1,5 @@
-using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.Logic.Business.RegistrationWorkflow.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.DataTransactionHandling.Contract;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Contract;
@@ -42,26 +42,26 @@ public class RegistrationWorkflowTests
     public async Task ExecuteRegistrationAsync_CallWithSuccessfulSubCalls_Succeeds()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
                 Arg.Any<CancellationToken>()).Returns(Result.Success());
 
         // Act
-        var result = await _sut.ExecuteRegistrationAsync(registrationRequest);
+        Result result = await _sut.ExecuteRegistrationAsync(registrationRequest);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -72,19 +72,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithSuccessfulSubCalls_DataTransactionHandlerStartDbTransactionCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -101,19 +101,19 @@ public class RegistrationWorkflowTests
     public async Task ExecuteRegistrationAsync_CallWithSuccessfulSubCalls_HashGeneratorGenerateCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -130,19 +130,19 @@ public class RegistrationWorkflowTests
     public async Task ExecuteRegistrationAsync_CallWithSuccessfulSubCalls_UserManagerAddCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -162,19 +162,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithSuccessfulSubCalls_RegistrationConfirmationManagerRegisterCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -194,19 +194,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithSuccessfulSubCalls_EmailManagerSendEmailCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -226,19 +226,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithSuccessfulSubCalls_DataTransactionHandlerRollbackDbTransactionNotCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -256,19 +256,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithSuccessfulSubCalls_DataTransactionHandlerCommitDbTransactionCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -286,19 +286,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithSuccessfulSubCalls_DataTransactionHandlerStartDbTransactionCalledBeforeAllOthers()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -345,19 +345,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithSuccessfulSubCalls_DataTransactionHandlerCommitDbTransactionCalledAfterAllOthers()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -403,14 +403,14 @@ public class RegistrationWorkflowTests
     public async Task ExecuteRegistrationAsync_CallWithFailingUserAddition_Fails()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+                Arg.Any<CancellationToken>()).Returns(Result.Failure<User>());
 
         // Act
-        var result = await _sut.ExecuteRegistrationAsync(registrationRequest);
+        Result result = await _sut.ExecuteRegistrationAsync(registrationRequest);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -421,11 +421,11 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingUserAddition_DataTransactionHandlerStartDbTransactionCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+                Arg.Any<CancellationToken>()).Returns(Result.Failure<User>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -438,11 +438,11 @@ public class RegistrationWorkflowTests
     public async Task ExecuteRegistrationAsync_CallWithFailingUserAddition_HashGeneratorGenerateCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+                Arg.Any<CancellationToken>()).Returns(Result.Failure<User>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -455,11 +455,11 @@ public class RegistrationWorkflowTests
     public async Task ExecuteRegistrationAsync_CallWithFailingUserAddition_UserManagerAddCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+                Arg.Any<CancellationToken>()).Returns(Result.Failure<User>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -475,11 +475,11 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingUserAddition_RegistrationConfirmationManagerRegisterNotCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+                Arg.Any<CancellationToken>()).Returns(Result.Failure<User>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -494,11 +494,11 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingUserAddition_EmailManagerSendEmailNotCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+                Arg.Any<CancellationToken>()).Returns(Result.Failure<User>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -513,11 +513,11 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingUserAddition_DataTransactionHandlerCommitDbTransactionNotCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+                Arg.Any<CancellationToken>()).Returns(Result.Failure<User>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -531,11 +531,11 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingUserAddition_DataTransactionHandlerRollbackDbTransactionCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+                Arg.Any<CancellationToken>()).Returns(Result.Failure<User>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -549,11 +549,11 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingUserAddition_DataTransactionHandlerStartDbTransactionCalledBeforeAllOthers()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+                Arg.Any<CancellationToken>()).Returns(Result.Failure<User>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -583,11 +583,11 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingUserAddition_DataTransactionHandlerRollbackDbTransactionCalledAfterAllOthers()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Failure());
+                Arg.Any<CancellationToken>()).Returns(Result.Failure<User>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -616,21 +616,21 @@ public class RegistrationWorkflowTests
     public async Task ExecuteRegistrationAsync_CallWithFailingRegistrationConfirmationAddition_Fails()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
-        var result = await _sut.ExecuteRegistrationAsync(registrationRequest);
+        Result result = await _sut.ExecuteRegistrationAsync(registrationRequest);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -641,18 +641,18 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingRegistrationConfirmationAddition_DataTransactionHandlerStartDbTransactionCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -666,18 +666,18 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingRegistrationConfirmationAddition_HashGeneratorGenerateCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -690,18 +690,18 @@ public class RegistrationWorkflowTests
     public async Task ExecuteRegistrationAsync_CallWithFailingRegistrationConfirmationAddition_UserManagerAddCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -717,18 +717,18 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingRegistrationConfirmationAddition_RegistrationConfirmationManagerRegisterCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -744,18 +744,18 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingRegistrationConfirmationAddition_EmailManagerSendEmailNotCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -771,18 +771,18 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingRegistrationConfirmationAddition_DataTransactionHandlerCommitDbTransactionNotCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -796,18 +796,18 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingRegistrationConfirmationAddition_DataTransactionHandlerRollbackDbTransactionCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -821,18 +821,18 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingRegistrationConfirmationAddition_DataTransactionHandlerStartDbTransactionCalledBeforeAllOthers()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -869,18 +869,18 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingRegistrationConfirmationAddition_DataTransactionHandlerRollbackDbTransactionCalledAfterAllOthers()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteRegistrationAsync(registrationRequest);
@@ -916,26 +916,26 @@ public class RegistrationWorkflowTests
     public async Task ExecuteRegistrationAsync_CallWithFailingEmailSending_Fails()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
                 Arg.Any<CancellationToken>()).Returns(Result.Failure());
 
         // Act
-        var result = await _sut.ExecuteRegistrationAsync(registrationRequest);
+        Result result = await _sut.ExecuteRegistrationAsync(registrationRequest);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -946,19 +946,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingEmailSending_DataTransactionHandlerStartDbTransactionCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -975,19 +975,19 @@ public class RegistrationWorkflowTests
     public async Task ExecuteRegistrationAsync_CallWithFailingEmailSending_HashGeneratorGenerateCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -1004,19 +1004,19 @@ public class RegistrationWorkflowTests
     public async Task ExecuteRegistrationAsync_CallWithFailingEmailSending_UserManagerAddCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -1036,19 +1036,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingEmailSending_RegistrationConfirmationManagerRegisterCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -1068,19 +1068,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingEmailSending_EmailManagerSendEmailCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -1100,19 +1100,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingEmailSending_DataTransactionHandlerRollbackDbTransactionCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -1130,19 +1130,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsyncCallWithFailingEmailSending_DataTransactionHandlerCommitDbTransactionNotCalled()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -1160,19 +1160,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingEmailSending_DataTransactionHandlerStartDbTransactionCalledBeforeAllOthers()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -1219,19 +1219,19 @@ public class RegistrationWorkflowTests
         ExecuteRegistrationAsync_CallWithFailingEmailSending_DataTransactionHandlerRollbackDbTransactionCalledAfterAllOthers()
     {
         // Arrange
-        var registrationRequest = _fixture.Create<RegistrationRequest>();
-        var newlyCreatedUser = _fixture.Create<User>();
-        var newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        RegistrationWorkflowRequest registrationRequest = _fixture.Create<RegistrationWorkflowRequest>();
+        User newlyCreatedUser = _fixture.Create<User>();
+        RegistrationConfirmation newlyCreatedRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _userManagerMock
             .AddNewUserAsync(Arg.Is<User>(user => user.UserName.Equals(registrationRequest.Username)),
-                Arg.Any<CancellationToken>()).Returns(Result<User>.Success(newlyCreatedUser));
+                Arg.Any<CancellationToken>()).Returns(Result.Success(newlyCreatedUser));
 
         _registrationConfirmationManagerMock
             .RegisterAsync(
                 Arg.Is<RegistrationConfirmation>(registrationConfirmation =>
                     registrationConfirmation.User == newlyCreatedUser), Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(newlyCreatedRegistrationConfirmation));
+            .Returns(Result.Success(newlyCreatedRegistrationConfirmation));
 
         _emailManagerMock
             .SendEmailAsync(Arg.Is<Email>(email => email.Receivers.Contains(newlyCreatedUser)),
@@ -1277,12 +1277,12 @@ public class RegistrationWorkflowTests
     public async Task ExecuteConfirmationAsync_CallWithExistingRegistrationConfirmationAndSuccessfulSubCalls_Succeeds()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1292,7 +1292,7 @@ public class RegistrationWorkflowTests
                 Arg.Any<CancellationToken>()).Returns(Result.Success());
 
         // Act
-        var result = await _sut.ExecuteConfirmationAsync(confirmationRequest);
+        Result result = await _sut.ExecuteConfirmationAsync(confirmationRequest);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -1303,12 +1303,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithExistingRegistrationConfirmationAndSuccessfulSubCalls_DataTransactionHandlerStartDbTransactionCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1329,12 +1329,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithExistingRegistrationConfirmationAndSuccessfulSubCalls_RegistrationConfirmationManagerConfirmCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1356,12 +1356,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithExistingRegistrationConfirmationAndSuccessfulSubCalls_EmailManagerSendEmailCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1384,12 +1384,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithExistingRegistrationConfirmationAndSuccessfulSubCalls_DataTransactionHandlerCommitDbTransactionCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1410,12 +1410,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithExistingRegistrationConfirmationAndSuccessfulSubCalls_DataTransactionHandlerRollbackDbTransactionNotCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1436,12 +1436,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithExistingRegistrationConfirmationAndSuccessfulSubCalls_DataTransactionHandlerStartDbTransactionCalledBeforeAllOthers()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1479,12 +1479,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithExistingRegistrationConfirmationAndSuccessfulSubCalls_DataTransactionHandlerCommitDbTransactionCalledAfterAllOthers()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1521,14 +1521,14 @@ public class RegistrationWorkflowTests
     public async Task ExecuteConfirmationAsync_CallWithFailingRegistrationConfirmationQueryCall_Fails()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
-        var result = await _sut.ExecuteConfirmationAsync(confirmationRequest);
+        Result result = await _sut.ExecuteConfirmationAsync(confirmationRequest);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -1539,11 +1539,11 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingRegistrationConfirmationQueryCall_DataTransactionHandlerStartDbTransactionNotCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteConfirmationAsync(confirmationRequest);
@@ -1557,11 +1557,11 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingRegistrationConfirmationQueryCall_RegistrationConfirmationManagerConfirmNotCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteConfirmationAsync(confirmationRequest);
@@ -1576,11 +1576,11 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingRegistrationConfirmationQueryCall_EmailManagerSendEmailNotCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteConfirmationAsync(confirmationRequest);
@@ -1594,11 +1594,11 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingRegistrationConfirmationQueryCall_DataTransactionHandlerCommitDbTransactionNotCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteConfirmationAsync(confirmationRequest);
@@ -1612,11 +1612,11 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingRegistrationConfirmationQueryCall_DataTransactionHandlerRollbackDbTransactionNotCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Failure());
+            .Returns(Result.Failure<RegistrationConfirmation>());
 
         // Act
         _ = await _sut.ExecuteConfirmationAsync(confirmationRequest);
@@ -1629,18 +1629,18 @@ public class RegistrationWorkflowTests
     public async Task ExecuteConfirmationAsync_CallWithFailingConfirmation_Fails()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Failure());
 
         // Act
-        var result = await _sut.ExecuteConfirmationAsync(confirmationRequest);
+        Result result = await _sut.ExecuteConfirmationAsync(confirmationRequest);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -1651,12 +1651,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingConfirmation_DataTransactionHandlerStartDbTransactionCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Failure());
@@ -1673,12 +1673,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingConfirmation_RegistrationConfirmationManagerConfirmCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Failure());
@@ -1696,12 +1696,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingConfirmation_EmailManagerSendEmailNotCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Failure());
@@ -1718,12 +1718,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingConfirmation_DataTransactionHandlerCommitDbTransactionNotCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Failure());
@@ -1740,12 +1740,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingConfirmation_DataTransactionHandlerRollbackDbTransactionCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Failure());
@@ -1762,12 +1762,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingConfirmation_DataTransactionHandlerStartDbTransactionCalledBeforeAllOthers()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Failure());
@@ -1795,12 +1795,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingConfirmation_DataTransactionHandlerRollbackDbTransactionCalledAfterAllOthers()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Failure());
@@ -1827,12 +1827,12 @@ public class RegistrationWorkflowTests
     public async Task ExecuteConfirmationAsync_CallWithFailingEmailSending_Fails()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1842,7 +1842,7 @@ public class RegistrationWorkflowTests
                 Arg.Any<CancellationToken>()).Returns(Result.Failure());
 
         // Act
-        var result = await _sut.ExecuteConfirmationAsync(confirmationRequest);
+        Result result = await _sut.ExecuteConfirmationAsync(confirmationRequest);
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -1853,12 +1853,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingEmailSending_DataTransactionHandlerStartDbTransactionCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1879,12 +1879,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingEmailSending_RegistrationConfirmationManagerConfirmCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1906,12 +1906,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingEmailSending_EmailManagerSendEmailCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1934,12 +1934,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingEmailSending_DataTransactionHandlerCommitDbTransactionNotCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1960,12 +1960,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingEmailSending_DataTransactionHandlerRollbackDbTransactionCalled()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -1986,12 +1986,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingEmailSending_DataTransactionHandlerStartDbTransactionCalledBeforeAllOthers()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());
@@ -2029,12 +2029,12 @@ public class RegistrationWorkflowTests
         ExecuteConfirmationAsync_CallWithFailingEmailSending_DataTransactionHandlerRollbackDbTransactionCalledAfterAllOthers()
     {
         // Arrange
-        var confirmationRequest = _fixture.Create<ConfirmationRequest>();
-        var existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
+        ConfirmationWorkflowRequest confirmationRequest = _fixture.Create<ConfirmationWorkflowRequest>();
+        RegistrationConfirmation existingRegistrationConfirmation = _fixture.Create<RegistrationConfirmation>();
 
         _registrationConfirmationManagerMock
             .GetRegistrationConfirmationWithUserAsync(confirmationRequest.ConfirmationId, Arg.Any<CancellationToken>())
-            .Returns(Result<RegistrationConfirmation>.Success(existingRegistrationConfirmation));
+            .Returns(Result.Success(existingRegistrationConfirmation));
 
         _registrationConfirmationManagerMock
             .ConfirmAsync(existingRegistrationConfirmation, Arg.Any<CancellationToken>()).Returns(Result.Success());

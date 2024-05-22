@@ -1,9 +1,9 @@
-﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
+﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.Infrastructure;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Contract;
 using FluentEmail.Core;
 using FluentEmail.Core.Models;
-using Email = FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models.Email;
+using Email = FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model.Email;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement;
 
@@ -22,7 +22,7 @@ public class EmailManager : IEmailManager
     {
         await _repository.InsertAsync(email, cancellationToken);
 
-        var sendResponse = await _fluentEmailFactory
+        SendResponse sendResponse = await _fluentEmailFactory
             .Create()
             .To(email.Receivers.Select(user => new Address
             {

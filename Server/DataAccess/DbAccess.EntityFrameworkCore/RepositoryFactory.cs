@@ -1,5 +1,5 @@
-﻿using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Model;
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;

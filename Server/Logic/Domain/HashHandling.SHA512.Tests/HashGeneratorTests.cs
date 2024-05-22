@@ -21,10 +21,10 @@ public class HashGeneratorTests
     public async Task GenerateAsync_Call_ReturnedHashIsNotEmpty()
     {
         // Arrange
-        var clearString = _fixture.Create<string>();
+        string clearString = _fixture.Create<string>();
 
         // Act
-        var hashedString = await _sut.GenerateAsync(clearString);
+        string hashedString = await _sut.GenerateAsync(clearString);
 
         // Assert
         hashedString.Should().NotBeEmpty();
@@ -34,14 +34,14 @@ public class HashGeneratorTests
     public async Task GenerateAsync_Call_ReturnedHashStringSizeIsHashSizePlusSaltSizeInBase64()
     {
         // Arrange
-        var clearString = _fixture.Create<string>();
+        string clearString = _fixture.Create<string>();
 
         // Act
-        var hashedString = await _sut.GenerateAsync(clearString);
+        string hashedString = await _sut.GenerateAsync(clearString);
 
         // Assert
-        var expectedLength =
-            (int)Math.Ceiling((double)(_hashingOptions.HashSize + _hashingOptions.SaltSize) / 3) *
+        int expectedLength =
+            (int) Math.Ceiling((double) (_hashingOptions.HashSize + _hashingOptions.SaltSize) / 3) *
             4; // Divide by 3 and times 4 because of the Base64 String we get back
         hashedString.Should().HaveLength(expectedLength);
     }
@@ -50,10 +50,10 @@ public class HashGeneratorTests
     public async Task GenerateAsync_Call_ReturnedHashStringIsDifferentFromClearString()
     {
         // Arrange
-        var clearString = _fixture.Create<string>();
+        string clearString = _fixture.Create<string>();
 
         // Act
-        var hashedString = await _sut.GenerateAsync(clearString);
+        string hashedString = await _sut.GenerateAsync(clearString);
 
         // Assert
         hashedString.Should().NotBe(clearString);
