@@ -4,8 +4,7 @@ namespace FlorianAlbert.FinanceObserver.Server.Startup.Extensions;
 
 internal static class ServiceCollectionExtensions
 {
-    public static IServiceCollection InstallServices(this IServiceCollection services,
-        IConfiguration configuration,
+    public static IHostApplicationBuilder InstallServices(this IHostApplicationBuilder builder,
         params Assembly[] assemblies)
     {
         var serviceInstallers = assemblies.SelectMany(assembly => assembly.DefinedTypes)
@@ -16,11 +15,11 @@ internal static class ServiceCollectionExtensions
 
         foreach (var serviceInstaller in serviceInstallers)
         {
-            var logger = services.BuildServiceProvider()
+            var logger = builder.Services.BuildServiceProvider()
                 .GetRequiredService(typeof(ILogger<>).MakeGenericType(serviceInstaller.GetType())) as ILogger;
-            serviceInstaller.Install(services, configuration, logger!);
+            serviceInstaller.Install(builder, logger!);
         }
 
-        return services;
+        return builder;
     }
 }

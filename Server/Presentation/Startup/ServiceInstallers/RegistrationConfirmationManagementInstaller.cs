@@ -5,10 +5,10 @@ namespace FlorianAlbert.FinanceObserver.Server.Startup.ServiceInstallers;
 
 public class RegistrationConfirmationManagementInstaller : IServiceInstaller
 {
-    public void Install(IServiceCollection services, IConfiguration configuration, ILogger logger)
+    public void Install(IHostApplicationBuilder builder, ILogger logger)
     {
         logger.LogInformation("Adding RegistrationConfirmation management");
         
-        services.AddScoped<IRegistrationConfirmationManager, RegistrationConfirmationManager>();
+        builder.Services.AddScoped<IRegistrationConfirmationManager, RegistrationConfirmationManager>();
     }
 }

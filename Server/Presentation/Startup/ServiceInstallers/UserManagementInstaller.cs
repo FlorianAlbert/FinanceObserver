@@ -5,10 +5,10 @@ namespace FlorianAlbert.FinanceObserver.Server.Startup.ServiceInstallers;
 
 internal class UserManagementInstaller : IServiceInstaller
 {
-    public void Install(IServiceCollection services, IConfiguration configuration, ILogger logger)
+    public void Install(IHostApplicationBuilder builder, ILogger logger)
     {
         logger.LogInformation("Adding user management");
         
-        services.AddScoped<IUserManager, UserManager>();
+        builder.Services.AddScoped<IUserManager, UserManager>();
     }
 }

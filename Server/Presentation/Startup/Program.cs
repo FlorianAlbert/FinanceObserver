@@ -1,7 +1,10 @@
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
 using FlorianAlbert.FinanceObserver.Server.Startup;
 using FlorianAlbert.FinanceObserver.Server.Startup.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 builder.Host.UseDefaultServiceProvider(serviceProviderOptions =>
 {
@@ -11,10 +14,11 @@ builder.Host.UseDefaultServiceProvider(serviceProviderOptions =>
 
 // Add services to the container.
 
-builder.Services
-    .InstallServices(builder.Configuration, typeof(IServiceInstaller).Assembly);
+builder.InstallServices(typeof(IServiceInstaller).Assembly);
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 app.UseMigrations();
 

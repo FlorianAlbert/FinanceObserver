@@ -14,7 +14,7 @@ internal class RegistrationInstaller : IServiceInstaller
     private const string _expiredRegistrationDeletionExecutionPeriodInSecondsKey =
         "Registration:ExpiredRegistrationDeletionExecutionPeriod";
 
-    public void Install(IServiceCollection services, IConfiguration configuration, ILogger logger)
+    public void Install(IHostApplicationBuilder builder, ILogger logger)
     {
         logger.LogInformation("Adding registration workflow");
 
@@ -30,7 +30,7 @@ internal class RegistrationInstaller : IServiceInstaller
 
         expiredRegistrationDeletionExecutionPeriodInSecondsString ??=
             Environment.GetEnvironmentVariable(_expiredRegistrationDeletionExecutionPeriodInSecondsEnvKey)
-            ?? configuration[_expiredRegistrationDeletionExecutionPeriodInSecondsKey];
+            ?? builder.Configuration[_expiredRegistrationDeletionExecutionPeriodInSecondsKey];
 
         ArgumentException.ThrowIfNullOrEmpty(expiredRegistrationDeletionExecutionPeriodInSecondsString);
         if (!int.TryParse(expiredRegistrationDeletionExecutionPeriodInSecondsString,
@@ -40,9 +40,9 @@ internal class RegistrationInstaller : IServiceInstaller
                 "There was no valid expiredRegistrationDeletion execution period found in the configuration.");
         }
 
-        services.AddTransient<IRegistrationWorkflow, RegistrationWorkflow>();
+        builder.Services.AddTransient<IRegistrationWorkflow, RegistrationWorkflow>();
 
-        services.AddHostedService<ExpiredRegistrationsUserDeletionService>(serviceProvider =>
+        builder.Services.AddHostedService<ExpiredRegistrationsUserDeletionService>(serviceProvider =>
             new ExpiredRegistrationsUserDeletionService(serviceProvider,
                 expiredRegistrationDeletionExecutionPeriodInSeconds));
     }

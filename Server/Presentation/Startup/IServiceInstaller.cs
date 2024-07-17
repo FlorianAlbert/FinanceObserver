@@ -2,5 +2,5 @@
 
 internal interface IServiceInstaller
 {
-    void Install(IServiceCollection services, IConfiguration configuration, ILogger logger);
+    void Install(IHostApplicationBuilder builder, ILogger logger);
 }
