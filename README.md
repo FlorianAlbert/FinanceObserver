@@ -19,24 +19,28 @@ Contributions are always welcome! 🤝
 
 ### Dependencies
 
+* [.NET SDK](https://dotnet.microsoft.com/en-us/download)
 * [Docker](https://www.docker.com/)
 
 ### Installing
 
-* Create your own specific .env file in the root directory from the [template](.env.tmpl)
+There is nothing to set up.
 
 ### Executing program
 
-Development version:
-* In the project root directory, run:
-```
-docker compose -f dev.compose.yaml up
-```
+#### Development version:
+
+* The project uses .NET Aspire.
+
+* To start the whole application just start the `AppHost` project.
+
 * This starts:
-    * A development SMTP Server ([MailDev](https://maildev.github.io/maildev/)) on the [localhost](localhost:1080) with a web UI
-    * A [PosgreSQL](https://www.postgresql.org/) database
-    * A [pgAdmin](https://www.pgadmin.org/) web UI on the [localhost](localhost:9080)
-    * The FinanceObserver backend on the [localhost](localhost:5000)
+    * A development SMTP Server ([MailDev](https://maildev.github.io/maildev/)) on the [localhost](localhost:1080) with a web UI.
+    * A [PosgreSQL](https://www.postgresql.org/) database.
+    * A [pgAdmin](https://www.pgadmin.org/) web UI on the [localhost](localhost:9080).
+    * The FinanceObserver backend on the [localhost](localhost:5000).
+
+* If you want to customize some settings of the FinanceObserver backend you can edit them by adjusting the environment variables in the `Program.cs` of the `AppHost` project.
 
 ## Authors
 

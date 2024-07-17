@@ -68,13 +68,19 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
         foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
         {
-            ((LifecycleTrackable)entry.Entity).CreatedDate = createdTime;
-            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
+            if (entry.Entity is LifecycleTrackable lifecycleTrackable)
+            {
+               lifecycleTrackable.CreatedDate = createdTime;
+               lifecycleTrackable.UpdatedDate = createdTime;
+            }
         }
 
         foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
         {
-            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
+            if (entry.Entity is LifecycleTrackable lifecycleTrackable)
+            {
+                lifecycleTrackable.UpdatedDate = createdTime;
+            }
         }
 
         await _context.SaveChangesAsync(cancellationToken);
@@ -97,13 +103,19 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
         foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
         {
-            ((LifecycleTrackable)entry.Entity).CreatedDate = createdTime;
-            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
+            if (entry.Entity is LifecycleTrackable lifecycleTrackable)
+            {
+                lifecycleTrackable.CreatedDate = createdTime;
+                lifecycleTrackable.UpdatedDate = createdTime;
+            }
         }
 
         foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
         {
-            ((LifecycleTrackable)entry.Entity).UpdatedDate = createdTime;
+            if (entry.Entity is LifecycleTrackable lifecycleTrackable)
+            {
+                lifecycleTrackable.UpdatedDate = createdTime;
+            }
         }
 
         await _context.SaveChangesAsync(cancellationToken);

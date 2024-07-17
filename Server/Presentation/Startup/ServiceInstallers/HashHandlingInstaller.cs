@@ -16,7 +16,7 @@ internal class HashHandlingInstaller : IServiceInstaller
     private const string _saltSizeFileEnvKey = "FINANCE_OBSERVER_HASHING_SALT_SIZE_FILE";
     private const string _saltSizeKey = "HashingOptions:SaltSize";
 
-    public void Install(IServiceCollection services, IConfiguration configuration, ILogger logger)
+    public void Install(IHostApplicationBuilder builder, ILogger logger)
     {
         logger.LogInformation("Adding hash handling");
         
@@ -28,7 +28,7 @@ internal class HashHandlingInstaller : IServiceInstaller
         }
 
         iterationsString ??= Environment.GetEnvironmentVariable(_iterationsEnvKey)
-                             ?? configuration[_iterationsKey];
+                             ?? builder.Configuration[_iterationsKey];
 
         ArgumentException.ThrowIfNullOrEmpty(iterationsString);
         if (!int.TryParse(iterationsString, out var iterations))
@@ -44,7 +44,7 @@ internal class HashHandlingInstaller : IServiceInstaller
         }
 
         hashSizeString ??= Environment.GetEnvironmentVariable(_hashSizeEnvKey)
-                           ?? configuration[_hashSizeKey];
+                           ?? builder.Configuration[_hashSizeKey];
 
         ArgumentException.ThrowIfNullOrEmpty(hashSizeString);
         if (!int.TryParse(hashSizeString, out var hashSize))
@@ -60,7 +60,7 @@ internal class HashHandlingInstaller : IServiceInstaller
         }
 
         saltSizeString ??= Environment.GetEnvironmentVariable(_saltSizeEnvKey)
-                           ?? configuration[_saltSizeKey];
+                           ?? builder.Configuration[_saltSizeKey];
 
         ArgumentException.ThrowIfNullOrEmpty(saltSizeString);
         if (!int.TryParse(saltSizeString, out var saltSize))
@@ -68,14 +68,14 @@ internal class HashHandlingInstaller : IServiceInstaller
             throw new StartupValidationException("There was no valid salt size count found in the configuration.");
         }
 
-        services.AddTransient<HashingOptions>(_ => new HashingOptions
+        builder.Services.AddTransient(_ => new HashingOptions
         {
             Iterations = iterations,
             HashSize = hashSize,
             SaltSize = saltSize
         });
 
-        services.AddTransient<IHashGenerator, HashGenerator>();
-        services.AddTransient<IHashValidator, HashValidator>();
+        builder.Services.AddTransient<IHashGenerator, HashGenerator>();
+        builder.Services.AddTransient<IHashValidator, HashValidator>();
     }
 }

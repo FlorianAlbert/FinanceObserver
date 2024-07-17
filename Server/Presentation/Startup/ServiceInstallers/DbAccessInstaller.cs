@@ -15,7 +15,7 @@ internal class DbAccessInstaller : IServiceInstaller
     private const string _dbConnectionStringFileEnvKey = "FINANCE_OBSERVER_DB_CONNECTIONSTRING_FILE";
     private const string _dbConfiguredProvidersKey = "DbAccess:ConfiguredProviders";
 
-    public void Install(IServiceCollection services, IConfiguration configuration, ILogger logger)
+    public void Install(IHostApplicationBuilder builder, ILogger logger)
     {
         logger.LogInformation("Adding database access");
         
@@ -27,7 +27,7 @@ internal class DbAccessInstaller : IServiceInstaller
         }
 
         dbProvider ??= Environment.GetEnvironmentVariable(_dbProviderEnvKey)
-                       ?? configuration[_dbProviderKey];
+                       ?? builder.Configuration[_dbProviderKey];
         ArgumentException.ThrowIfNullOrEmpty(dbProvider);
 
         string? dbConnectionString = null;
@@ -48,7 +48,7 @@ internal class DbAccessInstaller : IServiceInstaller
 
         if (dbConnectionString is null)
         {
-            if (!(configuration.GetSection(_dbConfiguredProvidersKey).GetChildren() is { } providers
+            if (!(builder.Configuration.GetSection(_dbConfiguredProvidersKey).GetChildren() is { } providers
                   && providers.Any(p => p.Key == dbProvider)))
             {
 #pragma warning disable CA2208 // Instantiate argument exceptions correctly
@@ -56,27 +56,22 @@ internal class DbAccessInstaller : IServiceInstaller
 #pragma warning restore CA2208 // Instantiate argument exceptions correctly
             }
 
-            dbConnectionString = configuration[_dbConfiguredProvidersKey + ":" + provider]!;
+            dbConnectionString = builder.Configuration[_dbConfiguredProvidersKey + ":" + provider]!;
         }
 
-        services.AddDbContextPool<DbContext, FinanceObserverContext>(contextOptionsBuilder =>
-        {
-            switch (provider)
+        builder.AddNpgsqlDbContext<FinanceObserverContext>("postgres",
+            efCorePostgresSettings =>
             {
-                case DatabaseProvider.Npgsql:
-                    contextOptionsBuilder.UseNpgsql(dbConnectionString, 
-                        npgsqlOptionsBuilder => npgsqlOptionsBuilder.MigrationsAssembly(typeof(AssemblyReference).Assembly.FullName));
-                    break;
-                case DatabaseProvider.None:
-                default:
-#pragma warning disable CA2208 // Instantiate argument exceptions correctly
-                    throw new ArgumentOutOfRangeException(nameof(provider),
-                        "The given Database provider is not supported");
-#pragma warning restore CA2208 // Instantiate argument exceptions correctly
-            }
-        });
+                efCorePostgresSettings.DisableRetry = true;
+            },
+            contextOptionsBuilder =>
+            {
+                contextOptionsBuilder.UseNpgsql(npgsqlOptionsBuilder => npgsqlOptionsBuilder.MigrationsAssembly(typeof(AssemblyReference).Assembly.FullName));
+            });
 
-        services.AddScoped<IRepositoryFactory, RepositoryFactory>();
-        services.AddScoped<IDbTransactionHandler, DbTransactionHandler>();
+        builder.Services.AddScoped<DbContext>(provider => provider.GetRequiredService<FinanceObserverContext>());
+
+        builder.Services.AddScoped<IRepositoryFactory, RepositoryFactory>();
+        builder.Services.AddScoped<IDbTransactionHandler, DbTransactionHandler>();
     }
 }
