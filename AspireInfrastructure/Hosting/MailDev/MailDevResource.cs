@@ -1,6 +1,6 @@
 ﻿using Aspire.Hosting.ApplicationModel;
 
-namespace FlorianAlbert.FinanceObserver.AspireInfrastructure.Hosting.MailDev;
+namespace Aspire.Hosting.MailDev;
 
 public class MailDevResource : ContainerResource, IResourceWithConnectionString
 {

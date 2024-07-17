@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace FlorianAlbert.FinanceObserver.AspireInfrastructure.Components.FluentEmail.MailKit;
+namespace Aspire.FluentEmail.MailKit;
 
 public static class AspireFluentEmailMailKitExtensions
 {

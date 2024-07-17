@@ -1,4 +1,4 @@
-using FlorianAlbert.FinanceObserver.AspireInfrastructure.Components.FluentEmail.MailKit;
+using Aspire.FluentEmail.MailKit;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Contract;
 

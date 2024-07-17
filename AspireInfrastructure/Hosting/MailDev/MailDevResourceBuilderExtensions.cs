@@ -1,7 +1,6 @@
 ﻿using Aspire.Hosting.ApplicationModel;
-using Aspire.Hosting;
 
-namespace FlorianAlbert.FinanceObserver.AspireInfrastructure.Hosting.MailDev;
+namespace Aspire.Hosting.MailDev;
 
 public static class MailDevResourceBuilderExtensions
 {
@@ -22,7 +21,7 @@ public static class MailDevResourceBuilderExtensions
     /// </returns>
     public static IResourceBuilder<MailDevResource> AddMailDev(
         this IDistributedApplicationBuilder builder,
-        string name, 
+        string name,
         IResourceBuilder<ParameterResource>? userName = null,
         IResourceBuilder<ParameterResource>? password = null,
         int? httpPort = null,

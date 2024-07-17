@@ -1,4 +1,4 @@
-using FlorianAlbert.FinanceObserver.AspireInfrastructure.Hosting.MailDev;
+using Aspire.Hosting.MailDev;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
