@@ -33,7 +33,7 @@ jobs:
               run: dotnet test --configuration Release --no-restore --no-build  --collect "XPlat Code Coverage" --settings .runsettings
 
             - name: Upload coverage reports to Codecov
-              uses: codecov/codecov-action@v4
+              uses: codecov/codecov-action@v5
               with:
                 token: ${{ secrets.CODECOV_TOKEN }}
                 dry_run: ${{ github.event_name != 'push' }}
