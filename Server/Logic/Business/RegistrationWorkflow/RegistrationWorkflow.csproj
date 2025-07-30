@@ -8,21 +8,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\DataAccess\DbAccess.Contract\DbAccess.Contract.csproj"/>
-        <ProjectReference Include="..\..\Domain\DataTransactionHandling.Contract\DataTransactionHandling.Contract.csproj"/>
-        <ProjectReference Include="..\..\Domain\EmailManagement.Contract\EmailManagement.Contract.csproj"/>
-        <ProjectReference Include="..\..\Domain\HashHandling.Contract\HashHandling.Contract.csproj"/>
-        <ProjectReference Include="..\..\Domain\RegistrationConfirmationManagement.Contract\RegistrationConfirmationManagement.Contract.csproj"/>
-        <ProjectReference Include="..\..\Domain\UserManagement.Contract\UserManagement.Contract.csproj"/>
-        <ProjectReference Include="..\RegistrationWorkflow.Contract\RegistrationWorkflow.Contract.csproj"/>
+        <ProjectReference Include="..\..\..\DataAccess\DbAccess.Contract\DbAccess.Contract.csproj" />
+        <ProjectReference Include="..\..\Domain\DataTransactionHandling.Contract\DataTransactionHandling.Contract.csproj" />
+        <ProjectReference Include="..\..\Domain\EmailManagement.Contract\EmailManagement.Contract.csproj" />
+        <ProjectReference Include="..\..\Domain\HashHandling.Contract\HashHandling.Contract.csproj" />
+        <ProjectReference Include="..\..\Domain\RegistrationConfirmationManagement.Contract\RegistrationConfirmationManagement.Contract.csproj" />
+        <ProjectReference Include="..\..\Domain\UserManagement.Contract\UserManagement.Contract.csproj" />
+        <ProjectReference Include="..\RegistrationWorkflow.Contract\RegistrationWorkflow.Contract.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\RegistrationWorkflow.Contract\RegistrationWorkflow.Contract.csproj"/>
+        <ProjectReference Include="..\RegistrationWorkflow.Contract\RegistrationWorkflow.Contract.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.7" />
     </ItemGroup>
 
 </Project>
