@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>FlorianAlbert.FinanceObserver.Server.Logic.Business.RegistrationWorkflow.Contract</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\CrossCutting\DataClasses\DataClasses.csproj"/>
+        <ProjectReference Include="..\..\..\CrossCutting\DataClasses\DataClasses.csproj" />
     </ItemGroup>
 
 
