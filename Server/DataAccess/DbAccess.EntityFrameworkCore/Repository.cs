@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using System.Reflection;
 using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
@@ -180,30 +180,15 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
         
         validUpdates.Add(Update<TEntity>.With(e => e.UpdatedDate, DateTimeOffset.UtcNow));
 
-        var methods = typeof(SetPropertyCalls<TEntity>)
-            .GetMethods(BindingFlags.Instance | BindingFlags.Public);
-
-        var m = methods.Single(methodInfo =>
-            methodInfo is { Name: nameof(SetPropertyCalls<object>.SetProperty), IsGenericMethod: true } &&
-            methodInfo.GetParameters() is { Length: 2 } parameters
-            && parameters.All(parameterInfo => parameterInfo.ParameterType is { IsGenericType: true } parameterType &&
-                                               parameterType.GetGenericTypeDefinition() == typeof(Func<,>)));
-
-        Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>>
-            baseExpression = setPropertyCall => setPropertyCall;
-        
-        var updateExpression = Expression.Lambda<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>>(validUpdates.Aggregate(
-                baseExpression.Body,
-                (currentExpr, nextUpdate) =>
-                    Expression.Call(currentExpr,
-                        m.MakeGenericMethod(nextUpdate.SelectorExpression.ReturnType),
-                        nextUpdate.SelectorExpression,
-                        nextUpdate.ValueExpression)),
-            baseExpression.Parameters);
-
         var entitiesToUpdate = _Set.Where(predicate);
         
-        var updatedRowsCount = await entitiesToUpdate.ExecuteUpdateAsync(updateExpression, cancellationToken: cancellationToken);
+        var updatedRowsCount = await entitiesToUpdate.ExecuteUpdateAsync(builder => 
+        {
+            foreach (var item in validUpdates)
+            {
+                builder.SetProperty(item.SelectorExpression, item.ValueExpression);
+            }
+        }, cancellationToken: cancellationToken);
 
         return updatedRowsCount;
     }
