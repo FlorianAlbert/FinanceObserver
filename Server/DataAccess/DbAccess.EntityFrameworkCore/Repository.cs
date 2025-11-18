@@ -180,30 +180,28 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
         
         validUpdates.Add(Update<TEntity>.With(e => e.UpdatedDate, DateTimeOffset.UtcNow));
 
-        var methods = typeof(SetPropertyCalls<TEntity>)
-            .GetMethods(BindingFlags.Instance | BindingFlags.Public);
-
-        var m = methods.Single(methodInfo =>
-            methodInfo is { Name: nameof(SetPropertyCalls<object>.SetProperty), IsGenericMethod: true } &&
-            methodInfo.GetParameters() is { Length: 2 } parameters
-            && parameters.All(parameterInfo => parameterInfo.ParameterType is { IsGenericType: true } parameterType &&
-                                               parameterType.GetGenericTypeDefinition() == typeof(Func<,>)));
-
-        Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>>
-            baseExpression = setPropertyCall => setPropertyCall;
-        
-        var updateExpression = Expression.Lambda<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>>(validUpdates.Aggregate(
-                baseExpression.Body,
-                (currentExpr, nextUpdate) =>
-                    Expression.Call(currentExpr,
-                        m.MakeGenericMethod(nextUpdate.SelectorExpression.ReturnType),
-                        nextUpdate.SelectorExpression,
-                        nextUpdate.ValueExpression)),
-            baseExpression.Parameters);
-
+        // EF Core 10: ExecuteUpdate takes an Action<UpdateSettersBuilder<TEntity>> instead of Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>>
         var entitiesToUpdate = _Set.Where(predicate);
-        
-        var updatedRowsCount = await entitiesToUpdate.ExecuteUpdateAsync(updateExpression, cancellationToken: cancellationToken);
+
+        var updatedRowsCount = await entitiesToUpdate.ExecuteUpdateAsync(setters =>
+        {
+            foreach (var nextUpdate in validUpdates)
+            {
+                // nextUpdate.SelectorExpression: Expression<Func<TEntity, TProperty>>
+                // nextUpdate.ValueExpression: Expression<Func<TEntity, TProperty>> or constant expression
+                // Use the non-generic SetProperty method via reflection with the property type
+                var propertyType = nextUpdate.SelectorExpression.ReturnType;
+                var setPropertyGeneric = typeof(UpdateSettersBuilder<TEntity>)
+                    .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                    .First(m => m.Name == nameof(UpdateSettersBuilder<TEntity>.SetProperty)
+                             && m.IsGenericMethod
+                             && m.GetParameters().Length == 2);
+
+                var method = setPropertyGeneric.MakeGenericMethod(propertyType);
+                // Invoke: setters.SetProperty<TProperty>(selector, value)
+                method.Invoke(setters, new object[] { nextUpdate.SelectorExpression, nextUpdate.ValueExpression });
+            }
+        }, cancellationToken: cancellationToken);
 
         return updatedRowsCount;
     }
