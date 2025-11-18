@@ -1,40 +1,17 @@
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.MailDev;
-using Aspire.Hosting.PostgreSQL;
-using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-using System.Runtime;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-using System.Runtime;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
-IResourceBuilder<PostgresServerResource> postgresResource = 
+var postgresResource =
     builder.AddPostgres("postgres")
            .WithPgAdmin();
 
-IResourceBuilder<MailDevResource> mailDevResource = builder.AddMailDev("maildev")
+var mailDevResource = builder.AddMailDev("maildev")
     .ExcludeFromManifest();
 
-builder.AddProject<Projects.Startup>("startup")
+builder.AddProject("startup", "..\\..\\Server\\Presentation\\Startup\\Startup.csproj")
     .WithEnvironment("FINANCE_OBSERVER_FROM_EMAIL_ADDRESS", "no-reply@finance-observer.com")
     .WithEnvironment("FINANCE_OBSERVER_FROM_EMAIL_NAME", "Finance Observer")
     .WithEnvironment("FINANCE_OBSERVER_DB_PROVIDER", "Npgsql")
