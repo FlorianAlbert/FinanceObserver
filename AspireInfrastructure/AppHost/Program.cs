@@ -1,4 +1,5 @@
 using Aspire.Hosting.MailDev;
+using System;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
