@@ -3,6 +3,7 @@ using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.MailDev;
 using Aspire.Hosting.PostgreSQL;
 using System;
+using System.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
