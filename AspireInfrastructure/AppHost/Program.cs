@@ -1,17 +1,20 @@
-using Aspire.Hosting;
-using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.MailDev;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
-var postgresResource =
+IResourceBuilder<PostgresServerResource> postgresResource = 
     builder.AddPostgres("postgres")
            .WithPgAdmin();
 
-var mailDevResource = builder.AddMailDev("maildev")
+IResourceBuilder<MailDevResource> mailDevResource = builder.AddMailDev("maildev")
     .ExcludeFromManifest();
 
-builder.AddProject("startup", "..\\..\\Server\\Presentation\\Startup\\Startup.csproj")
+builder.AddProject<Projects.Startup>("startup")
     .WithEnvironment("FINANCE_OBSERVER_FROM_EMAIL_ADDRESS", "no-reply@finance-observer.com")
     .WithEnvironment("FINANCE_OBSERVER_FROM_EMAIL_NAME", "Finance Observer")
     .WithEnvironment("FINANCE_OBSERVER_DB_PROVIDER", "Npgsql")
