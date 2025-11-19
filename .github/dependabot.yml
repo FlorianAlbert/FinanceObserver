@@ -10,6 +10,11 @@ updates:
     schedule:
       interval: "daily"
 
+    # Ignoring FluentAssertions >=8.0.0 due to license change
+    ignore:
+      - dependency-name: "FluentAssertions"
+        versions: [">=8.0.0"]
+
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
