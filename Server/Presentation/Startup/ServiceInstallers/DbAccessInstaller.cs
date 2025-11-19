@@ -10,10 +10,8 @@ internal class DbAccessInstaller : IServiceInstaller
 {
     private const string _dbProviderEnvKey = "FINANCE_OBSERVER_DB_PROVIDER";
     private const string _dbProviderFileEnvKey = "FINANCE_OBSERVER_DB_PROVIDER_FILE";
-    private const string _dbProviderKey = "DbAccess:ActiveProvider";
-    private const string _dbConnectionStringEnvKey = "FINANCE_OBSERVER_DB_CONNECTIONSTRING";
-    private const string _dbConnectionStringFileEnvKey = "FINANCE_OBSERVER_DB_CONNECTIONSTRING_FILE";
-    private const string _dbConfiguredProvidersKey = "DbAccess:ConfiguredProviders";
+    private const string _dbConnectionNameEnvKey = "FINANCE_OBSERVER_DB_CONNECTIONNAME";
+    private const string _dbConnectionNameFileEnvKey = "FINANCE_OBSERVER_DB_CONNECTIONNAME_FILE";
 
     public void Install(IHostApplicationBuilder builder, ILogger logger)
     {
@@ -26,18 +24,8 @@ internal class DbAccessInstaller : IServiceInstaller
             dbProvider = File.ReadAllText(dbProviderFileLocation);
         }
 
-        dbProvider ??= Environment.GetEnvironmentVariable(_dbProviderEnvKey)
-                       ?? builder.Configuration[_dbProviderKey];
+        dbProvider ??= Environment.GetEnvironmentVariable(_dbProviderEnvKey);
         ArgumentException.ThrowIfNullOrEmpty(dbProvider);
-
-        string? dbConnectionString = null;
-        if (Environment.GetEnvironmentVariable(_dbConnectionStringFileEnvKey) is { } dbConnectionStringFileLocation
-            && File.Exists(dbConnectionStringFileLocation))
-        {
-            dbConnectionString = File.ReadAllText(dbConnectionStringFileLocation);
-        }
-
-        dbConnectionString ??= Environment.GetEnvironmentVariable(_dbConnectionStringEnvKey);
 
         if (!Enum.TryParse(dbProvider, true, out DatabaseProvider provider))
         {
@@ -46,28 +34,34 @@ internal class DbAccessInstaller : IServiceInstaller
 #pragma warning restore CA2208 // Instantiate argument exceptions correctly
         }
 
-        if (dbConnectionString is null)
+        string? dbConnectionName = null;
+        if (Environment.GetEnvironmentVariable(_dbConnectionNameFileEnvKey) is { } dbConnectionNameFileLocation
+            && File.Exists(dbConnectionNameFileLocation))
         {
-            if (!(builder.Configuration.GetSection(_dbConfiguredProvidersKey).GetChildren() is { } providers
-                  && providers.Any(p => p.Key == dbProvider)))
-            {
+            dbConnectionName = File.ReadAllText(dbConnectionNameFileLocation);
+        }
+
+        dbConnectionName ??= Environment.GetEnvironmentVariable(_dbConnectionNameEnvKey);
+        ArgumentException.ThrowIfNullOrEmpty(dbConnectionName);
+
+        switch (provider)
+        {
+            case DatabaseProvider.Npgsql:
+                builder.AddNpgsqlDbContext<FinanceObserverContext>(dbConnectionName,
+                    efCorePostgresSettings =>
+                    {
+                        efCorePostgresSettings.DisableRetry = true;
+                    },
+                    contextOptionsBuilder =>
+                    {
+                        contextOptionsBuilder.UseNpgsql(npgsqlOptionsBuilder => npgsqlOptionsBuilder.MigrationsAssembly(typeof(AssemblyReference).Assembly.FullName));
+                    });
+                break;
+            default:
 #pragma warning disable CA2208 // Instantiate argument exceptions correctly
                 throw new ArgumentOutOfRangeException(nameof(provider), "There was no valid Database provider given");
 #pragma warning restore CA2208 // Instantiate argument exceptions correctly
-            }
-
-            dbConnectionString = builder.Configuration[_dbConfiguredProvidersKey + ":" + provider]!;
         }
-
-        builder.AddNpgsqlDbContext<FinanceObserverContext>("postgres",
-            efCorePostgresSettings =>
-            {
-                efCorePostgresSettings.DisableRetry = true;
-            },
-            contextOptionsBuilder =>
-            {
-                contextOptionsBuilder.UseNpgsql(npgsqlOptionsBuilder => npgsqlOptionsBuilder.MigrationsAssembly(typeof(AssemblyReference).Assembly.FullName));
-            });
 
         builder.Services.AddScoped<DbContext>(provider => provider.GetRequiredService<FinanceObserverContext>());
 
