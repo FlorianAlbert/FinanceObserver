@@ -7,7 +7,7 @@
     <!-- Aspire Packages -->
     <PackageVersion Include="Aspire.Hosting" Version="13.0.0" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.0.0" />
-    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.5.2" />
+    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.0.1" />
 
     <!-- Microsoft Packages -->
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
