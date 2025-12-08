@@ -1,4 +1,5 @@
 ﻿using FluentEmail.MailKitSmtp;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,7 +11,7 @@ public static class AspireFluentEmailMailKitExtensions
     private const string _hostEnvKey = "FINANCE_OBSERVER_SMTP_CONNECTION_STRING";
     private const string _hostFileEnvKey = "FINANCE_OBSERVER_SMTP_CONNECTION_STRING_FILE";
 
-    public static void AddFluentEmail(
+    public static IHostApplicationBuilder AddFluentEmail(
         this IHostApplicationBuilder builder,
         string connectionName,
         string fromEmailAddress,
@@ -54,5 +55,15 @@ public static class AspireFluentEmailMailKitExtensions
                     UseSsl = false
                 });
         }
+
+        return builder;
     }
+
+    public static IHostApplicationBuilder AddIdentityEmailSender(
+        this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddTransient<IEmailSender, FluentEmailSender>();
+        return builder;
+    }
+
 }

@@ -36,7 +36,8 @@ internal class EmailManagementInstaller : IServiceInstaller
                           ?? builder.Configuration["SmtpSettings:FromName"];
         ArgumentException.ThrowIfNullOrEmpty(fromEmailName);
 
-        builder.AddFluentEmail("maildev", fromEmailAddress, fromEmailName);
+        builder.AddFluentEmail("maildev", fromEmailAddress, fromEmailName)
+            .AddIdentityEmailSender();
 
         //Register services
         builder.Services.AddScoped<IEmailManager, EmailManager>();
