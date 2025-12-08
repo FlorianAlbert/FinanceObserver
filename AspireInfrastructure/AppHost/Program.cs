@@ -14,10 +14,13 @@ if (builder.ExecutionContext.IsRunMode)
 
 IResourceBuilder<PostgresDatabaseResource> database = postgresResource.AddDatabase("finance-observer-db");
 
-IResourceBuilder<MailDevResource> mailDevResource = builder.AddMailDev("maildev")
-    .ExcludeFromManifest();
+IResourceBuilder<IResourceWithConnectionString>? mailDevResource = null;
+if (builder.ExecutionContext.IsRunMode)
+{
+    mailDevResource = builder.AddMailDev("maildev");
+}
 
-builder.AddProject<Projects.Startup>("startup")
+IResourceBuilder<ProjectResource> api = builder.AddProject<Projects.Startup>("startup")
     .WithEnvironment("FINANCE_OBSERVER_FROM_EMAIL_ADDRESS", "no-reply@finance-observer.com")
     .WithEnvironment("FINANCE_OBSERVER_FROM_EMAIL_NAME", "Finance Observer")
     .WithEnvironment("FINANCE_OBSERVER_DB_PROVIDER", "Npgsql")
@@ -28,8 +31,12 @@ builder.AddProject<Projects.Startup>("startup")
     .WithEnvironment("FINANCE_OBSERVER_EXPIRED_REGISTRATION_DELETION_EXECUTION_PERIOD", "60")
     .WithHttpHealthCheck("/health")
     .WithReference(database)
-    .WaitFor(database)
-    .WithReference(mailDevResource)
-    .WaitFor(mailDevResource);
+    .WaitFor(database);
+
+if (mailDevResource is not null)
+{ 
+    api.WithReference(mailDevResource)
+       .WaitFor(mailDevResource);
+}
 
 builder.Build().Run();
