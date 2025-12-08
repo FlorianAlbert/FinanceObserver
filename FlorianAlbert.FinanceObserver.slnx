@@ -1,0 +1,51 @@
+<Solution>
+  <Folder Name="/AspireInfrastructure/">
+    <Project Path="AspireInfrastructure/AppHost/AppHost.csproj" />
+    <Project Path="AspireInfrastructure/ServiceDefaults/ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/AspireInfrastructure/Components/">
+    <Project Path="AspireInfrastructure/Components/FluentEmail.MailKit/Aspire.FluentEmail.MailKit.csproj" />
+  </Folder>
+  <Folder Name="/AspireInfrastructure/Hosting/">
+    <Project Path="AspireInfrastructure/Hosting/MailDev/Aspire.Hosting.MailDev.csproj" />
+  </Folder>
+  <Folder Name="/Server/" />
+  <Folder Name="/Server/CrossCutting/">
+    <Project Path="Server/CrossCutting/DataClasses/DataClasses.csproj" />
+  </Folder>
+  <Folder Name="/Server/DataAccess/">
+    <Project Path="Server/DataAccess/DbAccess.Contract/DbAccess.Contract.csproj" />
+    <Project Path="Server/DataAccess/DbAccess.EntityFrameworkCore.Tests/DbAccess.EntityFrameworkCore.Tests.csproj" />
+    <Project Path="Server/DataAccess/DbAccess.EntityFrameworkCore/DbAccess.EntityFrameworkCore.csproj" />
+  </Folder>
+  <Folder Name="/Server/Logic/" />
+  <Folder Name="/Server/Logic/Business/">
+    <Project Path="Server/Logic/Business/RegistrationWorkflow.Contract/RegistrationWorkflow.Contract.csproj" />
+    <Project Path="Server/Logic/Business/RegistrationWorkflow.Tests/RegistrationWorkflow.Tests.csproj" />
+    <Project Path="Server/Logic/Business/RegistrationWorkflow/RegistrationWorkflow.csproj" />
+  </Folder>
+  <Folder Name="/Server/Logic/Domain/">
+    <Project Path="Server/Logic/Domain/DataTransactionHandling.Contract/DataTransactionHandling.Contract.csproj" />
+    <Project Path="Server/Logic/Domain/DataTransactionHandling.Tests/DataTransactionHandling.Tests.csproj" />
+    <Project Path="Server/Logic/Domain/DataTransactionHandling/DataTransactionHandling.csproj" />
+    <Project Path="Server/Logic/Domain/EmailManagement.Contract/EmailManagement.Contract.csproj" />
+    <Project Path="Server/Logic/Domain/EmailManagement.Tests/EmailManagement.Tests.csproj" />
+    <Project Path="Server/Logic/Domain/EmailManagement/EmailManagement.csproj" />
+    <Project Path="Server/Logic/Domain/HashHandling.Contract/HashHandling.Contract.csproj" />
+    <Project Path="Server/Logic/Domain/HashHandling.SHA512.Tests/HashHandling.SHA512.Tests.csproj" />
+    <Project Path="Server/Logic/Domain/HashHandling.SHA512/HashHandling.SHA512.csproj" />
+    <Project Path="Server/Logic/Domain/RegistrationConfirmationManagement.Contract/RegistrationConfirmationManagement.Contract.csproj" />
+    <Project Path="Server/Logic/Domain/RegistrationConfirmationManagement.Tests/RegistrationConfirmationManagement.Tests.csproj" />
+    <Project Path="Server/Logic/Domain/RegistrationConfirmationManagement/RegistrationConfirmationManagement.csproj" />
+    <Project Path="Server/Logic/Domain/UserManagement.Contract/UserManagement.Contract.csproj" />
+    <Project Path="Server/Logic/Domain/UserManagement.Tests/UserManagement.Tests.csproj" />
+    <Project Path="Server/Logic/Domain/UserManagement/UserManagement.csproj" />
+  </Folder>
+  <Folder Name="/Server/Presentation/">
+    <Project Path="Server/Presentation/REST/REST.csproj" />
+    <Project Path="Server/Presentation/Startup/Startup.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+</Solution>
