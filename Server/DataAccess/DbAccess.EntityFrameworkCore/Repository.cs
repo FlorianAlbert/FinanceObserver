@@ -5,7 +5,7 @@ using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
 
@@ -17,8 +17,6 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
     private readonly DbContext _context;
     private readonly InclusionEvaluator _inclusionEvaluator;
 
-    private DbSet<TEntity>? _set;
-
     internal Repository(DbContext dbContext,
         InclusionEvaluator inclusionEvaluator)
     {
@@ -26,19 +24,19 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
         _inclusionEvaluator = inclusionEvaluator;
     }
 
-    private DbSet<TEntity> _Set => _set ??= _context.Set<TEntity>();
+    private DbSet<TEntity> _Set => field ??= _context.Set<TEntity>();
 
     public Task<IQueryable<TEntity>> QueryAsync(Inclusion<TKey, TEntity>[]? includes = null,
         CancellationToken cancellationToken = default)
     {
-        var queryable = _inclusionEvaluator.Evaluate(_Set.AsNoTracking(), includes ?? [], cancellationToken);
+        IQueryable<TEntity> queryable = _inclusionEvaluator.Evaluate(_Set.AsNoTracking(), includes ?? [], cancellationToken);
 
         return Task.FromResult(queryable);
     }
 
     public async Task<Result<TEntity>> FindAsync(TKey id, Inclusion<TKey, TEntity>[]? includes = null, CancellationToken cancellationToken = default)
     {
-        var entity = (await QueryAsync(includes, cancellationToken)).SingleOrDefault(entity => entity.Id.Equals(id));
+        TEntity? entity = (await QueryAsync(includes, cancellationToken)).SingleOrDefault(entity => entity.Id.Equals(id));
 
         if (entity is null)
         {
@@ -61,12 +59,12 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        var createdTime = DateTimeOffset.UtcNow;
+        DateTimeOffset createdTime = DateTimeOffset.UtcNow;
 
-        var newEntry = _context.Attach(entity);
+        EntityEntry<TEntity> newEntry = _context.Attach(entity);
         newEntry.State = EntityState.Added;
 
-        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
+        foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
         {
             if (entry.Entity is LifecycleTrackable lifecycleTrackable)
             {
@@ -75,7 +73,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
             }
         }
 
-        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
+        foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
         {
             if (entry.Entity is LifecycleTrackable lifecycleTrackable)
             {
@@ -92,16 +90,16 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
     public async Task InsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
-        var entitiesArray = entities as TEntity[] ?? entities.ToArray();
+        TEntity[] entitiesArray = entities as TEntity[] ?? [.. entities];
 
-        var createdTime = DateTimeOffset.UtcNow;
-        foreach (var entity in entitiesArray)
+        DateTimeOffset createdTime = DateTimeOffset.UtcNow;
+        foreach (TEntity entity in entitiesArray)
         {
-            var entry = _context.Attach(entity);
+            EntityEntry<TEntity> entry = _context.Attach(entity);
             entry.State = EntityState.Added;
         }
 
-        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
+        foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
         {
             if (entry.Entity is LifecycleTrackable lifecycleTrackable)
             {
@@ -110,7 +108,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
             }
         }
 
-        foreach (var entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
+        foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
         {
             if (entry.Entity is LifecycleTrackable lifecycleTrackable)
             {
@@ -132,7 +130,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
             return;
         }
 
-        var entitiesArray = entities as object[] ?? entities.ToArray();
+        object[] entitiesArray = entities as object[] ?? [.. entities];
 
         _context.AttachRange(entitiesArray);
 
@@ -173,20 +171,22 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
             Member:
             {
                 MemberType: MemberTypes.Property,
-                Name: nameof(BaseEntity<TKey>.UpdatedDate) or nameof(BaseEntity<TKey>.CreatedDate)
-                or nameof(BaseEntity<TKey>.Id)
+                Name: nameof(BaseEntity<>.UpdatedDate) or nameof(BaseEntity<>.CreatedDate)
+                or nameof(BaseEntity<>.Id)
             }
         }).ToList();
         
         validUpdates.Add(Update<TEntity>.With(e => e.UpdatedDate, DateTimeOffset.UtcNow));
 
-        var entitiesToUpdate = _Set.Where(predicate);
-        
-        var updatedRowsCount = await entitiesToUpdate.ExecuteUpdateAsync(builder => 
+        IQueryable<TEntity> entitiesToUpdate = _Set.Where(predicate);
+
+        int updatedRowsCount = await entitiesToUpdate.ExecuteUpdateAsync(builder =>
         {
-            foreach (var item in validUpdates)
+            foreach (Update<TEntity>? item in validUpdates)
             {
+#pragma warning disable EF1001 // Internal EF Core API usage.
                 builder.SetProperty(item.SelectorExpression, item.ValueExpression);
+#pragma warning restore EF1001 // Internal EF Core API usage.
             }
         }, cancellationToken: cancellationToken);
 

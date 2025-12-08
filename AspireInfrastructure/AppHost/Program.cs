@@ -2,23 +2,41 @@ using Aspire.Hosting.MailDev;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
-IResourceBuilder<PostgresServerResource> postgresResource = 
-    builder.AddPostgres("postgres")
-           .WithPgAdmin();
+IResourceBuilder<PostgresServerResource> postgresResource = builder.AddPostgres("postgres");
 
-IResourceBuilder<MailDevResource> mailDevResource = builder.AddMailDev("maildev")
-    .ExcludeFromManifest();
+if (builder.ExecutionContext.IsRunMode)
+{
+    postgresResource.WithPgAdmin(pgAdminBuilder =>
+    {
+        pgAdminBuilder.WithLifetime(ContainerLifetime.Persistent);
+    });
+}
 
-builder.AddProject<Projects.Startup>("startup")
+IResourceBuilder<PostgresDatabaseResource> database = postgresResource.AddDatabase("finance-observer-db");
+
+IResourceBuilder<IResourceWithConnectionString>? smtpServerResource = null;
+if (builder.ExecutionContext.IsRunMode)
+{
+    smtpServerResource = builder.AddMailDev("maildev");
+}
+
+IResourceBuilder<ProjectResource> api = builder.AddProject<Projects.Startup>("startup")
     .WithEnvironment("FINANCE_OBSERVER_FROM_EMAIL_ADDRESS", "no-reply@finance-observer.com")
     .WithEnvironment("FINANCE_OBSERVER_FROM_EMAIL_NAME", "Finance Observer")
     .WithEnvironment("FINANCE_OBSERVER_DB_PROVIDER", "Npgsql")
-    .WithEnvironment("FINANCE_OBSERVER_DB_CONNECTIONSTRING", "postgres")
+    .WithEnvironment("FINANCE_OBSERVER_DB_CONNECTIONNAME", "finance-observer-db")
     .WithEnvironment("FINANCE_OBSERVER_HASHING_ITERATIONS", "123456")
     .WithEnvironment("FINANCE_OBSERVER_HASHING_HASH_SIZE", "64")
     .WithEnvironment("FINANCE_OBSERVER_HASHING_SALT_SIZE", "16")
     .WithEnvironment("FINANCE_OBSERVER_EXPIRED_REGISTRATION_DELETION_EXECUTION_PERIOD", "60")
-    .WithReference(postgresResource)
-    .WithReference(mailDevResource);
+    .WithHttpHealthCheck("/health")
+    .WithReference(database)
+    .WaitFor(database);
+
+if (smtpServerResource is not null)
+{ 
+    api.WithReference(smtpServerResource)
+       .WaitFor(smtpServerResource);
+}
 
 builder.Build().Run();

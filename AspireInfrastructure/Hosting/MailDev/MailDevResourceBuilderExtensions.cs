@@ -46,7 +46,8 @@ public static class MailDevResourceBuilderExtensions
                       {
                           context.EnvironmentVariables[UserEnvVarName] = mailDevServer.UserNameReference;
                           context.EnvironmentVariables[PasswordEnvVarName] = mailDevServer.PasswordParameter;
-                      });
+                      })
+                      .WithHttpHealthCheck("/healthz");
     }
 }
 
