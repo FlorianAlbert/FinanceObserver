@@ -186,7 +186,9 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
         {
             foreach (var item in validUpdates)
             {
+#pragma warning disable EF1001 // Internal EF Core API usage.
                 builder.SetProperty(item.SelectorExpression, item.ValueExpression);
+#pragma warning restore EF1001 // Internal EF Core API usage.
             }
         }, cancellationToken: cancellationToken);
 
