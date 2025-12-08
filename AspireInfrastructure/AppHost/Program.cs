@@ -2,8 +2,15 @@ using Aspire.Hosting.MailDev;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
-IResourceBuilder<PostgresServerResource> postgresResource = builder.AddPostgres("postgres")
-    .WithPgAdmin();
+IResourceBuilder<PostgresServerResource> postgresResource = builder.AddPostgres("postgres");
+
+if (builder.ExecutionContext.IsRunMode)
+{
+    postgresResource.WithPgAdmin(pgAdminBuilder =>
+    {
+        pgAdminBuilder.WithLifetime(ContainerLifetime.Persistent);
+    });
+}
 
 IResourceBuilder<PostgresDatabaseResource> database = postgresResource.AddDatabase("finance-observer-db");
 
