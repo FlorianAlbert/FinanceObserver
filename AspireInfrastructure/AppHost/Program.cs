@@ -14,10 +14,10 @@ if (builder.ExecutionContext.IsRunMode)
 
 IResourceBuilder<PostgresDatabaseResource> database = postgresResource.AddDatabase("finance-observer-db");
 
-IResourceBuilder<IResourceWithConnectionString>? mailDevResource = null;
+IResourceBuilder<IResourceWithConnectionString>? smtpServerResource = null;
 if (builder.ExecutionContext.IsRunMode)
 {
-    mailDevResource = builder.AddMailDev("maildev");
+    smtpServerResource = builder.AddMailDev("maildev");
 }
 
 IResourceBuilder<ProjectResource> api = builder.AddProject<Projects.Startup>("startup")
@@ -33,10 +33,10 @@ IResourceBuilder<ProjectResource> api = builder.AddProject<Projects.Startup>("st
     .WithReference(database)
     .WaitFor(database);
 
-if (mailDevResource is not null)
+if (smtpServerResource is not null)
 { 
-    api.WithReference(mailDevResource)
-       .WaitFor(mailDevResource);
+    api.WithReference(smtpServerResource)
+       .WaitFor(smtpServerResource);
 }
 
 builder.Build().Run();
