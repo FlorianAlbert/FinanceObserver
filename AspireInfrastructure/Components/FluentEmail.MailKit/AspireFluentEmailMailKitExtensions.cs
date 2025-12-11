@@ -7,24 +7,13 @@ namespace Aspire.FluentEmail.MailKit;
 
 public static class AspireFluentEmailMailKitExtensions
 {
-    private const string _hostEnvKey = "FINANCE_OBSERVER_SMTP_CONNECTION_STRING";
-    private const string _hostFileEnvKey = "FINANCE_OBSERVER_SMTP_CONNECTION_STRING_FILE";
-
     public static IHostApplicationBuilder AddFluentEmail(
         this IHostApplicationBuilder builder,
         string connectionName,
         string fromEmailAddress,
         string fromEmailName)
     {
-        string? smtpConnectionString = null;
-        if (Environment.GetEnvironmentVariable(_hostFileEnvKey) is { } smtpConnectionStringFileLocation
-            && File.Exists(smtpConnectionStringFileLocation))
-        {
-            smtpConnectionString = File.ReadAllText(smtpConnectionStringFileLocation);
-        }
-        smtpConnectionString ??= Environment.GetEnvironmentVariable(_hostEnvKey);
-        smtpConnectionString ??= builder.Configuration["SmtpSettings:ConnectionString"];
-        smtpConnectionString ??= builder.Configuration.GetConnectionString(connectionName);
+        string? smtpConnectionString = builder.Configuration.GetConnectionString(connectionName);
         ArgumentException.ThrowIfNullOrEmpty(smtpConnectionString);
 
         var smtpConnectionStringUri = new Uri(smtpConnectionString);
