@@ -6,7 +6,7 @@ using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 
 public interface IRepository<TKey, TEntity>
-    where TEntity : BaseEntity<TKey>
+    where TEntity : IBaseEntity<TKey>
     where TKey : IParsable<TKey>,
     IEquatable<TKey>
 {

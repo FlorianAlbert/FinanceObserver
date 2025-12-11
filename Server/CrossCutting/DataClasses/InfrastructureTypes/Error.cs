@@ -17,4 +17,9 @@ public class Error
     public int Status { get; }
 
     public string Detail { get; }
+
+    public override string ToString()
+    {
+        return $"{Title} (Type: {Type}, Status: {Status}) - {Detail}";
+    }
 }

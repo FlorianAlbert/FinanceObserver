@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Logic\Business\RegistrationWorkflow.Contract\RegistrationWorkflow.Contract.csproj" />
+      <ProjectReference Include="..\..\CrossCutting\DataClasses\DataClasses.csproj" />
     </ItemGroup>
 
 </Project>

@@ -15,7 +15,7 @@ public class RepositoryFactory : IRepositoryFactory
 
     public IRepository<TKey, TEntity> CreateRepository<TKey, TEntity>()
         where TKey : IParsable<TKey>, IEquatable<TKey>
-        where TEntity : BaseEntity<TKey>
+        where TEntity : class, IBaseEntity<TKey>
     {
         return new Repository<TKey, TEntity>(_dbContext,
             new InclusionEvaluator());

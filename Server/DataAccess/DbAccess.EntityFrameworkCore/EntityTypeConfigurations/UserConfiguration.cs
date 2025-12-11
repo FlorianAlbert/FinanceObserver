@@ -14,10 +14,5 @@ internal class UserConfiguration : BaseEntityConfiguration<Guid, User>
 
         builder.HasMany(user => user.Emails)
             .WithMany(email => email.Receivers);
-
-        builder.HasOne(user => user.RegistrationConfirmation)
-            .WithOne(registrationConfirmation => registrationConfirmation.User)
-            .HasForeignKey<RegistrationConfirmation>("UserId")
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

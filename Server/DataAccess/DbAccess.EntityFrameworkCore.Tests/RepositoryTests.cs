@@ -1,4 +1,6 @@
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Tests.AutoFixture;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Tests.TestModel;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.PostgreSql;
@@ -26,13 +28,14 @@ public class RepositoryTests : IAsyncLifetime
         _fixture = new Fixture();
         _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        _fixture.Customize(new PostgreSqlDateTimeOffsetCustomization());
     }
 
     public async Task InitializeAsync()
     {
         await _postgreSqlContainer.StartAsync();
-        
-        var contextOptions = new DbContextOptionsBuilder<TestDbContext>()
+
+        DbContextOptions<TestDbContext> contextOptions = new DbContextOptionsBuilder<TestDbContext>()
             .UseNpgsql(_postgreSqlContainer.GetConnectionString())
             .Options;
 
@@ -53,7 +56,7 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var testEntities = _fixture.CreateMany<TestEntity>().AsQueryable();
+        IQueryable<TestEntity> testEntities = _fixture.CreateMany<TestEntity>().AsQueryable();
 
         await _context.AddRangeAsync(testEntities);
         await _context.SaveChangesAsync();
@@ -61,7 +64,7 @@ public class RepositoryTests : IAsyncLifetime
         _context.ChangeTracker.Clear();
 
         // Act
-        var result = await _sut.QueryAsync();
+        IQueryable<TestEntity> result = await _sut.QueryAsync();
 
         // Assert
         result.Should().BeEquivalentTo(testEntities, options => options.Excluding(entity => entity.Relation));
@@ -72,7 +75,7 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var testEntities = _fixture.CreateMany<TestEntity>();
+        IEnumerable<TestEntity> testEntities = _fixture.CreateMany<TestEntity>();
 
         await _context.AddRangeAsync(testEntities);
         await _context.SaveChangesAsync();
@@ -80,10 +83,10 @@ public class RepositoryTests : IAsyncLifetime
         _context.ChangeTracker.Clear();
 
         // Act
-        var result = await _sut.QueryAsync();
+        IQueryable<TestEntity> result = await _sut.QueryAsync();
 
         // Assert
-        foreach (var entity in result)
+        foreach (TestEntity entity in result)
         {
             entity.Relation.Should().BeNull();
         }
@@ -94,7 +97,7 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var testEntities = _fixture.CreateMany<TestEntity>();
+        IEnumerable<TestEntity> testEntities = _fixture.CreateMany<TestEntity>();
 
         await _context.AddRangeAsync(testEntities);
         await _context.SaveChangesAsync();
@@ -102,10 +105,10 @@ public class RepositoryTests : IAsyncLifetime
         _context.ChangeTracker.Clear();
 
         // Act
-        var result = await _sut.QueryAsync([Inclusion<Guid, TestEntity>.Of<Guid, TestRelationEntity?>(entity => entity.Relation)]);
+        IQueryable<TestEntity> result = await _sut.QueryAsync([Inclusion<Guid, TestEntity>.Of<Guid, TestRelationEntity?>(entity => entity.Relation)]);
 
         // Assert
-        foreach (var entity in result)
+        foreach (TestEntity entity in result)
         {
             entity.Relation.Should().NotBeNull();
         }
@@ -115,7 +118,7 @@ public class RepositoryTests : IAsyncLifetime
     public async Task FindAsync_CallWithExistingEntity_Succeeds()
     {
         // Arrange
-        var testEntity = _fixture.Create<TestEntity>();
+        TestEntity testEntity = _fixture.Create<TestEntity>();
 
         await _context.AddAsync(testEntity);
         await _context.SaveChangesAsync();
@@ -123,7 +126,7 @@ public class RepositoryTests : IAsyncLifetime
         _context.ChangeTracker.Clear();
 
         // Act
-        var result = await _sut.FindAsync(testEntity.Id);
+        Result<TestEntity> result = await _sut.FindAsync(testEntity.Id);
 
         // Assert
         result.Succeeded.Should().BeTrue();
@@ -133,7 +136,7 @@ public class RepositoryTests : IAsyncLifetime
     public async Task FindAsync_CallWithExistingEntity_ReturnsEntity()
     {
         // Arrange
-        var testEntity = _fixture.Create<TestEntity>();
+        TestEntity testEntity = _fixture.Create<TestEntity>();
 
         await _context.AddAsync(testEntity);
         await _context.SaveChangesAsync();
@@ -141,7 +144,7 @@ public class RepositoryTests : IAsyncLifetime
         _context.ChangeTracker.Clear();
 
         // Act
-        var result = await _sut.FindAsync(testEntity.Id);
+        Result<TestEntity> result = await _sut.FindAsync(testEntity.Id);
 
         // Assert
         result.Value.Should().BeEquivalentTo(testEntity, options => options.Excluding(entity => entity.Relation));
@@ -153,7 +156,7 @@ public class RepositoryTests : IAsyncLifetime
         // Arrange
 
         // Act
-        var result = await _sut.FindAsync(Guid.NewGuid());
+        Result<TestEntity> result = await _sut.FindAsync(Guid.NewGuid());
 
         // Assert
         result.Failed.Should().BeTrue();
@@ -165,7 +168,7 @@ public class RepositoryTests : IAsyncLifetime
         // Arrange
 
         // Act
-        var result = await _sut.FindAsync(Guid.NewGuid());
+        Result<TestEntity> result = await _sut.FindAsync(Guid.NewGuid());
 
         // Assert
         result.Errors.Should().ContainSingle();
@@ -175,7 +178,7 @@ public class RepositoryTests : IAsyncLifetime
     public async Task DeleteAsync_CallWithExistingEntity_EntityNotFoundAfterDeletion()
     {
         // Arrange
-        var entityToDelete = _fixture.Create<TestEntity>();
+        TestEntity entityToDelete = _fixture.Create<TestEntity>();
 
         await _context.AddAsync(entityToDelete);
         await _context.SaveChangesAsync();
@@ -186,7 +189,7 @@ public class RepositoryTests : IAsyncLifetime
         await _sut.DeleteAsync([entityToDelete]);
 
         // Assert
-        var notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
+        TestEntity? notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
         notFoundEntity.Should().BeNull();
     }
 
@@ -194,10 +197,10 @@ public class RepositoryTests : IAsyncLifetime
     public async Task DeleteAsync_CallWithExistingEntityInEnumerable_EntityNotFoundAfterDeletionAndOthersStillExistent()
     {
         // Arrange
-        var entityToDelete = _fixture.Create<TestEntity>();
-        var stillExistentEntities = _fixture.CreateMany<TestEntity>().ToList();
+        TestEntity entityToDelete = _fixture.Create<TestEntity>();
+        List<TestEntity> stillExistentEntities = [.. _fixture.CreateMany<TestEntity>()];
 
-        var storedEntities = stillExistentEntities.Concat([entityToDelete]);
+        IEnumerable<TestEntity> storedEntities = stillExistentEntities.Concat([entityToDelete]);
         
         await _context.AddRangeAsync(storedEntities);
         await _context.SaveChangesAsync();
@@ -208,13 +211,13 @@ public class RepositoryTests : IAsyncLifetime
         await _sut.DeleteAsync(entityToDelete);
 
         // Assert
-        foreach (var entity in stillExistentEntities)
+        foreach (TestEntity entity in stillExistentEntities)
         {
-            var foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
+            TestEntity? foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
             foundEntity.Should().NotBeNull();
         }
-        
-        var notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
+
+        TestEntity? notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
         notFoundEntity.Should().BeNull();
     }
 
@@ -222,10 +225,10 @@ public class RepositoryTests : IAsyncLifetime
     public async Task DeleteAsync_CallWithExistingKey_EntityNotFoundAfterDeletionAndOthersStillExistent()
     {
         // Arrange
-        var entityToDelete = _fixture.Create<TestEntity>();
-        var stillExistentEntities = _fixture.CreateMany<TestEntity>().ToList();
+        TestEntity entityToDelete = _fixture.Create<TestEntity>();
+        List<TestEntity> stillExistentEntities = [.. _fixture.CreateMany<TestEntity>()];
 
-        var storedEntities = stillExistentEntities.Concat([entityToDelete]);
+        IEnumerable<TestEntity> storedEntities = stillExistentEntities.Concat([entityToDelete]);
         
         await _context.AddRangeAsync(storedEntities);
         await _context.SaveChangesAsync();
@@ -236,13 +239,13 @@ public class RepositoryTests : IAsyncLifetime
         await _sut.DeleteAsync(entityToDelete.Id);
 
         // Assert
-        foreach (var entity in stillExistentEntities)
+        foreach (TestEntity entity in stillExistentEntities)
         {
-            var foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
+            TestEntity? foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
             foundEntity.Should().NotBeNull();
         }
-        
-        var notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
+
+        TestEntity? notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
         notFoundEntity.Should().BeNull();
     }
 
@@ -250,10 +253,10 @@ public class RepositoryTests : IAsyncLifetime
     public async Task DeleteAsync_CallWithValidExpression_EntityNotFoundAfterDeletionAndOthersStillExistent()
     {
         // Arrange
-        var entityToDelete = _fixture.Create<TestEntity>();
-        var stillExistentEntities = _fixture.CreateMany<TestEntity>().ToList();
+        TestEntity entityToDelete = _fixture.Create<TestEntity>();
+        List<TestEntity> stillExistentEntities = [.. _fixture.CreateMany<TestEntity>()];
 
-        var storedEntities = stillExistentEntities.Concat([entityToDelete]);
+        IEnumerable<TestEntity> storedEntities = stillExistentEntities.Concat([entityToDelete]);
         
         await _context.AddRangeAsync(storedEntities);
         await _context.SaveChangesAsync();
@@ -264,13 +267,13 @@ public class RepositoryTests : IAsyncLifetime
         await _sut.DeleteAsync(entity => entity.Id == entityToDelete.Id);
 
         // Assert
-        foreach (var entity in stillExistentEntities)
+        foreach (TestEntity entity in stillExistentEntities)
         {
-            var foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
+            TestEntity? foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
             foundEntity.Should().NotBeNull();
         }
-        
-        var notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
+
+        TestEntity? notFoundEntity = await _context.FindAsync<TestEntity>(entityToDelete.Id);
         notFoundEntity.Should().BeNull();
     }
 
@@ -278,7 +281,7 @@ public class RepositoryTests : IAsyncLifetime
     public async Task DeleteAsync_CallWithInvalidExpression_AllEntitiesStillExistent()
     {
         // Arrange
-        var stillExistentEntities = _fixture.CreateMany<TestEntity>().ToList();
+        List<TestEntity> stillExistentEntities = [.. _fixture.CreateMany<TestEntity>()];
         
         await _context.AddRangeAsync(stillExistentEntities);
         await _context.SaveChangesAsync();
@@ -289,9 +292,9 @@ public class RepositoryTests : IAsyncLifetime
         await _sut.DeleteAsync(entity => false);
 
         // Assert
-        foreach (var entity in stillExistentEntities)
+        foreach (TestEntity entity in stillExistentEntities)
         {
-            var foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
+            TestEntity? foundEntity = await _context.FindAsync<TestEntity>(entity.Id);
             foundEntity.Should().NotBeNull();
         }
     }
@@ -300,7 +303,7 @@ public class RepositoryTests : IAsyncLifetime
     public async Task ExistsAsync_CallWithValidExpression_ReturnsTrue()
     {
         // Arrange
-        var existingEntity = _fixture.Create<TestEntity>();
+        TestEntity existingEntity = _fixture.Create<TestEntity>();
         
         await _context.AddAsync(existingEntity);
         await _context.SaveChangesAsync();
@@ -308,7 +311,7 @@ public class RepositoryTests : IAsyncLifetime
         _context.ChangeTracker.Clear();
 
         // Act
-        var result = await _sut.ExistsAsync(entity => entity.Id.Equals(existingEntity.Id));
+        bool result = await _sut.ExistsAsync(entity => entity.Id.Equals(existingEntity.Id));
 
         // Assert
         result.Should().BeTrue();
@@ -320,7 +323,7 @@ public class RepositoryTests : IAsyncLifetime
         // Arrange
 
         // Act
-        var result = await _sut.ExistsAsync(entity => false);
+        bool result = await _sut.ExistsAsync(entity => false);
 
         // Assert
         result.Should().BeFalse();
@@ -330,7 +333,7 @@ public class RepositoryTests : IAsyncLifetime
     public async Task ExistsAsync_CallWithExistingId_ReturnsTrue()
     {
         // Arrange
-        var existingEntity = _fixture.Create<TestEntity>();
+        TestEntity existingEntity = _fixture.Create<TestEntity>();
         
         await _context.AddAsync(existingEntity);
         await _context.SaveChangesAsync();
@@ -338,7 +341,7 @@ public class RepositoryTests : IAsyncLifetime
         _context.ChangeTracker.Clear();
 
         // Act
-        var result = await _sut.ExistsAsync(existingEntity.Id);
+        bool result = await _sut.ExistsAsync(existingEntity.Id);
 
         // Assert
         result.Should().BeTrue();
@@ -349,9 +352,9 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         var nonExistingId = Guid.NewGuid();
-        
+
         // Act
-        var result = await _sut.ExistsAsync(nonExistingId);
+        bool result = await _sut.ExistsAsync(nonExistingId);
 
         // Assert
         result.Should().BeFalse();
@@ -362,13 +365,13 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var entityToInsert = _fixture.Create<TestEntity>();
+        TestEntity entityToInsert = _fixture.Create<TestEntity>();
         
         // Act
         await _sut.InsertAsync(entityToInsert);
 
         // Assert
-        var insertedEntity = await _context.FindAsync<TestEntity>(entityToInsert.Id);
+        TestEntity? insertedEntity = await _context.FindAsync<TestEntity>(entityToInsert.Id);
         insertedEntity.Should().NotBeNull();
     }
     
@@ -377,7 +380,7 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var existingEntity = _fixture.Create<TestEntity>();
+        TestEntity existingEntity = _fixture.Create<TestEntity>();
         
         await _context.AddAsync(existingEntity);
         await _context.SaveChangesAsync();
@@ -385,7 +388,7 @@ public class RepositoryTests : IAsyncLifetime
         _context.ChangeTracker.Clear();
 
         // Act
-        var act = async () => await _sut.InsertAsync(existingEntity);
+        Func<Task<TestEntity>> act = async () => await _sut.InsertAsync(existingEntity);
 
         // Assert
         await act.Should().ThrowAsync<DbUpdateException>();
@@ -396,10 +399,10 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var entityToInsert = _fixture.Create<TestEntity>();
-        
+        TestEntity entityToInsert = _fixture.Create<TestEntity>();
+
         // Act
-        var result = await _sut.InsertAsync(entityToInsert);
+        TestEntity result = await _sut.InsertAsync(entityToInsert);
 
         // Assert
         result.Should().BeEquivalentTo(entityToInsert);
@@ -410,12 +413,12 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var entityToInsert = _fixture.Create<TestEntity>();
-        
+        TestEntity entityToInsert = _fixture.Create<TestEntity>();
+
         // Act
-        var beforeInsert = DateTimeOffset.UtcNow;
+        DateTimeOffset beforeInsert = DateTimeOffset.UtcNow;
         await _sut.InsertAsync(entityToInsert);
-        var afterInsert = DateTimeOffset.UtcNow;
+        DateTimeOffset afterInsert = DateTimeOffset.UtcNow;
 
         // Assert
         entityToInsert.CreatedDate.Should().BeOnOrAfter(beforeInsert);
@@ -427,7 +430,7 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var entityToInsert = _fixture.Create<TestEntity>();
+        TestEntity entityToInsert = _fixture.Create<TestEntity>();
         
         // Act
         await _sut.InsertAsync(entityToInsert);
@@ -441,15 +444,15 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var entitiesToInsert = _fixture.CreateMany<TestEntity>().ToList();
+        List<TestEntity> entitiesToInsert = [.. _fixture.CreateMany<TestEntity>()];
         
         // Act
         await _sut.InsertAsync(entitiesToInsert);
 
         // Assert
-        foreach (var entity in entitiesToInsert)
+        foreach (TestEntity entity in entitiesToInsert)
         {
-            var insertedEntity = await _context.FindAsync<TestEntity>(entity.Id);
+            TestEntity? insertedEntity = await _context.FindAsync<TestEntity>(entity.Id);
             insertedEntity.Should().NotBeNull();
         }
     }
@@ -459,7 +462,7 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var existingEntities = _fixture.CreateMany<TestEntity>().ToList();
+        List<TestEntity> existingEntities = [.. _fixture.CreateMany<TestEntity>()];
         
         await _context.AddRangeAsync(existingEntities);
         await _context.SaveChangesAsync();
@@ -467,7 +470,7 @@ public class RepositoryTests : IAsyncLifetime
         _context.ChangeTracker.Clear();
 
         // Act
-        var act = async () => await _sut.InsertAsync(existingEntities);
+        Func<Task> act = async () => await _sut.InsertAsync(existingEntities);
 
         // Assert
         await act.Should().ThrowAsync<DbUpdateException>();
@@ -478,15 +481,15 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var entitiesToInsert = _fixture.CreateMany<TestEntity>().ToList();
-        
+        List<TestEntity> entitiesToInsert = [.. _fixture.CreateMany<TestEntity>()];
+
         // Act
-        var beforeInsert = DateTimeOffset.UtcNow;
+        DateTimeOffset beforeInsert = DateTimeOffset.UtcNow;
         await _sut.InsertAsync(entitiesToInsert);
-        var afterInsert = DateTimeOffset.UtcNow;
+        DateTimeOffset afterInsert = DateTimeOffset.UtcNow;
 
         // Assert
-        foreach (var entity in entitiesToInsert)
+        foreach (TestEntity entity in entitiesToInsert)
         {
             entity.CreatedDate.Should().BeOnOrAfter(beforeInsert);
             entity.CreatedDate.Should().BeOnOrBefore(afterInsert);
@@ -498,13 +501,13 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var entitiesToInsert = _fixture.CreateMany<TestEntity>().ToList();
+        List<TestEntity> entitiesToInsert = [.. _fixture.CreateMany<TestEntity>()];
         
         // Act
         await _sut.InsertAsync(entitiesToInsert);
 
         // Assert
-        var createdDates = entitiesToInsert.Select(entity => entity.CreatedDate).Distinct();
+        IEnumerable<DateTimeOffset> createdDates = entitiesToInsert.Select(entity => entity.CreatedDate).Distinct();
         createdDates.Should().ContainSingle();
     }
     
@@ -513,13 +516,13 @@ public class RepositoryTests : IAsyncLifetime
     {
         // Arrange
         _fixture.Customize<Guid>(c => c.FromFactory(() => Guid.Empty));
-        var entitiesToInsert = _fixture.CreateMany<TestEntity>().ToList();
+        List<TestEntity> entitiesToInsert = [.. _fixture.CreateMany<TestEntity>()];
         
         // Act
         await _sut.InsertAsync(entitiesToInsert);
 
         // Assert
-        foreach (var entity in entitiesToInsert)
+        foreach (TestEntity entity in entitiesToInsert)
         {
             entity.UpdatedDate.Should().Be(entity.CreatedDate);
         }
@@ -529,23 +532,23 @@ public class RepositoryTests : IAsyncLifetime
     public async Task UpdateAsync_CallWithExistingEntityAndUpdates_UpdatesAreApplied()
     {
         // Arrange
-        var entityToUpdate = _fixture.Create<TestEntity>();
+        TestEntity entityToUpdate = _fixture.Create<TestEntity>();
         
         await _context.AddAsync(entityToUpdate);
         await _context.SaveChangesAsync();
         
         _context.ChangeTracker.Clear();
 
-        var updates = new[]
-        {
+        Update<TestEntity>[] updates =
+        [
             Update<TestEntity>.With(entity => entity.Name, "new name")
-        };
+        ];
         
         // Act
         await _sut.UpdateAsync(entityToUpdate, updates);
 
         // Assert
-        var updatedEntity = await _context.FindAsync<TestEntity>(entityToUpdate.Id);
+        TestEntity? updatedEntity = await _context.FindAsync<TestEntity>(entityToUpdate.Id);
 
         updatedEntity.Should().NotBeNull();
         updatedEntity!.Name.Should().Be("new name");

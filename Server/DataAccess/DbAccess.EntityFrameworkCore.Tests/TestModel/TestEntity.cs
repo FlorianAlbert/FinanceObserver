@@ -2,11 +2,15 @@ using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Tests.TestModel;
 
-public class TestEntity : BaseEntity<Guid>
+public class TestEntity : IBaseEntity<Guid>
 {
-    // ReSharper disable EntityFramework.ModelValidation.UnlimitedStringLength
+    public Guid Id { get; set; }
+
     public required string Name { get; init; }
-    // ReSharper restore EntityFramework.ModelValidation.UnlimitedStringLength
     
     public TestRelationEntity? Relation { get; init; }
+
+    public DateTimeOffset CreatedDate { get; set; }
+
+    public DateTimeOffset UpdatedDate { get; set; }
 }

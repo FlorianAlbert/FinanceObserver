@@ -1,45 +1,35 @@
-﻿namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public sealed class User : BaseEntity<Guid>
+namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+
+public sealed class User : IdentityUser<Guid>, IBaseEntity<Guid>
 {
-    private ICollection<Email>? _emails;
+    public User()
+    {
+    }
 
-    // Navigation properties
-    public required string UserName { get; set; }
+    public string? FirstName { get; set; }
 
-    public required string FirstName { get; set; }
-
-    public required string LastName { get; set; }
+    public string? LastName { get; set; }
 
     public string FullName => $"{FirstName} {LastName}";
 
-    public required string EmailAddress { get; set; }
+    public DateOnly BirthDate { get; init; }
 
-    public required DateOnly BirthDate { get; init; }
+    // Navigation properties
 
-    public required string PasswordHash { get; set; }
-
-    private RegistrationConfirmation? _registrationConfirmation;
-    public RegistrationConfirmation RegistrationConfirmation
-    {
-        get => _registrationConfirmation ??= new RegistrationConfirmation
-        {
-            Id = Guid.Empty,
-            User = this
-        };
-        set => _registrationConfirmation = value;
-    }
-    
-    private ICollection<Transaction>? _transactions;
     public ICollection<Transaction> Transactions
     {
-        get => _transactions ??= new List<Transaction>();
-        set => _transactions = value.ToList();
+        get => field ??= [];
+        set;
     }
-
     public ICollection<Email> Emails
     {
-        get => _emails ??= new List<Email>();
-        set => _emails = value.ToList();
+        get => field ??= [];
+        set;
     }
+
+    public DateTimeOffset CreatedDate { get; set; }
+
+    public DateTimeOffset UpdatedDate { get; set; }
 }

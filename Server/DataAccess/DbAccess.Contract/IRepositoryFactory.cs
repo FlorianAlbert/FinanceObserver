@@ -7,5 +7,5 @@ public interface IRepositoryFactory
     IRepository<TKey, TEntity> CreateRepository<TKey, TEntity>()
         where TKey : IParsable<TKey>,
         IEquatable<TKey>
-        where TEntity : BaseEntity<TKey>;
+        where TEntity : class, IBaseEntity<TKey>;
 }

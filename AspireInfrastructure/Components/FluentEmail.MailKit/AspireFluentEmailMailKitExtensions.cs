@@ -1,5 +1,4 @@
 ﻿using FluentEmail.MailKitSmtp;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -56,13 +55,6 @@ public static class AspireFluentEmailMailKitExtensions
                 });
         }
 
-        return builder;
-    }
-
-    public static IHostApplicationBuilder AddIdentityEmailSender(
-        this IHostApplicationBuilder builder)
-    {
-        builder.Services.AddTransient<IEmailSender, FluentEmailSender>();
         return builder;
     }
 
