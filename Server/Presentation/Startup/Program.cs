@@ -1,8 +1,9 @@
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using FlorianAlbert.FinanceObserver.Server.Startup;
 using FlorianAlbert.FinanceObserver.Server.Startup.Extensions;
+using Microsoft.AspNetCore.Identity;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
@@ -16,9 +17,11 @@ builder.Host.UseDefaultServiceProvider(serviceProviderOptions =>
 
 builder.InstallServices(typeof(IServiceInstaller).Assembly);
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.MapDefaultEndpoints();
+
+app.MapIdentityApi<User>();
 
 app.UseMigrations();
 

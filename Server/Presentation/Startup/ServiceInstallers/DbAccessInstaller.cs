@@ -1,6 +1,8 @@
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -64,6 +66,9 @@ internal class DbAccessInstaller : IServiceInstaller
         }
 
         builder.Services.AddScoped<DbContext>(provider => provider.GetRequiredService<FinanceObserverContext>());
+
+        builder.Services.AddIdentityApiEndpoints<User>()
+            .AddEntityFrameworkStores<FinanceObserverContext>();
 
         builder.Services.AddScoped<IRepositoryFactory, RepositoryFactory>();
         builder.Services.AddScoped<IDbTransactionHandler, DbTransactionHandler>();

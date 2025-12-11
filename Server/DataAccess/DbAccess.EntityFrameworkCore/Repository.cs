@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
 
 public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
-    where TEntity : BaseEntity<TKey>
+    where TEntity : class, IBaseEntity<TKey>
     where TKey : IParsable<TKey>,
     IEquatable<TKey>
 {
@@ -66,7 +66,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
         foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
         {
-            if (entry.Entity is LifecycleTrackable lifecycleTrackable)
+            if (entry.Entity is ILifecycleTrackable lifecycleTrackable)
             {
                lifecycleTrackable.CreatedDate = createdTime;
                lifecycleTrackable.UpdatedDate = createdTime;
@@ -75,7 +75,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
         foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
         {
-            if (entry.Entity is LifecycleTrackable lifecycleTrackable)
+            if (entry.Entity is ILifecycleTrackable lifecycleTrackable)
             {
                 lifecycleTrackable.UpdatedDate = createdTime;
             }
@@ -101,7 +101,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
         foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Added))
         {
-            if (entry.Entity is LifecycleTrackable lifecycleTrackable)
+            if (entry.Entity is ILifecycleTrackable lifecycleTrackable)
             {
                 lifecycleTrackable.CreatedDate = createdTime;
                 lifecycleTrackable.UpdatedDate = createdTime;
@@ -110,7 +110,7 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
 
         foreach (EntityEntry? entry in _context.ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified))
         {
-            if (entry.Entity is LifecycleTrackable lifecycleTrackable)
+            if (entry.Entity is ILifecycleTrackable lifecycleTrackable)
             {
                 lifecycleTrackable.UpdatedDate = createdTime;
             }
@@ -171,8 +171,8 @@ public class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
             Member:
             {
                 MemberType: MemberTypes.Property,
-                Name: nameof(BaseEntity<>.UpdatedDate) or nameof(BaseEntity<>.CreatedDate)
-                or nameof(BaseEntity<>.Id)
+                Name: nameof(IBaseEntity<>.UpdatedDate) or nameof(IBaseEntity<>.CreatedDate)
+                or nameof(IBaseEntity<>.Id)
             }
         }).ToList();
         

@@ -22,12 +22,12 @@ public class EmailManager : IEmailManager
     {
         await _repository.InsertAsync(email, cancellationToken);
 
-        var sendResponse = await _fluentEmailFactory
+        SendResponse sendResponse = await _fluentEmailFactory
             .Create()
             .To(email.Receivers.Select(user => new Address
             {
                 Name = user.FullName,
-                EmailAddress = user.EmailAddress
+                EmailAddress = user.Email
             }))
             .Subject(email.Subject)
             .Body(email.Message)

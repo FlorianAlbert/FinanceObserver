@@ -18,14 +18,11 @@
         <ProjectReference Include="..\..\..\AspireInfrastructure\Components\FluentEmail.MailKit\Aspire.FluentEmail.MailKit.csproj" />
         <ProjectReference Include="..\..\..\AspireInfrastructure\ServiceDefaults\ServiceDefaults.csproj" />
         <ProjectReference Include="..\..\DataAccess\DbAccess.EntityFrameworkCore\DbAccess.EntityFrameworkCore.csproj" />
-        <ProjectReference Include="..\..\Logic\Business\RegistrationWorkflow\RegistrationWorkflow.csproj" />
+        <ProjectReference Include="..\..\Logic\Business\Identity.EmailSending\Identity.EmailSending.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\DataTransactionHandling\DataTransactionHandling.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\EmailManagement.Contract\EmailManagement.Contract.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\EmailManagement\EmailManagement.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\HashHandling.SHA512\HashHandling.SHA512.csproj" />
-        <ProjectReference Include="..\..\Logic\Domain\RegistrationConfirmationManagement\RegistrationConfirmationManagement.csproj" />
-        <ProjectReference Include="..\..\Logic\Domain\UserManagement.Contract\UserManagement.Contract.csproj" />
-        <ProjectReference Include="..\..\Logic\Domain\UserManagement\UserManagement.csproj" />
         <ProjectReference Include="..\REST\REST.csproj" />
     </ItemGroup>
 </Project>

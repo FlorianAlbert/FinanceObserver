@@ -37,7 +37,7 @@ public class BaseController : ControllerBase
             problemDetails.Extensions["errors"] = errors;
         }
 
-        var status = errors.All(e => e.Status == errors[0].Status) ? errors[0].Status : 500;
+        int status = errors.All(e => e.Status == errors[0].Status) ? errors[0].Status : 500;
 
         problemDetails.Status = status;
         return StatusCode(status, problemDetails);
@@ -50,6 +50,6 @@ public class BaseController : ControllerBase
     /// <returns>The ProblemDetails response</returns>
     protected IActionResult ProblemDetailsFromErrors(IEnumerable<Error> errors)
     {
-        return ProblemDetailsFromErrors(errors as Error[] ?? errors.ToArray());
+        return ProblemDetailsFromErrors(errors as Error[] ?? [.. errors]);
     }
 }

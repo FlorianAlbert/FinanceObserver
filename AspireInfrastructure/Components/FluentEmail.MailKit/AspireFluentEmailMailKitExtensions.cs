@@ -10,7 +10,7 @@ public static class AspireFluentEmailMailKitExtensions
     private const string _hostEnvKey = "FINANCE_OBSERVER_SMTP_CONNECTION_STRING";
     private const string _hostFileEnvKey = "FINANCE_OBSERVER_SMTP_CONNECTION_STRING_FILE";
 
-    public static void AddFluentEmail(
+    public static IHostApplicationBuilder AddFluentEmail(
         this IHostApplicationBuilder builder,
         string connectionName,
         string fromEmailAddress,
@@ -54,5 +54,8 @@ public static class AspireFluentEmailMailKitExtensions
                     UseSsl = false
                 });
         }
+
+        return builder;
     }
+
 }

@@ -1,6 +1,8 @@
 using Aspire.FluentEmail.MailKit;
+using FlorianAlbert.FinanceObserver.Server.Logic.Business.Identity.EmailSending;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Contract;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace FlorianAlbert.FinanceObserver.Server.Startup.ServiceInstallers;
 
@@ -37,6 +39,7 @@ internal class EmailManagementInstaller : IServiceInstaller
         ArgumentException.ThrowIfNullOrEmpty(fromEmailName);
 
         builder.AddFluentEmail("maildev", fromEmailAddress, fromEmailName);
+        builder.Services.AddTransient<IEmailSender, IdentityEmailSender>();
 
         //Register services
         builder.Services.AddScoped<IEmailManager, EmailManager>();

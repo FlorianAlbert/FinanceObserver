@@ -1,5 +1,6 @@
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Tests.TestModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Tests;
 
@@ -19,7 +20,7 @@ public class TestDbContext : DbContext
         modelBuilder.Entity<TestEntity>()
             .HasOne(entity => entity.Relation)
             .WithMany(relation => relation.TestEntities);
-        
+
         modelBuilder.Entity<TestRelationEntity>()
             .HasKey(entity => entity.Id);
         modelBuilder.Entity<TestRelationEntity>()

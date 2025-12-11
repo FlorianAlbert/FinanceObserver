@@ -2,12 +2,17 @@ using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Tests.TestModel;
 
-public class TestRelationEntity : BaseEntity<Guid>
+public class TestRelationEntity : IBaseEntity<Guid>
 {
-    private ICollection<TestEntity>? _testEntities;
+    public Guid Id { get; set; }
+
+    public DateTimeOffset CreatedDate { get; set; }
+
+    public DateTimeOffset UpdatedDate { get; set; }
+
     public ICollection<TestEntity> TestEntities
     {
-        get => _testEntities ??= new List<TestEntity>();
-        set => _testEntities = value.ToList();
+        get => field ??= [];
+        set;
     }
 }

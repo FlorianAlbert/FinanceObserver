@@ -1,7 +1,9 @@
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 
-public class Transaction : BaseEntity<Guid>
+public class Transaction : IBaseEntity<Guid>
 {
+    public Guid Id { get; set; }
+
     public required string Title { get; set; }
 
     public required string Description { get; set; }
@@ -13,4 +15,8 @@ public class Transaction : BaseEntity<Guid>
     public required DateTimeOffset Time { get; set; }
 
     public required User Owner { get; set; }
+
+    public DateTimeOffset CreatedDate { get; set; }
+
+    public DateTimeOffset UpdatedDate { get; set; }
 }

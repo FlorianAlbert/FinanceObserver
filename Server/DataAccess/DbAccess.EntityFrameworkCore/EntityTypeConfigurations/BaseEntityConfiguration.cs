@@ -7,7 +7,7 @@ namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFramewo
 internal abstract class BaseEntityConfiguration<TKey, TEntity> : IEntityTypeConfiguration<TEntity>
     where TKey : IParsable<TKey>,
                  IEquatable<TKey>
-    where TEntity : BaseEntity<TKey>
+    where TEntity : class, IBaseEntity<TKey>
 {
     public virtual void Configure(EntityTypeBuilder<TEntity> builder)
     {

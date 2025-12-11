@@ -18,7 +18,7 @@ public abstract class Inclusion
 
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj))
+        if (obj is null)
         {
             return false;
         }
@@ -53,12 +53,12 @@ public abstract class Inclusion
 }
 
 public abstract class Inclusion<TKey, TEntity> : Inclusion
-    where TEntity : BaseEntity<TKey>?
+    where TEntity : IBaseEntity<TKey>?
     where TKey : IParsable<TKey>,
     IEquatable<TKey>
 {
     public static Inclusion<TKey, TEntity, TPropertyKey, TProperty, ICollection<TProperty>> Of<TPropertyKey, TProperty>(Expression<Func<TEntity, ICollection<TProperty>>> inclusion)
-        where TProperty : BaseEntity<TPropertyKey>
+        where TProperty : IBaseEntity<TPropertyKey>
         where TPropertyKey : IParsable<TPropertyKey>,
         IEquatable<TPropertyKey>
     {
@@ -66,7 +66,7 @@ public abstract class Inclusion<TKey, TEntity> : Inclusion
     }
 
     public static Inclusion<TKey, TEntity, TPropertyKey, TProperty, TProperty> Of<TPropertyKey, TProperty>(Expression<Func<TEntity, TProperty>> inclusion)
-        where TProperty : BaseEntity<TPropertyKey>?
+        where TProperty : IBaseEntity<TPropertyKey>?
         where TPropertyKey : IParsable<TPropertyKey>,
         IEquatable<TPropertyKey>
     {
@@ -75,10 +75,10 @@ public abstract class Inclusion<TKey, TEntity> : Inclusion
 }
 
 public class Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> : Inclusion<TKey, TEntity>
-    where TEntity : BaseEntity<TKey>?
+    where TEntity : IBaseEntity<TKey>?
     where TKey : IParsable<TKey>,
     IEquatable<TKey>
-    where TProperty : BaseEntity<TPropertyKey>?
+    where TProperty : IBaseEntity<TPropertyKey>?
     where TPropertyKey : IParsable<TPropertyKey>,
     IEquatable<TPropertyKey>
 {
@@ -99,7 +99,7 @@ public class Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> : Inclu
             throw new ArgumentException($"Expression '{inclusion}' refers to a field, not a property.");
         }
 
-        var type = typeof(TEntity);
+        Type type = typeof(TEntity);
         if (propInfo.ReflectedType != null && !propInfo.ReflectedType.IsAssignableFrom(type))
         {
             throw new ArgumentException($"Expression '{inclusion}' refers to a property that is not from type {type}.");
@@ -112,7 +112,7 @@ public class Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> : Inclu
 
     public Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> AddChildInclusion<TNestedPropertyKey, TNestedProperty>(
         Inclusion<TPropertyKey, TProperty, TNestedPropertyKey, TNestedProperty, TNestedProperty> childInclusion)
-        where TNestedProperty : BaseEntity<TNestedPropertyKey>
+        where TNestedProperty : IBaseEntity<TNestedPropertyKey>
         where TNestedPropertyKey : IParsable<TNestedPropertyKey>,
         IEquatable<TNestedPropertyKey>
     {
@@ -124,7 +124,7 @@ public class Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> : Inclu
     public Inclusion<TKey, TEntity, TPropertyKey, TProperty, TInclude> AddChildInclusion<TContentKey, TContent, TCollection>(
         Inclusion<TPropertyKey, TProperty, TContentKey, TContent, TCollection> childInclusion)
         where TCollection : class, ICollection<TContent>
-        where TContent : BaseEntity<TContentKey>
+        where TContent : IBaseEntity<TContentKey>
         where TContentKey : IParsable<TContentKey>,
         IEquatable<TContentKey>
     {
