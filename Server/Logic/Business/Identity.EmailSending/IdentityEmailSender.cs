@@ -31,7 +31,7 @@ public class IdentityEmailSender : IEmailSender
         {
             if (logger.IsEnabled(LogLevel.Error))
             {
-                logger.LogError("Tried to send email to non existing user with email {Email}.", email);
+                logger.LogError("Tried to send email to non existing user.");
             }
 
             return;
@@ -47,12 +47,9 @@ public class IdentityEmailSender : IEmailSender
 
         Result sendResult = await emailManager.SendEmailAsync(emailToSend);
 
-        if (sendResult.Failed)
+        if (sendResult.Failed && logger.IsEnabled(LogLevel.Error))
         {
-            if (logger.IsEnabled(LogLevel.Error))
-            {
-                logger.LogError("Failed to send email to {Email}. Errors: {Errors}", email, string.Join(", ", sendResult.Errors));
-            }
+            logger.LogError("Failed to send email. Errors: {Errors}", string.Join(", ", sendResult.Errors));
         }
     }
 }
