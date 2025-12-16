@@ -1,4 +1,5 @@
 using Aspire.Hosting.MailDev;
+using Scalar.Aspire;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
@@ -42,5 +43,20 @@ IResourceBuilder<ProjectResource> api = builder.AddProject<Projects.Startup>("st
     .WaitFor(database)
     .WithReference(smtpServerResource)
     .WaitFor(smtpServerResource);
+
+if (builder.ExecutionContext.IsRunMode)
+{
+    IResourceBuilder<ScalarResource> scalar = builder.AddScalarApiReference(options =>
+    {
+        options.PreferHttpsEndpoint()
+            .AllowSelfSignedCertificates();
+
+        // Disable proxying to get correct confirmation links in emails
+        options.DisableDefaultProxy();
+    });
+
+    // Every reference added in the future should have CORS configured to allow calls from Scalar
+    scalar.WithApiReference(api).WaitFor(api);
+}
 
 builder.Build().Run();
