@@ -19,10 +19,6 @@ internal class ControllersInstaller : IServiceInstaller
             options.Password.RequiredUniqueChars = 4;
         });
 
-        builder.Services.AddControllers()
-            .AddApplicationPart(typeof(AssemblyReference).Assembly);
-
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddOpenApi(options =>
         {
