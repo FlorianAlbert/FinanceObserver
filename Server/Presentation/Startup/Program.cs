@@ -2,6 +2,7 @@ using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
 using FlorianAlbert.FinanceObserver.Server.Startup;
 using FlorianAlbert.FinanceObserver.Server.Startup.Extensions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,21 @@ builder.Host.UseDefaultServiceProvider(serviceProviderOptions =>
 // Add services to the container.
 
 builder.InstallServices(typeof(IServiceInstaller).Assembly);
+
+builder.Services.AddAuthorization();
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequiredUniqueChars = 4;
+});
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddOpenApi(options =>
+{
+    options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1;
+});
 
 // CORS for local development (needed when Scalar proxy is disabled)
 if (builder.Environment.IsDevelopment())
