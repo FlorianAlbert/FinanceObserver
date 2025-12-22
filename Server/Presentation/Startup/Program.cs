@@ -1,5 +1,8 @@
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
-using FlorianAlbert.FinanceObserver.Server.Startup;
+using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Extensions;
+using FlorianAlbert.FinanceObserver.Server.Logic.Business.Identity.EmailSending.Extensions;
+using FlorianAlbert.FinanceObserver.Server.Logic.Domain.DataTransactionHandling.Extensions;
+using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Extensions;
 using FlorianAlbert.FinanceObserver.Server.Startup.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi;
@@ -15,8 +18,6 @@ builder.Host.UseDefaultServiceProvider(serviceProviderOptions =>
 });
 
 // Add services to the container.
-
-builder.InstallServices(typeof(IServiceInstaller).Assembly);
 
 builder.Services.AddAuthorization();
 builder.Services.Configure<IdentityOptions>(options =>
@@ -56,6 +57,13 @@ if (builder.Environment.IsDevelopment())
     });
 }
 
+builder.AddDataTransactionHandling();
+
+builder.AddEntityFrameworkCoreDbAccess();
+
+builder.AddFluentEmailManagement();
+builder.AddIdentityEmailSending();
+
 WebApplication app = builder.Build();
 
 app.MapDefaultEndpoints();
@@ -71,8 +79,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
-
-app.MapControllers();
 
 // Maps the OpenAPI endpoint for API documentation.
 // The OpenAPI specification will be available at '/openapi/v1.json' (e.g., https://localhost:5001/openapi/v1.json).

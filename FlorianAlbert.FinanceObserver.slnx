@@ -29,9 +29,6 @@
     <Project Path="Server/Logic/Domain/EmailManagement.Contract/EmailManagement.Contract.csproj" />
     <Project Path="Server/Logic/Domain/EmailManagement.Tests/EmailManagement.Tests.csproj" />
     <Project Path="Server/Logic/Domain/EmailManagement/EmailManagement.csproj" />
-    <Project Path="Server/Logic/Domain/HashHandling.Contract/HashHandling.Contract.csproj" />
-    <Project Path="Server/Logic/Domain/HashHandling.SHA512.Tests/HashHandling.SHA512.Tests.csproj" />
-    <Project Path="Server/Logic/Domain/HashHandling.SHA512/HashHandling.SHA512.csproj" />
   </Folder>
   <Folder Name="/Server/Presentation/">
     <Project Path="Server/Presentation/REST/REST.csproj" />
