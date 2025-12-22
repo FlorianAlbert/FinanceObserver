@@ -6,8 +6,8 @@ namespace FlorianAlbert.FinanceObserver.Server.MigrationService;
 
 public class Worker : BackgroundService
 {
-public Worker(IServiceProvider serviceProvider,
-    IHostApplicationLifetime hostApplicationLifetime)
+    public Worker(IServiceProvider serviceProvider, 
+        IHostApplicationLifetime hostApplicationLifetime)
     {
         _serviceProvider = serviceProvider;
         _hostApplicationLifetime = hostApplicationLifetime;
