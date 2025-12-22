@@ -3,15 +3,16 @@
     <Project Path="AspireInfrastructure/AppHost/AppHost.csproj" />
     <Project Path="AspireInfrastructure/ServiceDefaults/ServiceDefaults.csproj" />
   </Folder>
-  <Folder Name="/AspireInfrastructure/Components/">
-    <Project Path="AspireInfrastructure/Components/FluentEmail.MailKit/Aspire.FluentEmail.MailKit.csproj" />
+  <Folder Name="/AspireInfrastructure/ClientIntegrations/">
+    <Project Path="AspireInfrastructure/ClientIntegrations/FluentEmail.MailKit/Aspire.FluentEmail.MailKit.csproj" />
   </Folder>
-  <Folder Name="/AspireInfrastructure/Hosting/">
-    <Project Path="AspireInfrastructure/Hosting/MailDev/Aspire.Hosting.MailDev.csproj" />
+  <Folder Name="/AspireInfrastructure/HostingIntegrations/">
+    <Project Path="AspireInfrastructure/HostingIntegrations/MailDev/Aspire.Hosting.MailDev.csproj" />
   </Folder>
   <Folder Name="/Server/" />
   <Folder Name="/Server/CrossCutting/">
-    <Project Path="Server/CrossCutting/DataClasses/DataClasses.csproj" />
+    <Project Path="Server/CrossCutting/Infrastructure/Infrastructure.csproj" />
+    <Project Path="Server/CrossCutting/Model/Model.csproj" Id="c192f657-3585-490a-8676-26ce0852e881" />
   </Folder>
   <Folder Name="/Server/DataAccess/">
     <Project Path="Server/DataAccess/DbAccess.Contract/DbAccess.Contract.csproj" />
@@ -29,12 +30,9 @@
     <Project Path="Server/Logic/Domain/EmailManagement.Contract/EmailManagement.Contract.csproj" />
     <Project Path="Server/Logic/Domain/EmailManagement.Tests/EmailManagement.Tests.csproj" />
     <Project Path="Server/Logic/Domain/EmailManagement/EmailManagement.csproj" />
-    <Project Path="Server/Logic/Domain/HashHandling.Contract/HashHandling.Contract.csproj" />
-    <Project Path="Server/Logic/Domain/HashHandling.SHA512.Tests/HashHandling.SHA512.Tests.csproj" />
-    <Project Path="Server/Logic/Domain/HashHandling.SHA512/HashHandling.SHA512.csproj" />
   </Folder>
   <Folder Name="/Server/Presentation/">
-    <Project Path="Server/Presentation/REST/REST.csproj" />
+    <Project Path="Server/Presentation/MigrationService/MigrationService.csproj" />
     <Project Path="Server/Presentation/Startup/Startup.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">

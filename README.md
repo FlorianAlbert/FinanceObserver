@@ -1,6 +1,6 @@
 # FinanceObserver
 
-This is a learning project aiming to develop a platform to observe your finances and everything around it. 
+This is a learning project aiming to develop a platform to observe your finances and everything around it.
 
 [![Continous Integration .NET](https://github.com/FlorianAlbert/FinanceObserver/actions/workflows/dotnet-integration.yml/badge.svg?event=push)](https://github.com/FlorianAlbert/FinanceObserver/actions/workflows/dotnet-integration.yml)
 [![codecov](https://codecov.io/gh/FlorianAlbert/FinanceObserver/graph/badge.svg?token=LW7XCTFPW3)](https://codecov.io/gh/FlorianAlbert/FinanceObserver)
@@ -28,23 +28,23 @@ There is nothing to set up.
 
 ### Executing program
 
-#### Development version:
+#### Development version
 
-* The project uses .NET Aspire.
+* The project uses Aspire.
 
 * To start the whole application just start the `AppHost` project.
 
 * This starts:
-    * A development SMTP Server ([MailDev](https://maildev.github.io/maildev/)) on the [localhost](localhost:1080) with a web UI.
-    * A [PosgreSQL](https://www.postgresql.org/) database.
-    * A [pgAdmin](https://www.pgadmin.org/) web UI on the [localhost](localhost:9080).
-    * The FinanceObserver backend on the [localhost](localhost:5000).
+  * A development SMTP Server ([MailDev](https://maildev.github.io/maildev/)) on the [localhost](localhost:1080) with a web UI.
+  * A [PosgreSQL](https://www.postgresql.org/) database.
+  * A [pgAdmin](https://www.pgadmin.org/) web UI on the localhost.
+  * The FinanceObserver backend on the localhost.
 
 * If you want to customize some settings of the FinanceObserver backend you can edit them by adjusting the environment variables in the `Program.cs` of the `AppHost` project.
 
 ## Authors
 
-#### Florian Albert
+### Florian Albert
 
 * [Github](https://github.com/FlorianAlbert)
 * [LinkedIn](https://www.linkedin.com/in/florian-albert-2b9a89213)
@@ -55,4 +55,4 @@ There is nothing to set up.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

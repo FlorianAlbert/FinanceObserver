@@ -2,7 +2,7 @@ using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.Infrastructu
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FluentEmail.Core;
 using FluentEmail.Core.Models;
-using Email = FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models.Email;
+using Email = FlorianAlbert.FinanceObserver.Server.CrossCutting.Model.Email;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Tests;
 
@@ -60,6 +60,7 @@ public class EmailManagerTests
 
         SendResponse sendResponse = _fixture.Create<SendResponse>();
 
+        _emailRepositoryMock.InsertAsync(_email, Arg.Any<CancellationToken>()).Returns(_email);
         _fluentEmailMock.SendAsync(Arg.Any<CancellationToken>()).Returns(sendResponse);
 
         // Act
@@ -78,6 +79,7 @@ public class EmailManagerTests
 
         SendResponse sendResponse = _fixture.Create<SendResponse>();
 
+        _emailRepositoryMock.InsertAsync(_email, Arg.Any<CancellationToken>()).Returns(_email);
         _fluentEmailMock.SendAsync(Arg.Any<CancellationToken>()).Returns(sendResponse);
 
         // Act
@@ -95,6 +97,7 @@ public class EmailManagerTests
             customizationComposer.With(sendResponse => sendResponse.ErrorMessages,
                 [.. _fixture.CreateMany<string>()]));
 
+        _emailRepositoryMock.InsertAsync(_email, Arg.Any<CancellationToken>()).Returns(_email);
         SendResponse sendResponse = _fixture.Create<SendResponse>();
 
         _fluentEmailMock.SendAsync(Arg.Any<CancellationToken>()).Returns(sendResponse);
@@ -116,6 +119,7 @@ public class EmailManagerTests
 
         SendResponse sendResponse = _fixture.Create<SendResponse>();
 
+        _emailRepositoryMock.InsertAsync(_email, Arg.Any<CancellationToken>()).Returns(_email);
         _fluentEmailMock.SendAsync(Arg.Any<CancellationToken>()).Returns(sendResponse);
 
         // Act
@@ -136,6 +140,7 @@ public class EmailManagerTests
 
         SendResponse sendResponse = _fixture.Create<SendResponse>();
 
+        _emailRepositoryMock.InsertAsync(_email, Arg.Any<CancellationToken>()).Returns(_email);
         _fluentEmailMock.SendAsync(Arg.Any<CancellationToken>()).Returns(sendResponse);
 
         // Act

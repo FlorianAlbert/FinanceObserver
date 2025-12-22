@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.0.0">
+<Project Sdk="Aspire.AppHost.Sdk/13.1.0">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -11,10 +11,12 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+    <PackageReference Include="Scalar.Aspire" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hosting\MailDev\Aspire.Hosting.MailDev.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="..\..\Server\Presentation\MigrationService\MigrationService.csproj" />
+    <ProjectReference Include="..\HostingIntegrations\MailDev\Aspire.Hosting.MailDev.csproj" IsAspireProjectResource="false" />
     <ProjectReference Include="..\..\Server\Presentation\Startup\Startup.csproj" />
   </ItemGroup>
 

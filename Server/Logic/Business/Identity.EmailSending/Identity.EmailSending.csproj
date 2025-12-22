@@ -15,4 +15,8 @@
     <ProjectReference Include="..\..\Domain\EmailManagement.Contract\EmailManagement.Contract.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+	<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+  </ItemGroup>
+
 </Project>
