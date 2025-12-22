@@ -3,11 +3,11 @@
     <Project Path="AspireInfrastructure/AppHost/AppHost.csproj" />
     <Project Path="AspireInfrastructure/ServiceDefaults/ServiceDefaults.csproj" />
   </Folder>
-  <Folder Name="/AspireInfrastructure/Components/">
-    <Project Path="AspireInfrastructure/Components/FluentEmail.MailKit/Aspire.FluentEmail.MailKit.csproj" />
+  <Folder Name="/AspireInfrastructure/ClientIntegrations/">
+    <Project Path="AspireInfrastructure/ClientIntegrations/FluentEmail.MailKit/Aspire.FluentEmail.MailKit.csproj" />
   </Folder>
-  <Folder Name="/AspireInfrastructure/Hosting/">
-    <Project Path="AspireInfrastructure/Hosting/MailDev/Aspire.Hosting.MailDev.csproj" />
+  <Folder Name="/AspireInfrastructure/HostingIntegrations/">
+    <Project Path="AspireInfrastructure/HostingIntegrations/MailDev/Aspire.Hosting.MailDev.csproj" />
   </Folder>
   <Folder Name="/Server/" />
   <Folder Name="/Server/CrossCutting/">
