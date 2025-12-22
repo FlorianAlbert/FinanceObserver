@@ -50,7 +50,7 @@ public class EmailManager : IEmailManager
             activity?.SetStatus(ActivityStatusCode.Error, "Email send failed");
             return Result.Failure(Errors.EmailSendUnsuccessful(
                 sendResponse.ErrorMessages.Aggregate(
-                        "The following errors occured: ",
+                        "The following errors occurred: ",
                         (current, next) => current + $"\n\t- {next},")
                     .TrimEnd(',')
             ));
