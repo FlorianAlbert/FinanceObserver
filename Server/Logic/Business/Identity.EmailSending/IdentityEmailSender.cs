@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Model;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Contract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;

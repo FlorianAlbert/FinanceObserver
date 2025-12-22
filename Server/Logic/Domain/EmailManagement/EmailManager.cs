@@ -4,7 +4,7 @@ using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Contract;
 using FluentEmail.Core;
 using FluentEmail.Core.Models;
-using Email = FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models.Email;
+using Email = FlorianAlbert.FinanceObserver.Server.CrossCutting.Model.Email;
 
 namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement;
 

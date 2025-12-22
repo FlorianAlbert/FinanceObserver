@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+namespace FlorianAlbert.FinanceObserver.Server.CrossCutting.Model;
 
 public sealed class User : IdentityUser<Guid>, IBaseEntity<Guid>
 {

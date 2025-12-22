@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\CrossCutting\DataClasses\DataClasses.csproj" />
+      <ProjectReference Include="..\..\CrossCutting\DataClasses\Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

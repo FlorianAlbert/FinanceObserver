@@ -11,7 +11,8 @@
   </Folder>
   <Folder Name="/Server/" />
   <Folder Name="/Server/CrossCutting/">
-    <Project Path="Server/CrossCutting/DataClasses/DataClasses.csproj" />
+    <Project Path="Server/CrossCutting/Infrastructure/Infrastructure.csproj" />
+    <Project Path="Server/CrossCutting/Model/Model.csproj" Id="c192f657-3585-490a-8676-26ce0852e881" />
   </Folder>
   <Folder Name="/Server/DataAccess/">
     <Project Path="Server/DataAccess/DbAccess.Contract/DbAccess.Contract.csproj" />
