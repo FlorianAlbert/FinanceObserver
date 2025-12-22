@@ -32,7 +32,6 @@
     <Project Path="Server/Logic/Domain/EmailManagement/EmailManagement.csproj" />
   </Folder>
   <Folder Name="/Server/Presentation/">
-    <Project Path="Server/Presentation/REST/REST.csproj" />
     <Project Path="Server/Presentation/Startup/Startup.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">

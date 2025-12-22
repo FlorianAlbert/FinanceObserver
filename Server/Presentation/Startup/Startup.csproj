@@ -19,6 +19,5 @@
         <ProjectReference Include="..\..\Logic\Domain\DataTransactionHandling\DataTransactionHandling.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\EmailManagement.Contract\EmailManagement.Contract.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\EmailManagement\EmailManagement.csproj" />
-        <ProjectReference Include="..\REST\REST.csproj" />
     </ItemGroup>
 </Project>
