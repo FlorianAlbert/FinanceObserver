@@ -11,7 +11,9 @@ namespace FlorianAlbert.FinanceObserver.Server.Logic.Business.Identity.EmailSend
 
 public class IdentityEmailSender : IEmailSender
 {
-    private static readonly ActivitySource _activity = new(typeof(IdentityEmailSender).FullName ?? nameof(IdentityEmailSender));
+    public const string ActivitySourceName = "IdentityEmailSending";
+
+    private static readonly ActivitySource _activity = new(ActivitySourceName);
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public IdentityEmailSender(IServiceScopeFactory serviceScopeFactory)

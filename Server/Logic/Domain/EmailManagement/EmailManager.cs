@@ -10,7 +10,9 @@ namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement;
 
 public class EmailManager : IEmailManager
 {
-    private static readonly ActivitySource _activity = new(typeof(EmailManager).FullName ?? nameof(EmailManager));
+    public const string ActivitySourceName = "EmailManagement";
+
+    private static readonly ActivitySource _activity = new(ActivitySourceName);
     private readonly IFluentEmailFactory _fluentEmailFactory;
     private readonly IRepository<Guid, Email> _repository;
 

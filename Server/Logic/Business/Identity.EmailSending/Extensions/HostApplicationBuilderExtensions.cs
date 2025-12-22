@@ -17,7 +17,7 @@ public static class HostApplicationBuilderExtensions
             builder.Services.AddOpenTelemetry()
             .WithTracing(tracing =>
             {
-                tracing.AddSource(typeof(IdentityEmailSender).FullName ?? nameof(IdentityEmailSender));
+                tracing.AddSource(IdentityEmailSender.ActivitySourceName);
             });
 
             return builder;
