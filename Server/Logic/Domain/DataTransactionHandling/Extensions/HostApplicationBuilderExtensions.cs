@@ -6,7 +6,7 @@ namespace FlorianAlbert.FinanceObserver.Server.Logic.Domain.DataTransactionHandl
 
 public static class HostApplicationBuilderExtensions
 {
-    extension (IHostApplicationBuilder builder)
+    extension(IHostApplicationBuilder builder)
     {
         public IHostApplicationBuilder AddDataTransactionHandling()
         {

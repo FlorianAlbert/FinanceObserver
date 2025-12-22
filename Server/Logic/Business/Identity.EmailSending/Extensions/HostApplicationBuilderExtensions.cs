@@ -8,7 +8,7 @@ namespace FlorianAlbert.FinanceObserver.Server.Logic.Business.Identity.EmailSend
 
 public static class HostApplicationBuilderExtensions
 {
-    extension (IHostApplicationBuilder builder)
+    extension(IHostApplicationBuilder builder)
     {
         public IHostApplicationBuilder AddIdentityEmailSending()
         {

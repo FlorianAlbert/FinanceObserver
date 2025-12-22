@@ -16,7 +16,7 @@ public static class HostApplicationBuilderExtensions
     private const string _fromEmailNameEnvKey = "FINANCE_OBSERVER_FROM_EMAIL_NAME";
     private const string _fromEmailNameFileEnvKey = "FINANCE_OBSERVER_FROM_EMAIL_NAME_FILE";
 
-    extension (IHostApplicationBuilder builder)
+    extension(IHostApplicationBuilder builder)
     {
         public IHostApplicationBuilder AddFluentEmailManagement()
         {
