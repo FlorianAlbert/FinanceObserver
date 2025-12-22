@@ -8,27 +8,30 @@ namespace FlorianAlbert.FinanceObserver.Server.Startup.Extensions;
 
 public static class ApplicationBuilderExtensions
 {
-    public static IApplicationBuilder UseMigrations(this IApplicationBuilder app)
+    extension(IApplicationBuilder app)
     {
-        ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
-            .AddRetry(new RetryStrategyOptions
-            {
-                ShouldHandle = new PredicateBuilder().Handle<NpgsqlException>(),
-                MaxRetryAttempts = 5,
-                DelayGenerator = static args =>
+        public IApplicationBuilder UseMigrations()
+        {
+            ResiliencePipeline pipeline = new ResiliencePipelineBuilder()
+                .AddRetry(new RetryStrategyOptions
                 {
-                    double delayInSeconds = Math.Pow(2, args.AttemptNumber);
+                    ShouldHandle = new PredicateBuilder().Handle<NpgsqlException>(),
+                    MaxRetryAttempts = 5,
+                    DelayGenerator = static args =>
+                    {
+                        double delayInSeconds = Math.Pow(2, args.AttemptNumber);
 
-                    return ValueTask.FromResult(TimeSpan.FromSeconds(delayInSeconds) as TimeSpan?);
-                }
-            })
-            .Build();
+                        return ValueTask.FromResult(TimeSpan.FromSeconds(delayInSeconds) as TimeSpan?);
+                    }
+                })
+                .Build();
 
-        using IServiceScope scope = app.ApplicationServices.CreateScope();
-        
-        using DbContext dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
-        pipeline.Execute(dbContext.Database.Migrate);
+            using IServiceScope scope = app.ApplicationServices.CreateScope();
 
-        return app;
+            using DbContext dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+            pipeline.Execute(dbContext.Database.Migrate);
+
+            return app;
+        }
     }
 }

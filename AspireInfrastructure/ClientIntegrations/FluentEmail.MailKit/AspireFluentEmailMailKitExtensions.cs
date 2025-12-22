@@ -7,44 +7,45 @@ namespace Aspire.FluentEmail.MailKit;
 
 public static class AspireFluentEmailMailKitExtensions
 {
-    public static IHostApplicationBuilder AddFluentEmail(
-        this IHostApplicationBuilder builder,
-        string connectionName,
-        string fromEmailAddress,
-        string fromEmailName)
+    extension(IHostApplicationBuilder builder)
     {
-        string? smtpConnectionString = builder.Configuration.GetConnectionString(connectionName);
-        ArgumentException.ThrowIfNullOrEmpty(smtpConnectionString);
-
-        var smtpConnectionStringUri = new Uri(smtpConnectionString);
-        if (!string.IsNullOrEmpty(smtpConnectionStringUri.UserInfo))
+        public IHostApplicationBuilder AddFluentEmail(
+            string connectionName,
+            string fromEmailAddress,
+            string fromEmailName)
         {
-            string[] userInfos = smtpConnectionStringUri.UserInfo.Split(':',
-                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            string? smtpConnectionString = builder.Configuration.GetConnectionString(connectionName);
+            ArgumentException.ThrowIfNullOrEmpty(smtpConnectionString);
 
-            builder.Services.AddFluentEmail(fromEmailAddress, fromEmailName)
-                .AddMailKitSender(new SmtpClientOptions
-                {
-                    Server = smtpConnectionStringUri.Host,
-                    Port = smtpConnectionStringUri.Port,
-                    User = userInfos[0],
-                    Password = userInfos[1],
-                    RequiresAuthentication = true,
-                    UseSsl = false
-                });
-        }
-        else
-        {
-            builder.Services.AddFluentEmail(fromEmailAddress, fromEmailName)
-                .AddMailKitSender(new SmtpClientOptions
-                {
-                    Server = smtpConnectionStringUri.Host,
-                    Port = smtpConnectionStringUri.Port,
-                    UseSsl = false
-                });
-        }
+            var smtpConnectionStringUri = new Uri(smtpConnectionString);
+            if (!string.IsNullOrEmpty(smtpConnectionStringUri.UserInfo))
+            {
+                string[] userInfos = smtpConnectionStringUri.UserInfo.Split(':',
+                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        return builder;
+                builder.Services.AddFluentEmail(fromEmailAddress, fromEmailName)
+                    .AddMailKitSender(new SmtpClientOptions
+                    {
+                        Server = smtpConnectionStringUri.Host,
+                        Port = smtpConnectionStringUri.Port,
+                        User = userInfos[0],
+                        Password = userInfos[1],
+                        RequiresAuthentication = true,
+                        UseSsl = false
+                    });
+            }
+            else
+            {
+                builder.Services.AddFluentEmail(fromEmailAddress, fromEmailName)
+                    .AddMailKitSender(new SmtpClientOptions
+                    {
+                        Server = smtpConnectionStringUri.Host,
+                        Port = smtpConnectionStringUri.Port,
+                        UseSsl = false
+                    });
+            }
+
+            return builder;
+        }
     }
-
 }
