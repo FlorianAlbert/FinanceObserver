@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\EmailManagement.Contract\EmailManagement.Contract.csproj" />
-		<ProjectReference Include="..\..\..\..\AspireInfrastructure\Components\FluentEmail.MailKit\Aspire.FluentEmail.MailKit.csproj" />
+		<ProjectReference Include="..\..\..\..\AspireInfrastructure\ClientIntegrations\FluentEmail.MailKit\Aspire.FluentEmail.MailKit.csproj" />
     </ItemGroup>
 
 
