@@ -4,12 +4,12 @@ namespace Aspire.Hosting.MailDev;
 
 public static class MailDevResourceBuilderExtensions
 {
-    private const string UserEnvVarName = "MAILDEV_INCOMING_USER";
-    private const string PasswordEnvVarName = "MAILDEV_INCOMING_PASS";
+    private const string _userEnvVarName = "MAILDEV_INCOMING_USER";
+    private const string _passwordEnvVarName = "MAILDEV_INCOMING_PASS";
 
     /// <summary>
     /// Adds the <see cref="MailDevResource"/> to the given
-    /// <paramref name="builder"/> instance. Uses the "latest" tag.
+    /// <paramref name="builder"/> instance. Uses the "2.2.1" tag.
     /// </summary>
     /// <param name="builder">The <see cref="IDistributedApplicationBuilder"/>.</param>
     /// <param name="name">The name of the resource.</param>
@@ -44,8 +44,8 @@ public static class MailDevResourceBuilderExtensions
                           name: MailDevResource.SmtpEndpointName)
                       .WithEnvironment(context =>
                       {
-                          context.EnvironmentVariables[UserEnvVarName] = mailDevServer.UserNameReference;
-                          context.EnvironmentVariables[PasswordEnvVarName] = mailDevServer.PasswordParameter;
+                          context.EnvironmentVariables[_userEnvVarName] = mailDevServer.UserNameReference;
+                          context.EnvironmentVariables[_passwordEnvVarName] = mailDevServer.PasswordParameter;
                       })
                       .WithHttpHealthCheck("/healthz");
     }
@@ -59,5 +59,5 @@ internal static class MailDevContainerImageTags
 
     internal const string Image = "maildev/maildev";
 
-    internal const string Tag = "latest";
+    internal const string Tag = "2.2.1";
 }

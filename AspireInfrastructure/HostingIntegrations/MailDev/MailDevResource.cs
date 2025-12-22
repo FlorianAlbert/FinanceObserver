@@ -19,7 +19,7 @@ public class MailDevResource : ContainerResource, IResourceWithConnectionString
     internal const string SmtpEndpointName = "smtp";
     internal const string HttpEndpointName = "http";
 
-    private const string DefaultUserName = "maildev";
+    private const string _defaultUserName = "maildev";
 
     /// <summary>
     /// Gets the primary endpoint for the MailDev server.
@@ -34,7 +34,7 @@ public class MailDevResource : ContainerResource, IResourceWithConnectionString
     internal ReferenceExpression UserNameReference =>
         UserNameParameter is not null ?
             ReferenceExpression.Create($"{UserNameParameter}") :
-            ReferenceExpression.Create($"{DefaultUserName}");
+            ReferenceExpression.Create($"{_defaultUserName}");
 
     /// <summary>
     /// Gets the parameter that contains the MailDev server password.
