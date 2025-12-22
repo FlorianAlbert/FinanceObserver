@@ -41,6 +41,5 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
     <!-- Other Packages -->
     <PackageVersion Include="Polly" Version="8.6.5" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.0.1" />
   </ItemGroup>
 </Project>
