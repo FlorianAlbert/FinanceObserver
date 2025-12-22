@@ -1,6 +1,4 @@
-﻿using FlorianAlbert.FinanceObserver.Server.Logic.Business.Identity.EmailSending;
-using FlorianAlbert.FinanceObserver.Server.Logic.Business.Identity.EmailSending.Extensions;
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

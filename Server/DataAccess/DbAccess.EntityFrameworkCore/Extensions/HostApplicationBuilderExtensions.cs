@@ -1,6 +1,5 @@
 ﻿using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 using FlorianAlbert.FinanceObserver.Server.CrossCutting.Model;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

@@ -1,7 +1,5 @@
 ﻿using Aspire.FluentEmail.MailKit;
-using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Contract;
-using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
