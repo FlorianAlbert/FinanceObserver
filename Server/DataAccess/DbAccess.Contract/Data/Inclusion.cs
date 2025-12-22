@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using System.Reflection;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Model;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
 

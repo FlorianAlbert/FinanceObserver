@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
@@ -8,21 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Polly" />
-        <PackageReference Include="Swashbuckle.AspNetCore" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\AspireInfrastructure\Components\FluentEmail.MailKit\Aspire.FluentEmail.MailKit.csproj" />
         <ProjectReference Include="..\..\..\AspireInfrastructure\ServiceDefaults\ServiceDefaults.csproj" />
         <ProjectReference Include="..\..\DataAccess\DbAccess.EntityFrameworkCore\DbAccess.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\Logic\Business\Identity.EmailSending\Identity.EmailSending.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\DataTransactionHandling\DataTransactionHandling.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\EmailManagement.Contract\EmailManagement.Contract.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\EmailManagement\EmailManagement.csproj" />
-        <ProjectReference Include="..\..\Logic\Domain\HashHandling.SHA512\HashHandling.SHA512.csproj" />
-        <ProjectReference Include="..\REST\REST.csproj" />
     </ItemGroup>
 </Project>

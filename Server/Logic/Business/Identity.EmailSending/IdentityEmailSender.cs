@@ -1,5 +1,6 @@
-﻿using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+﻿using System.Diagnostics;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Model;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Contract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -10,6 +11,9 @@ namespace FlorianAlbert.FinanceObserver.Server.Logic.Business.Identity.EmailSend
 
 public class IdentityEmailSender : IEmailSender
 {
+    public const string ActivitySourceName = "IdentityEmailSending";
+
+    private static readonly ActivitySource _activity = new(ActivitySourceName);
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public IdentityEmailSender(IServiceScopeFactory serviceScopeFactory)
@@ -19,6 +23,9 @@ public class IdentityEmailSender : IEmailSender
 
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
+        using Activity? activity = _activity.StartActivity("IdentityEmailSender.SendEmail", ActivityKind.Internal);
+        activity?.SetTag("email.subject", subject);
+
         await using AsyncServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
 
         ILogger<IdentityEmailSender> logger = scope.ServiceProvider.GetRequiredService<ILogger<IdentityEmailSender>>();
@@ -29,6 +36,7 @@ public class IdentityEmailSender : IEmailSender
         User? user = await userManager.FindByEmailAsync(email);
         if (user is null)
         {
+            activity?.SetStatus(ActivityStatusCode.Error, "User not found");
             if (logger.IsEnabled(LogLevel.Error))
             {
                 logger.LogError("Tried to send email to non existing user.");
@@ -47,9 +55,17 @@ public class IdentityEmailSender : IEmailSender
 
         Result sendResult = await emailManager.SendEmailAsync(emailToSend);
 
-        if (sendResult.Failed && logger.IsEnabled(LogLevel.Error))
+        if (sendResult.Failed)
         {
-            logger.LogError("Failed to send email. Errors: {Errors}", string.Join(", ", sendResult.Errors));
+            activity?.SetStatus(ActivityStatusCode.Error, "Email send failed");
+            if (logger.IsEnabled(LogLevel.Error))
+            {
+                logger.LogError("Failed to send email. Errors: {Errors}", string.Join(", ", sendResult.Errors));
+            }
+        }
+        else
+        {
+            activity?.SetStatus(ActivityStatusCode.Ok);
         }
     }
 }

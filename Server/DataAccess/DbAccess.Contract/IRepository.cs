@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using FlorianAlbert.FinanceObserver.Server.CrossCutting.DataClasses.InfrastructureTypes;
 using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Data;
-using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract.Models;
+using FlorianAlbert.FinanceObserver.Server.CrossCutting.Model;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
 

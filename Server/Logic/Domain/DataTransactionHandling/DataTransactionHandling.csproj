@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\..\..\DataAccess\DbAccess.Contract\DbAccess.Contract.csproj" />
         <ProjectReference Include="..\DataTransactionHandling.Contract\DataTransactionHandling.Contract.csproj" />
     </ItemGroup>

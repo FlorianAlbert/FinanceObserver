@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>FlorianAlbert.FinanceObserver.Server.MigrationService</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\AspireInfrastructure\ServiceDefaults\ServiceDefaults.csproj" />
+		<ProjectReference Include="..\..\DataAccess\DbAccess.EntityFrameworkCore\DbAccess.EntityFrameworkCore.csproj" />
+	</ItemGroup>
+
+</Project>
