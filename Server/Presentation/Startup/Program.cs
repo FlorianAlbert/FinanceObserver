@@ -3,7 +3,6 @@ using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCo
 using FlorianAlbert.FinanceObserver.Server.Logic.Business.Identity.EmailSending.Extensions;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.DataTransactionHandling.Extensions;
 using FlorianAlbert.FinanceObserver.Server.Logic.Domain.EmailManagement.Extensions;
-using FlorianAlbert.FinanceObserver.Server.Startup.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi;
 
@@ -69,8 +68,6 @@ WebApplication app = builder.Build();
 app.MapDefaultEndpoints();
 
 app.MapIdentityApi<User>();
-
-app.UseMigrations();
 
 // Apply CORS before authorization/endpoints
 if (app.Environment.IsDevelopment())

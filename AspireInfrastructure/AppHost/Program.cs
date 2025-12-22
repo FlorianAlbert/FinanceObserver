@@ -29,6 +29,11 @@ else
     throw new DistributedApplicationException("Currently we only support run mode of the AppHost.");
 }
 
+IResourceBuilder<ProjectResource> migrationService = builder.AddProject<Projects.MigrationService>("migration-service")
+    .WithEnvironment("FINANCE_OBSERVER_DB_CONNECTIONNAME", databaseResourceName)
+    .WithReference(database)
+    .WaitFor(database);
+
 IResourceBuilder<ProjectResource> api = builder.AddProject<Projects.Startup>("startup")
     .WithEnvironment("FINANCE_OBSERVER_FROM_EMAIL_ADDRESS", "no-reply@finance-observer.com")
     .WithEnvironment("FINANCE_OBSERVER_FROM_EMAIL_NAME", "Finance Observer")
@@ -38,7 +43,8 @@ IResourceBuilder<ProjectResource> api = builder.AddProject<Projects.Startup>("st
     .WithReference(database)
     .WaitFor(database)
     .WithReference(smtpServerResource)
-    .WaitFor(smtpServerResource);
+    .WaitFor(smtpServerResource)
+    .WaitForCompletion(migrationService);
 
 if (builder.ExecutionContext.IsRunMode)
 {

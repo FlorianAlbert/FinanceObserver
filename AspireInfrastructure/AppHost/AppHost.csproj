@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Server\Presentation\MigrationService\MigrationService.csproj" />
     <ProjectReference Include="..\HostingIntegrations\MailDev\Aspire.Hosting.MailDev.csproj" IsAspireProjectResource="false" />
     <ProjectReference Include="..\..\Server\Presentation\Startup\Startup.csproj" />
   </ItemGroup>
