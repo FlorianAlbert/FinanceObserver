@@ -1,1 +1,7 @@
-* text=auto eol=lf
+* text=auto
+
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+*.{ics,[iI][cC][sS]} text eol=crlf
+
+*.sh text eol=lf
