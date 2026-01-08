@@ -1,10 +1,19 @@
 {
     "configurations": [
+        // The first configuration is the preferred way to launch Aspire applications.
+        // At the moment there is a bug in the Aspire extension that prevents it from working correctly (https://github.com/dotnet/aspire/issues/12965).
+        // Once that bug is fixed, the following configuration can be uncommented and used instead.
+        // {
+        //     "type": "aspire",
+        //     "request": "launch",
+        //     "name": "Aspire: Launch default apphost",
+        //     "program": "${workspaceFolder}"
+        // },
         {
-            "type": "aspire",
+            "name": "Debug",
+            "type": "dotnet",
             "request": "launch",
-            "name": "Aspire: Launch default apphost",
-            "program": "${workspaceFolder}"
+            "projectPath": "${workspaceFolder}/AspireInfrastructure/AppHost/AppHost.csproj",
         }
     ]
 }
