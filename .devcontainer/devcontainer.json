@@ -1,0 +1,31 @@
+{
+  "name": "FinanceObserver",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "enableNonRootDocker": true,
+      "moby": true
+    },
+    "ghcr.io/devcontainers/features/powershell:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+  "postCreateCommand": "dotnet restore",
+  "postStartCommand": "dotnet dev-certs https --trust",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "microsoft-aspire.aspire-vscode",
+        "ms-azuretools.vscode-docker",
+        "GitHub.copilot-chat"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}
