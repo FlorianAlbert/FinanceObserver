@@ -29,6 +29,13 @@ else
     throw new DistributedApplicationException("Currently we only support run mode of the AppHost.");
 }
 
+IResourceBuilder<KeycloakResource> keycloak = builder.AddKeycloak("keycloak", port: 8080)
+    .WithOtlpExporter()
+    // NOTE: The realm config in ./Realms/finance-observer-realm.json references the MailDev SMTP
+    // host by the resource name "maildev" used below. If the MailDev resource name changes,
+    // the smtpServer.host field in the realm JSON must be updated to match.
+    .WithRealmImport("./Realms");
+
 IResourceBuilder<ProjectResource> migrationService = builder.AddProject<Projects.MigrationService>("migration-service")
     .WithEnvironment("FINANCE_OBSERVER_DB_CONNECTIONNAME", databaseResourceName)
     .WithReference(database)
@@ -40,6 +47,8 @@ IResourceBuilder<ProjectResource> api = builder.AddProject<Projects.Startup>("st
     .WithEnvironment("FINANCE_OBSERVER_SMTP_CONNECTIONNAME", smtpServerResourceName)
     .WithEnvironment("FINANCE_OBSERVER_DB_CONNECTIONNAME", databaseResourceName)
     .WithHttpHealthCheck("/health")
+    .WithReference(keycloak)
+    .WaitFor(keycloak)
     .WithReference(database)
     .WaitFor(database)
     .WithReference(smtpServerResource)

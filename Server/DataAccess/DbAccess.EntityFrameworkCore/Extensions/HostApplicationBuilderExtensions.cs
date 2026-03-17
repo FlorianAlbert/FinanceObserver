@@ -1,5 +1,4 @@
 ﻿using FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.Contract;
-using FlorianAlbert.FinanceObserver.Server.CrossCutting.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,9 +35,6 @@ public static class HostApplicationBuilderExtensions
                 });
 
             builder.Services.AddScoped<DbContext>(provider => provider.GetRequiredService<FinanceObserverContext>());
-
-            builder.Services.AddIdentityApiEndpoints<User>()
-                .AddEntityFrameworkStores<FinanceObserverContext>();
 
             builder.Services.AddScoped<IRepositoryFactory, RepositoryFactory>();
             builder.Services.AddScoped<IDbTransactionHandler, DbTransactionHandler>();

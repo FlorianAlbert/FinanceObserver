@@ -1,0 +1,74 @@
+{
+  "realm": "finance-observer",
+  "displayName": "Finance Observer",
+  "enabled": true,
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
+  "verifyEmail": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "sslRequired": "external",
+  "smtpServer": {
+    "host": "maildev",
+    "port": "1025",
+    "from": "no-reply@finance-observer.com",
+    "fromDisplayName": "Finance Observer",
+    "auth": "false",
+    "starttls": "false",
+    "ssl": "false"
+  },
+  "passwordPolicy": "length(8) and specialChars(1) and upperCase(1) and lowerCase(1) and digits(1) and notUsername(undefined) and passwordHistory(3)",
+  "clients": [
+    {
+      "clientId": "finance-observer-swagger",
+      "name": "Finance Observer Scalar/OpenAPI UI",
+      "description": "Confidential client for Scalar/OpenAPI documentation UI",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "finance-observer-swagger-secret",
+      "redirectUris": [
+        "http://localhost:*/*",
+        "https://localhost:*/*"
+      ],
+      "webOrigins": [
+        "http://localhost:*",
+        "https://localhost:*"
+      ],
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "+"
+      },
+      "fullScopeAllowed": true
+    },
+    {
+      "clientId": "finance-observer-api",
+      "name": "Finance Observer API",
+      "description": "Resource server client for the Finance Observer API",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "bearerOnly": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "fullScopeAllowed": true
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "user",
+        "description": "Standard user role"
+      }
+    ]
+  },
+  "defaultRoles": [
+    "user"
+  ]
+}

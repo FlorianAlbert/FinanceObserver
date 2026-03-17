@@ -1,11 +1,9 @@
 using FlorianAlbert.FinanceObserver.Server.CrossCutting.Model;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlorianAlbert.FinanceObserver.Server.DataAccess.DbAccess.EntityFrameworkCore;
 
-public class FinanceObserverContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+public class FinanceObserverContext : DbContext
 {
     public FinanceObserverContext(DbContextOptions<FinanceObserverContext> options)
         : base(options)
