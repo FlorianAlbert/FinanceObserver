@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Aspire.Keycloak.Authentication" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Polly" />
     </ItemGroup>
@@ -15,7 +16,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\AspireInfrastructure\ServiceDefaults\ServiceDefaults.csproj" />
         <ProjectReference Include="..\..\DataAccess\DbAccess.EntityFrameworkCore\DbAccess.EntityFrameworkCore.csproj" />
-        <ProjectReference Include="..\..\Logic\Business\Identity.EmailSending\Identity.EmailSending.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\DataTransactionHandling\DataTransactionHandling.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\EmailManagement.Contract\EmailManagement.Contract.csproj" />
         <ProjectReference Include="..\..\Logic\Domain\EmailManagement\EmailManagement.csproj" />

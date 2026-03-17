@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-
 namespace FlorianAlbert.FinanceObserver.Server.CrossCutting.Model;
 
-public sealed class User : IdentityUser<Guid>, IBaseEntity<Guid>
+public sealed class User : IBaseEntity<Guid>
 {
-    public User()
-    {
-    }
+    public Guid Id { get; set; }
+
+    public required string ExternalId { get; set; }
+
+    public string? Email { get; set; }
 
     public string? FirstName { get; set; }
 

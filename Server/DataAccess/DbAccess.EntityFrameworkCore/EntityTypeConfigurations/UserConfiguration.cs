@@ -8,6 +8,13 @@ internal class UserConfiguration : BaseEntityConfiguration<Guid, User>
 {
     public override void Configure(EntityTypeBuilder<User> builder)
     {
+        base.Configure(builder);
+
+        builder.ToTable("Users");
+
+        builder.HasIndex(user => user.ExternalId)
+            .IsUnique();
+
         builder.HasMany(user => user.Transactions)
             .WithOne(transaction => transaction.Owner)
             .OnDelete(DeleteBehavior.Cascade);
